@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Redirect, Tabs } from "expo-router";
 import React, { useContext } from "react";
-import { Pressable } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
@@ -21,7 +21,12 @@ export default function TabLayout() {
 	const auth = useContext(AuthContext);
 
 	if (auth?.loading) {
-		return null; // or splash screen
+		return (
+			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+				<ActivityIndicator size="large" />
+			</View>
+		);
+		// or splash screen
 	}
 
 	if (!auth?.user) {
