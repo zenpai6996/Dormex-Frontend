@@ -13,7 +13,7 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 const API = axios.create({
-	baseURL: "https://dormex-backend.fly.dev/api",
+	baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
 export const AuthProvider = ({ children }: any) => {
@@ -22,15 +22,19 @@ export const AuthProvider = ({ children }: any) => {
 
 	useEffect(() => {
 		const loadUser = async () => {
-			const token = await AsyncStorage.getItem("token");
-			const role = await AsyncStorage.getItem("role");
+			try {
+				const token = await AsyncStorage.getItem("token");
+				const role = await AsyncStorage.getItem("role");
 
-			if (token) {
-				API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-				setUser({ token, role });
+				if (token) {
+					API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+					setUser({ token, role });
+				}
+			} catch (error) {
+				console.log("Error loading user:", error);
+			} finally {
+				setLoading(false);
 			}
-
-			setLoading(false);
 		};
 
 		loadUser();

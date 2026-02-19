@@ -20,8 +20,12 @@ export default function TabLayout() {
 	const colorScheme = useColorScheme();
 	const auth = useContext(AuthContext);
 
+	if (auth?.loading) {
+		return null; // or splash screen
+	}
+
 	if (!auth?.user) {
-		return <Redirect href="/(auth)/login" />;
+		return <Redirect href="/login" />;
 	}
 
 	return (
