@@ -1,6 +1,19 @@
+// app/(auth)/register.tsx
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
-import { Button, Text, TextInput, View } from "react-native";
+import {
+	Alert,
+	KeyboardAvoidingView,
+	Platform,
+	Pressable,
+	ScrollView,
+	Text,
+	TextInput,
+	View,
+} from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { AuthContext } from "../../src/context/AuthContext";
 
 export default function Register() {
@@ -10,57 +23,293 @@ export default function Register() {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+
+	const handleRegister = async () => {
+		if (!name || !email || !password || !confirmPassword) {
+			Alert.alert("Error", "Please fill in all fields");
+			return;
+		}
+
+		if (password !== confirmPassword) {
+			Alert.alert("Error", "Passwords do not match");
+			return;
+		}
+
+		if (password.length < 8) {
+			Alert.alert("Error", "Password must be at least 8 characters");
+			return;
+		}
+
+		try {
+			setIsLoading(true);
+			await auth?.register(name, email, password);
+			Alert.alert("Success", "Registration successful! Please log in.", [
+				{ text: "OK", onPress: () => router.replace("/(auth)/login") },
+			]);
+		} catch (error) {
+			Alert.alert("Error", "Registration failed. Please try again.");
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	return (
-		<View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
-			<Text style={{ color: "#fff", fontSize: 24, marginBottom: 20 }}>
-				Register
-			</Text>
+		<LinearGradient
+			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			style={{ flex: 1 }}
+		>
+			<KeyboardAvoidingView
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				style={{ flex: 1 }}
+			>
+				<ScrollView
+					contentContainerStyle={{ flexGrow: 1 }}
+					showsVerticalScrollIndicator={false}
+				>
+					<View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
+						{/* Header */}
+						<Animated.View
+							entering={FadeInDown.delay(100).duration(500)}
+							style={{ alignItems: "center", marginBottom: 30 }}
+						>
+							<Text style={{ color: "#fff", fontSize: 28, fontWeight: "bold" }}>
+								Create Account
+							</Text>
+							<Text style={{ color: "#9CA3AF", fontSize: 16, marginTop: 8 }}>
+								Join DormEx today
+							</Text>
+						</Animated.View>
 
-			<TextInput
-				placeholder="Name"
-				value={name}
-				onChangeText={setName}
-				style={{
-					borderWidth: 1,
-					backgroundColor: "#fff",
-					marginBottom: 10,
-					padding: 10,
-				}}
-			/>
+						{/* Form */}
+						<Animated.View entering={FadeInDown.delay(200).duration(500)}>
+							{/* Name Input */}
+							<View style={{ marginBottom: 16 }}>
+								<Text
+									style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 8 }}
+								>
+									Full Name
+								</Text>
+								<View
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										backgroundColor: "rgba(255,255,255,0.1)",
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.2)",
+										paddingHorizontal: 16,
+									}}
+								>
+									<FontAwesome name="user" size={20} color="#9CA3AF" />
+									<TextInput
+										placeholder="Enter your full name"
+										placeholderTextColor="#6B7280"
+										value={name}
+										onChangeText={setName}
+										style={{
+											flex: 1,
+											color: "#fff",
+											paddingVertical: 16,
+											paddingHorizontal: 12,
+											fontSize: 16,
+										}}
+									/>
+								</View>
+							</View>
 
-			<TextInput
-				placeholder="Email"
-				value={email}
-				onChangeText={setEmail}
-				style={{
-					borderWidth: 1,
-					backgroundColor: "#fff",
-					marginBottom: 10,
-					padding: 10,
-				}}
-			/>
+							{/* Email Input */}
+							<View style={{ marginBottom: 16 }}>
+								<Text
+									style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 8 }}
+								>
+									Email Address
+								</Text>
+								<View
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										backgroundColor: "rgba(255,255,255,0.1)",
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.2)",
+										paddingHorizontal: 16,
+									}}
+								>
+									<FontAwesome name="envelope" size={20} color="#9CA3AF" />
+									<TextInput
+										placeholder="Enter your email"
+										placeholderTextColor="#6B7280"
+										value={email}
+										onChangeText={setEmail}
+										keyboardType="email-address"
+										autoCapitalize="none"
+										style={{
+											flex: 1,
+											color: "#fff",
+											paddingVertical: 16,
+											paddingHorizontal: 12,
+											fontSize: 16,
+										}}
+									/>
+								</View>
+							</View>
 
-			<TextInput
-				placeholder="Password"
-				secureTextEntry
-				value={password}
-				onChangeText={setPassword}
-				style={{
-					borderWidth: 1,
-					backgroundColor: "#fff",
-					marginBottom: 20,
-					padding: 10,
-				}}
-			/>
+							{/* Password Input */}
+							<View style={{ marginBottom: 16 }}>
+								<Text
+									style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 8 }}
+								>
+									Password
+								</Text>
+								<View
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										backgroundColor: "rgba(255,255,255,0.1)",
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.2)",
+										paddingHorizontal: 16,
+									}}
+								>
+									<FontAwesome name="lock" size={24} color="#9CA3AF" />
+									<TextInput
+										placeholder="8-16 characters"
+										placeholderTextColor="#6B7280"
+										value={password}
+										onChangeText={setPassword}
+										secureTextEntry={!showPassword}
+										style={{
+											flex: 1,
+											color: "#fff",
+											paddingVertical: 16,
+											paddingHorizontal: 12,
+											fontSize: 16,
+										}}
+									/>
+									<Pressable onPress={() => setShowPassword(!showPassword)}>
+										<FontAwesome
+											name={showPassword ? "eye-slash" : "eye"}
+											size={20}
+											color="#9CA3AF"
+										/>
+									</Pressable>
+								</View>
+							</View>
 
-			<Button
-				title="Register"
-				onPress={async () => {
-					await auth?.register(name, email, password);
-					router.replace("/(auth)/login");
-				}}
-			/>
-		</View>
+							{/* Confirm Password Input */}
+							<View style={{ marginBottom: 24 }}>
+								<Text
+									style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 8 }}
+								>
+									Confirm Password
+								</Text>
+								<View
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										backgroundColor: "rgba(255,255,255,0.1)",
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.2)",
+										paddingHorizontal: 16,
+									}}
+								>
+									<FontAwesome name="lock" size={24} color="#9CA3AF" />
+									<TextInput
+										placeholder="Re-enter password"
+										placeholderTextColor="#6B7280"
+										value={confirmPassword}
+										onChangeText={setConfirmPassword}
+										secureTextEntry={!showConfirmPassword}
+										style={{
+											flex: 1,
+											color: "#fff",
+											paddingVertical: 16,
+											paddingHorizontal: 12,
+											fontSize: 16,
+										}}
+									/>
+									<Pressable
+										onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+									>
+										<FontAwesome
+											name={showConfirmPassword ? "eye-slash" : "eye"}
+											size={20}
+											color="#9CA3AF"
+										/>
+									</Pressable>
+								</View>
+							</View>
+
+							{/* Register Button */}
+							<Pressable
+								onPress={handleRegister}
+								disabled={isLoading}
+								style={({ pressed }) => ({
+									backgroundColor: pressed ? "#4338CA" : "#4F46E5",
+									paddingVertical: 16,
+									borderRadius: 30,
+									alignItems: "center",
+									marginBottom: 20,
+									opacity: isLoading ? 0.7 : 1,
+									transform: [{ scale: pressed ? 0.98 : 1 }],
+								})}
+							>
+								<Text
+									style={{ color: "#fff", fontSize: 18, fontWeight: "600" }}
+								>
+									{isLoading ? "Creating Account..." : "Create Account"}
+								</Text>
+							</Pressable>
+
+							{/* Login Link */}
+							<View
+								style={{
+									flexDirection: "row",
+									justifyContent: "center",
+									alignItems: "center",
+								}}
+							>
+								<Text style={{ color: "#9CA3AF", fontSize: 14 }}>
+									Already have an account?{" "}
+								</Text>
+								<Pressable onPress={() => router.push("/(auth)/login")}>
+									<Text
+										style={{
+											color: "#4F46E5",
+											fontSize: 14,
+											fontWeight: "600",
+										}}
+									>
+										Log In
+									</Text>
+								</Pressable>
+							</View>
+
+							{/* Terms */}
+							<Text
+								style={{
+									color: "#6B7280",
+									textAlign: "center",
+									marginTop: 30,
+									fontSize: 12,
+								}}
+							>
+								By creating an account, you agree to our{"\n"}
+								<Text style={{ color: "#4F46E5" }}>
+									Terms of Service
+								</Text> and{" "}
+								<Text style={{ color: "#4F46E5" }}>Privacy Policy</Text>
+							</Text>
+						</Animated.View>
+					</View>
+				</ScrollView>
+			</KeyboardAvoidingView>
+		</LinearGradient>
 	);
 }

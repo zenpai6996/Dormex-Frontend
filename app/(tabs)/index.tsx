@@ -11,7 +11,7 @@ export default function TabOneScreen() {
 	const router = useRouter();
 	const handleLogout = async () => {
 		await auth?.logout();
-		router.replace("/login");
+		router.replace("/(auth)");
 	};
 
 	return (
