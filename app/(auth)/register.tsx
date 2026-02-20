@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import {
-	Alert,
 	KeyboardAvoidingView,
 	Platform,
 	Pressable,
@@ -14,6 +13,7 @@ import {
 	View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Alert } from "rn-custom-alert-prompt";
 import { AuthContext } from "../../src/context/AuthContext";
 
 export default function Register() {
@@ -30,28 +30,55 @@ export default function Register() {
 
 	const handleRegister = async () => {
 		if (!name || !email || !password || !confirmPassword) {
-			Alert.alert("Error", "Please fill in all fields");
+			Alert.alert({
+				title: "Error",
+				description: "Please fill in all the fields",
+				showCancelButton: false,
+			});
 			return;
 		}
 
 		if (password !== confirmPassword) {
-			Alert.alert("Error", "Passwords do not match");
+			Alert.alert({
+				title: "Error",
+				description: "Passwords donot match",
+				showCancelButton: false,
+			});
 			return;
 		}
 
 		if (password.length < 8) {
-			Alert.alert("Error", "Password must be at least 8 characters");
+			Alert.alert({
+				title: "Error",
+				description: "Password must be atleast 8 characters",
+				showCancelButton: false,
+			});
 			return;
 		}
 
 		try {
 			setIsLoading(true);
 			await auth?.register(name, email, password);
-			Alert.alert("Success", "Registration successful! Please log in.", [
-				{ text: "OK", onPress: () => router.replace("/(auth)/login") },
-			]);
+			await Alert.alert({
+				title: "Success",
+				description: "Registration successful!\n Please log in.",
+				showCancelButton: false,
+				buttons: [
+					{
+						text: "OK",
+						onPress: () => {
+							router.replace("/(auth)/login");
+						},
+					},
+				],
+			});
 		} catch (error) {
-			Alert.alert("Error", "Registration failed. Please try again.");
+			await Alert.alert({
+				title: "Error",
+				description: "Registration failed. Please try again.",
+				showCancelButton: false,
+				confirmText: "OK",
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -80,7 +107,7 @@ export default function Register() {
 								Create Account
 							</Text>
 							<Text style={{ color: "#9CA3AF", fontSize: 16, marginTop: 8 }}>
-								Join DormEx today
+								Join Dorm<Text style={{ color: "#FFCC00" }}>Ex</Text> today
 							</Text>
 						</Animated.View>
 
@@ -251,7 +278,7 @@ export default function Register() {
 								onPress={handleRegister}
 								disabled={isLoading}
 								style={({ pressed }) => ({
-									backgroundColor: pressed ? "#4338CA" : "#4F46E5",
+									backgroundColor: pressed ? "#ffcc00ad" : "#ffcc00",
 									paddingVertical: 16,
 									borderRadius: 30,
 									alignItems: "center",
@@ -261,7 +288,7 @@ export default function Register() {
 								})}
 							>
 								<Text
-									style={{ color: "#fff", fontSize: 18, fontWeight: "600" }}
+									style={{ color: "black", fontSize: 18, fontWeight: "600" }}
 								>
 									{isLoading ? "Creating Account..." : "Create Account"}
 								</Text>
@@ -281,7 +308,7 @@ export default function Register() {
 								<Pressable onPress={() => router.push("/(auth)/login")}>
 									<Text
 										style={{
-											color: "#4F46E5",
+											color: "#ffcc00",
 											fontSize: 14,
 											fontWeight: "600",
 										}}
@@ -294,17 +321,17 @@ export default function Register() {
 							{/* Terms */}
 							<Text
 								style={{
-									color: "#6B7280",
+									color: "#d0d7e6",
 									textAlign: "center",
 									marginTop: 30,
 									fontSize: 12,
 								}}
 							>
 								By creating an account, you agree to our{"\n"}
-								<Text style={{ color: "#4F46E5" }}>
+								<Text style={{ color: "#ffcc00" }}>
 									Terms of Service
 								</Text> and{" "}
-								<Text style={{ color: "#4F46E5" }}>Privacy Policy</Text>
+								<Text style={{ color: "#ffcc00" }}>Privacy Policy</Text>
 							</Text>
 						</Animated.View>
 					</View>

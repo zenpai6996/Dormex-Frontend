@@ -1,12 +1,10 @@
 // app/(auth)/login.tsx
 import { AuthContext } from "@/src/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useContext, useState } from "react";
 import {
-	Alert,
 	Dimensions,
 	KeyboardAvoidingView,
 	Platform,
@@ -17,6 +15,7 @@ import {
 	View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Alert } from "rn-custom-alert-prompt";
 
 const { width } = Dimensions.get("window");
 
@@ -28,10 +27,15 @@ export default function Login() {
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isFocused, setIsFocused] = useState(false);
 
 	const handleLogin = async () => {
 		if (!email || !password) {
-			Alert.alert("Error", "Please fill in all fields");
+			Alert.alert({
+				title: "Error",
+				description: "Please fill in all the fields",
+				showCancelButton: false,
+			});
 			return;
 		}
 
@@ -40,7 +44,11 @@ export default function Login() {
 			await auth?.login(email, password);
 			router.replace("/(tabs)");
 		} catch (error) {
-			Alert.alert("Error", "Invalid credentials");
+			Alert.alert({
+				title: "Error",
+				description: "Invalid Credentials",
+				showCancelButton: false,
+			});
 		} finally {
 			setIsLoading(false);
 		}
@@ -102,7 +110,8 @@ export default function Login() {
 								Welcome Back!
 							</Text>
 							<Text style={{ color: "#9CA3AF", fontSize: 16, marginTop: 8 }}>
-								Log in to continue to DormEx
+								Log in to continue to Dorm
+								<Text style={{ color: "#FFCC00" }}>Ex</Text>
 							</Text>
 						</Animated.View>
 
@@ -122,7 +131,9 @@ export default function Login() {
 										backgroundColor: "rgba(255,255,255,0.1)",
 										borderRadius: 16,
 										borderWidth: 1,
-										borderColor: "rgba(255,255,255,0.2)",
+										borderColor: isFocused
+											? "#4F46E5"
+											: "rgba(255,255,255,0.2)",
 										paddingHorizontal: 16,
 									}}
 								>
@@ -208,51 +219,20 @@ export default function Login() {
 								onPress={handleLogin}
 								disabled={isLoading}
 								style={({ pressed }) => ({
-									transform: [{ scale: pressed ? 0.98 : 1 }],
+									backgroundColor: pressed ? "#ffcc00ad" : "#ffcc00",
+									paddingVertical: 16,
+									borderRadius: 30,
+									alignItems: "center",
 									marginBottom: 20,
+									opacity: isLoading ? 0.7 : 1,
+									transform: [{ scale: pressed ? 0.98 : 1 }],
 								})}
 							>
-								{({ pressed }) => (
-									<BlurView
-										intensity={pressed ? 30 : 20}
-										tint="dark"
-										style={{
-											paddingVertical: 16,
-											borderRadius: 30,
-											overflow: "hidden",
-											backgroundColor: "rgba(79,70,229,0.2)",
-											borderWidth: 1,
-											borderColor: "rgba(255,255,255,0.2)",
-											alignItems: "center",
-											opacity: isLoading ? 0.7 : 1,
-											shadowColor: "#4F46E5",
-											shadowOffset: { width: 0, height: 8 },
-											shadowOpacity: pressed ? 0.5 : 0.3,
-											shadowRadius: 15,
-											elevation: 8,
-										}}
-									>
-										<LinearGradient
-											colors={[
-												"rgba(79,70,229,0.4)",
-												"rgba(79,70,229,0.1)",
-												"rgba(79,70,229,0.2)",
-											]}
-											start={{ x: 0, y: 0 }}
-											end={{ x: 1, y: 1 }}
-											style={{
-												position: "absolute",
-												width: "100%",
-												height: "100%",
-											}}
-										/>
-										<Text
-											style={{ color: "#fff", fontSize: 18, fontWeight: "600" }}
-										>
-											{isLoading ? "Logging in..." : "Log In"}
-										</Text>
-									</BlurView>
-								)}
+								<Text
+									style={{ color: "black", fontSize: 18, fontWeight: "600" }}
+								>
+									{isLoading ? "Logging in..." : "Log In"}
+								</Text>
 							</Pressable>
 
 							{/* Divider */}
@@ -291,7 +271,7 @@ export default function Login() {
 									borderRadius: 30,
 									alignItems: "center",
 									borderWidth: 1,
-									borderColor: "#4F46E5",
+									borderColor: "#ffcc00",
 									transform: [{ scale: pressed ? 0.98 : 1 }],
 								})}
 							>
@@ -305,17 +285,17 @@ export default function Login() {
 							{/* Terms */}
 							<Text
 								style={{
-									color: "#6B7280",
+									color: "#d0d7e6",
 									textAlign: "center",
 									marginTop: 30,
 									fontSize: 12,
 								}}
 							>
 								By continuing, you agree to our{"\n"}
-								<Text style={{ color: "#4F46E5" }}>
+								<Text style={{ color: "#ffcc00" }}>
 									Terms of Service
 								</Text> and{" "}
-								<Text style={{ color: "#4F46E5" }}>Privacy Policy</Text>
+								<Text style={{ color: "#ffcc00" }}>Privacy Policy</Text>
 							</Text>
 						</Animated.View>
 					</View>

@@ -1,3 +1,6 @@
+import { useColorScheme } from "@/components/useColorScheme";
+import { OnboardingProvider } from "@/context/OnboardingContext";
+import { AuthProvider } from "@/src/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
 	DarkTheme,
@@ -8,10 +11,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import "react-native-reanimated";
-
-import { useColorScheme } from "@/components/useColorScheme";
-import { AuthProvider } from "@/src/context/AuthContext";
+import { AlertContainer } from "rn-custom-alert-prompt";
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -56,11 +56,30 @@ function RootLayoutNav() {
 	return (
 		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
 			<AuthProvider>
-				<Stack>
-					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-					<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-					<Stack.Screen name="modal" options={{ presentation: "modal" }} />
-				</Stack>
+				<OnboardingProvider>
+					<AlertContainer
+						animationType="fade"
+						theme="android"
+						appearance={colorScheme === "dark" ? "dark" : "light"}
+						personalTheme={{
+							backgroundColor: "rgba(0,0,0,0.5)",
+							cardBackgroundColor:
+								colorScheme === "dark" ? "#1A1F32" : "#ffffff",
+							titleColor: colorScheme === "dark" ? "#fff" : "#333333",
+							descriptionColor: colorScheme === "dark" ? "#9CA3AF" : "#666666",
+							textButtonColor: "#ffcc00",
+						}}
+					/>
+					<Stack>
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+						<Stack.Screen
+							name="(onboarding)"
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen name="modal" options={{ presentation: "modal" }} />
+					</Stack>
+				</OnboardingProvider>
 			</AuthProvider>
 		</ThemeProvider>
 	);

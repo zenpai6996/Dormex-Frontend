@@ -6,6 +6,7 @@ import { ActivityIndicator, Pressable, View } from "react-native";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
+import { OnboardingContext } from "@/context/OnboardingContext";
 import { AuthContext } from "@/src/context/AuthContext";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -19,17 +20,22 @@ function TabBarIcon(props: {
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
 	const auth = useContext(AuthContext);
+	const onboarding = useContext(OnboardingContext);
 
-	if (auth?.loading) {
+	if (auth?.loading || onboarding?.loading) {
 		return (
 			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 				<ActivityIndicator size="large" />
 			</View>
 		);
-		// or splash screen
 	}
 
 	if (!auth?.user) {
+		// If user hasn't completed onboarding, send them to onboarding
+		if (!onboarding?.hasCompletedOnboarding) {
+			return <Redirect href="/(onboarding)/screen1" />;
+		}
+		// If they've completed onboarding but aren't logged in, send to auth
 		return <Redirect href="/(auth)" />;
 	}
 
