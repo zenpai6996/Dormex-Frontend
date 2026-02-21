@@ -77,7 +77,10 @@ function RootLayoutNav() {
 							name="(onboarding)"
 							options={{ headerShown: false }}
 						/>
-						<Stack.Screen name="modal" options={{ presentation: "modal" }} />
+						<Stack.Screen
+							name="modal"
+							options={{ presentation: "modal", headerShown: false }}
+						/>
 					</Stack>
 				</OnboardingProvider>
 			</AuthProvider>
