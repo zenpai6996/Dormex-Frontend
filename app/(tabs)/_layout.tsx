@@ -3,12 +3,10 @@ import { Link, Redirect, Tabs } from "expo-router";
 import React, { useContext } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { OnboardingContext } from "@/context/OnboardingContext";
-import { AuthContext } from "@/src/context/AuthContext";
-
+import { useAuth } from "@/src/context/AuthContext";
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
 	name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -19,7 +17,7 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
-	const auth = useContext(AuthContext);
+	const auth = useAuth();
 	const onboarding = useContext(OnboardingContext);
 
 	if (auth?.loading || onboarding?.loading) {
@@ -30,7 +28,7 @@ export default function TabLayout() {
 		);
 	}
 
-	if (!auth?.user) {
+	if (!auth?.token) {
 		// If user hasn't completed onboarding, send them to onboarding
 		if (!onboarding?.hasCompletedOnboarding) {
 			return <Redirect href="/(onboarding)/screen1" />;
@@ -45,14 +43,14 @@ export default function TabLayout() {
 				tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
 				// Disable the static render of the header on web
 				// to prevent a hydration error in React Navigation v6.
-				headerShown: useClientOnlyValue(false, true),
+				headerShown: false,
 			}}
 		>
 			<Tabs.Screen
 				name="index"
 				options={{
-					title: "Tab One",
-					tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+					title: "",
+					tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
 					headerRight: () => (
 						<Link href="/modal" asChild>
 							<Pressable>
@@ -73,16 +71,16 @@ export default function TabLayout() {
 				name="two"
 				options={{
 					headerShown: false,
-					title: "Tab Two",
-					tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+					title: "Mess",
+					tabBarIcon: ({ color }) => <TabBarIcon name="spoon" color={color} />,
 				}}
 			/>
 			<Tabs.Screen
 				name="three"
 				options={{
 					headerShown: false,
-					title: "Tab Three",
-					tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+					title: "Complaints",
+					tabBarIcon: ({ color }) => <TabBarIcon name="shield" color={color} />,
 				}}
 			/>
 		</Tabs>

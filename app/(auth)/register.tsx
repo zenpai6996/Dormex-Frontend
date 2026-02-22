@@ -1,8 +1,9 @@
 // app/(auth)/register.tsx
+import { useAuth } from "@/src/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
 	KeyboardAvoidingView,
 	Platform,
@@ -14,10 +15,9 @@ import {
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Alert } from "rn-custom-alert-prompt";
-import { AuthContext } from "../../src/context/AuthContext";
 
 export default function Register() {
-	const auth = useContext(AuthContext);
+	const auth = useAuth();
 	const router = useRouter();
 
 	const [name, setName] = useState("");
@@ -41,7 +41,7 @@ export default function Register() {
 		if (password !== confirmPassword) {
 			Alert.alert({
 				title: "Error",
-				description: "Passwords donot match",
+				description: "Passwords do not match",
 				showCancelButton: false,
 			});
 			return;
@@ -50,7 +50,7 @@ export default function Register() {
 		if (password.length < 8) {
 			Alert.alert({
 				title: "Error",
-				description: "Password must be atleast 8 characters",
+				description: "Password must be at least 8 characters",
 				showCancelButton: false,
 			});
 			return;
@@ -58,26 +58,40 @@ export default function Register() {
 
 		try {
 			setIsLoading(true);
-			await auth?.register(name, email, password);
-			await Alert.alert({
+
+			const res = await fetch(
+				`${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ name, email, password }),
+				},
+			);
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				throw new Error(data.message || "Registration failed");
+			}
+
+			Alert.alert({
 				title: "Success",
-				description: "Registration successful!\n Please log in.",
+				description: "Registration successful! Please log in.",
 				showCancelButton: false,
 				buttons: [
 					{
 						text: "OK",
-						onPress: () => {
-							router.replace("/(auth)/login");
-						},
+						onPress: () => router.replace("/(auth)/login"),
 					},
 				],
 			});
 		} catch (error) {
-			await Alert.alert({
+			Alert.alert({
 				title: "Error",
 				description: "Registration failed. Please try again.",
 				showCancelButton: false,
-				confirmText: "OK",
 			});
 		} finally {
 			setIsLoading(false);

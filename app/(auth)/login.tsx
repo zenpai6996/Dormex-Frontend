@@ -1,9 +1,9 @@
 // app/(auth)/login.tsx
-import { AuthContext } from "@/src/context/AuthContext";
+import { useAuth } from "@/src/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
 	Dimensions,
 	KeyboardAvoidingView,
@@ -20,7 +20,7 @@ import { Alert } from "rn-custom-alert-prompt";
 const { width } = Dimensions.get("window");
 
 export default function Login() {
-	const auth = useContext(AuthContext);
+	const auth = useAuth();
 	const router = useRouter();
 
 	const [email, setEmail] = useState("");
@@ -41,7 +41,23 @@ export default function Login() {
 
 		try {
 			setIsLoading(true);
-			await auth?.login(email, password);
+
+			const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/auth/login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ email, password }),
+			});
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				throw new Error(data.message || "Login failed");
+			}
+
+			await auth.login(data.token, data.role);
+
 			router.replace("/(tabs)");
 		} catch (error) {
 			Alert.alert({

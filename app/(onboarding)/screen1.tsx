@@ -1,4 +1,3 @@
-import { StyledText } from "@/components/StyledText";
 import { OnboardingContext } from "@/context/OnboardingContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -25,7 +24,7 @@ const screen1 = () => {
 	};
 
 	// Custom square dots component (kept exactly as in your file)
-	const DotComponent = ({ selected }) => {
+	const DotComponent = ({ selected }: any) => {
 		return (
 			<View
 				style={[
@@ -106,15 +105,10 @@ const screen1 = () => {
 							</View>
 						),
 						title: (
-							<StyledText
-								variant="logo"
-								style={{ color: "#fff", fontSize: 28, fontWeight: "bold" }}
-							>
+							<Text style={{ color: "#fff", fontSize: 28, fontWeight: "bold" }}>
 								Welcome to Dorm
-								<StyledText variant="logo" style={{ color: "#FFCC00" }}>
-									Ex
-								</StyledText>
-							</StyledText>
+								<Text style={{ color: "#FFCC00" }}>Ex</Text>
+							</Text>
 						),
 						subtitle: "Your all in one Hostel Management Tool",
 					},

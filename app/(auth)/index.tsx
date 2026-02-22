@@ -1,5 +1,4 @@
 // app/(auth)/index.tsx
-import { StyledText } from "@/components/StyledText";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
@@ -23,15 +22,10 @@ export default function Onboarding() {
 					entering={FadeInUp.delay(100).duration(500)}
 					style={{ alignItems: "center", marginTop: 60 }}
 				>
-					<StyledText
-						variant="logo"
-						style={{ color: "#fff", fontSize: 36, fontWeight: "bold" }}
-					>
+					<Text style={{ color: "#fff", fontSize: 36, fontWeight: "bold" }}>
 						Dorm
-						<StyledText variant="logo" style={{ color: "#FFCC00" }}>
-							Ex
-						</StyledText>
-					</StyledText>
+						<Text style={{ color: "#FFCC00" }}>Ex</Text>
+					</Text>
 					<Text style={{ color: "#9CA3AF", fontSize: 16, marginTop: 8 }}>
 						Hostel Management System
 					</Text>

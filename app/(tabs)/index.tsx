@@ -1,34 +1,45 @@
-import { Text, View } from "@/components/Themed";
-import { StyleSheet } from "react-native";
+import AdminDashboard from "@/components/dashboard/AdminDashboard";
+import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
+import ErrorState from "@/components/dashboard/ErrorState";
+import StudentDashboard from "@/components/dashboard/StudentDashboard";
+import { fetchDashboard } from "@/src/api/dashboard.api";
+import { useAuth } from "@/src/context/AuthContext";
+import { DashboardType } from "@/src/schemas/dashboard.schema";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 
 export default function TabOneScreen() {
-	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Tab One</Text>
-			<View
-				style={styles.separator}
-				lightColor="#eee"
-				darkColor="rgba(255,255,255,0.1)"
-			/>
+	const { token, role, loading: authLoading } = useAuth();
 
-			<Text>Tab One</Text>
+	const [data, setData] = useState<DashboardType | null>(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		if (!token) return;
+
+		fetchDashboard(token)
+			.then(setData)
+			.catch(console.error)
+			.finally(() => setLoading(false));
+	}, [token]);
+
+	// Show skeleton while loading
+	if (authLoading || loading) {
+		return <DashboardSkeleton />;
+	}
+
+	// If no data after loading, show nothing
+	if (!data) {
+		return <ErrorState />;
+	}
+
+	return (
+		<View style={{ flex: 1 }}>
+			{role === "ADMIN" ? (
+				<AdminDashboard data={data} />
+			) : (
+				<StudentDashboard data={data} />
+			)}
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: "80%",
-	},
-});

@@ -1,68 +1,64 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type AuthContextType = {
-	user: any;
-	loading: boolean;
-	login: (email: string, password: string) => Promise<void>;
-	register: (name: string, email: string, password: string) => Promise<void>;
+	token: string | null;
+	role: "ADMIN" | "STUDENT" | null;
+	login: (token: string, role: "ADMIN" | "STUDENT") => Promise<void>;
 	logout: () => Promise<void>;
+	loading: boolean;
 };
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API = axios.create({
-	baseURL: process.env.EXPO_PUBLIC_API_URL,
-});
-
-export const AuthProvider = ({ children }: any) => {
-	const [user, setUser] = useState<any>(null);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+	const [token, setToken] = useState<string | null>(null);
+	const [role, setRole] = useState<"ADMIN" | "STUDENT" | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const loadUser = async () => {
-			try {
-				const token = await AsyncStorage.getItem("token");
-				const role = await AsyncStorage.getItem("role");
-
-				if (token) {
-					API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-					setUser({ token, role });
-				}
-			} catch (error) {
-				console.log("Error loading user:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		loadUser();
+		loadAuth();
 	}, []);
 
-	const login = async (email: string, password: string) => {
-		const res = await API.post("/auth/login", { email, password });
+	async function loadAuth() {
+		const storedToken = await AsyncStorage.getItem("token");
+		const storedRole = await AsyncStorage.getItem("role");
 
-		await AsyncStorage.setItem("token", res.data.token);
-		await AsyncStorage.setItem("role", res.data.role);
+		if (storedToken && storedRole) {
+			setToken(storedToken);
+			setRole(storedRole as "ADMIN" | "STUDENT");
+		}
 
-		API.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+		setLoading(false);
+	}
 
-		setUser(res.data);
-	};
+	async function login(newToken: string, newRole: "ADMIN" | "STUDENT") {
+		await AsyncStorage.setItem("token", newToken);
+		await AsyncStorage.setItem("role", newRole);
 
-	const register = async (name: string, email: string, password: string) => {
-		await API.post("/auth/register", { name, email, password });
-	};
+		setToken(newToken);
+		setRole(newRole);
+	}
 
-	const logout = async () => {
-		await AsyncStorage.clear();
-		setUser(null);
-	};
+	async function logout() {
+		await AsyncStorage.removeItem("token");
+		await AsyncStorage.removeItem("role");
+
+		setToken(null);
+		setRole(null);
+	}
 
 	return (
-		<AuthContext.Provider value={{ user, loading, login, register, logout }}>
+		<AuthContext.Provider value={{ token, role, login, logout, loading }}>
 			{children}
 		</AuthContext.Provider>
 	);
+};
+
+export const useAuth = () => {
+	const context = useContext(AuthContext);
+	if (!context) {
+		throw new Error("useAuth must be used inside AuthProvider");
+	}
+	return context;
 };

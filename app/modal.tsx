@@ -1,12 +1,11 @@
 import { Text, View } from "@/components/Themed";
-import { AuthContext } from "@/src/context/AuthContext";
+import { useAuth } from "@/src/context/AuthContext";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useContext } from "react";
 import { Platform, Pressable, StyleSheet } from "react-native";
 
 export default function ModalScreen() {
-	const auth = useContext(AuthContext);
+	const auth = useAuth();
 	const router = useRouter();
 	const handleLogout = async () => {
 		await auth?.logout();
