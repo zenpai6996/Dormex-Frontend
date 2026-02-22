@@ -3,6 +3,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { Alert } from "rn-custom-alert-prompt";
 import BlocksEmptyState from "./cards/BlockEmptyState";
 import BlockStatsCard from "./cards/BlockStatsCard";
 import MenuEmptyState from "./cards/MenuEmptyState";
@@ -15,9 +16,42 @@ import SectionHeader from "./SectionHeader";
 export default function AdminDashboard({ data }) {
 	const auth = useAuth();
 	const router = useRouter();
+
+	const handleLogoutPress = () => {
+		Alert.alert({
+			title: "Logout",
+			description: "Are you sure you want to logout?",
+			buttons: [
+				{
+					text: "Cancel",
+					textStyle: {
+						color: "#00ff1a",
+					},
+					onPress: () => {},
+				},
+				{
+					text: "Yes",
+					textStyle: {
+						color: "#EF4444",
+					},
+					onPress: handleLogout,
+				},
+			],
+			showCancelButton: true,
+		});
+	};
+
 	const handleLogout = async () => {
-		await auth?.logout();
-		router.replace("/(auth)");
+		try {
+			await auth?.logout();
+			router.replace("/(auth)");
+		} catch (error) {
+			Alert.alert({
+				title: "Error",
+				description: "Failed to logout. Please try again.",
+				showCancelButton: false,
+			});
+		}
 	};
 
 	if (data.students.total === 0) {
@@ -102,7 +136,7 @@ export default function AdminDashboard({ data }) {
 
 							{/* Logout/Power Button */}
 							<Pressable
-								onPress={handleLogout}
+								onPress={handleLogoutPress}
 								style={({ pressed }) => ({
 									backgroundColor: "rgba(255,255,255,0.1)",
 									width: 44,
@@ -172,23 +206,21 @@ export default function AdminDashboard({ data }) {
 
 				{/* Rooms Stats */}
 				<View style={{ marginBottom: 24 }}>
-					<SectionHeader
-						title="Room Statistics"
-						subtitle={`${data.rooms.occupied} occupied · ${data.rooms.vacant} vacant`}
-					/>
+					<SectionHeader title="Room Statistics" />
 					<View style={{ flexDirection: "row", gap: 12 }}>
 						<View style={{ flex: 1 }}>
 							<StatsCard
 								label="Occupied"
 								value={data.rooms.occupied}
 								icon="🔒"
+								gradient
 							/>
 						</View>
 						<View style={{ flex: 1 }}>
 							<StatsCard
 								label="Vacant"
 								value={data.rooms.vacant}
-								icon="🔓"
+								icon="🔐"
 								gradient
 							/>
 						</View>
