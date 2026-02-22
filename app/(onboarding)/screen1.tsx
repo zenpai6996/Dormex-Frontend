@@ -1,3 +1,4 @@
+import { StyledText } from "@/components/StyledText";
 import { OnboardingContext } from "@/context/OnboardingContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -105,9 +106,15 @@ const screen1 = () => {
 							</View>
 						),
 						title: (
-							<Text style={{ color: "#fff", fontSize: 28, fontWeight: "bold" }}>
-								Welcome to Dorm<Text style={{ color: "#FFCC00" }}>Ex</Text>
-							</Text>
+							<StyledText
+								variant="logo"
+								style={{ color: "#fff", fontSize: 28, fontWeight: "bold" }}
+							>
+								Welcome to Dorm
+								<StyledText variant="logo" style={{ color: "#FFCC00" }}>
+									Ex
+								</StyledText>
+							</StyledText>
 						),
 						subtitle: "Your all in one Hostel Management Tool",
 					},

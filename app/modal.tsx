@@ -1,4 +1,3 @@
-import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 import { AuthContext } from "@/src/context/AuthContext";
 import { useRouter } from "expo-router";
@@ -30,7 +29,7 @@ export default function ModalScreen() {
 			>
 				<Text style={styles.logoutText}>Logout</Text>
 			</Pressable>
-			<EditScreenInfo path="app/modal.tsx" />
+			<Text>Modal</Text>
 
 			{/* Use a light status bar on iOS to account for the black space above the modal */}
 			<StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
