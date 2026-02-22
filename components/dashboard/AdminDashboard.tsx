@@ -3,6 +3,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { ToastService } from "react-native-toastier";
 import { Alert } from "rn-custom-alert-prompt";
 import BlocksEmptyState from "./cards/BlockEmptyState";
 import BlockStatsCard from "./cards/BlockStatsCard";
@@ -44,6 +45,18 @@ export default function AdminDashboard({ data }) {
 	const handleLogout = async () => {
 		try {
 			await auth?.logout();
+			ToastService.showError({
+				contentContainerStyle: {
+					borderStartColor: "#FFCC00",
+					borderStartWidth: 5,
+					borderEndColor: "#FFCC00",
+					borderEndWidth: 5,
+					backgroundColor: "#0A0F1E",
+				},
+				message: "Logged Out Successfully",
+				duration: 3000,
+				position: "bottom",
+			});
 			router.replace("/(auth)");
 		} catch (error) {
 			Alert.alert({
@@ -83,7 +96,7 @@ export default function AdminDashboard({ data }) {
 				style={{ flex: 1 }}
 				contentContainerStyle={{
 					padding: 16,
-					paddingBottom: 32,
+					paddingBottom: 122,
 					marginTop: 30,
 				}}
 				showsVerticalScrollIndicator={false}
@@ -152,9 +165,9 @@ export default function AdminDashboard({ data }) {
 								{({ pressed }) => (
 									<FontAwesome
 										name="sign-out"
-										size={22}
+										size={24}
 										color={pressed ? "#ffcc00" : "#ffcc00"}
-										style={{ opacity: pressed ? 0.8 : 1 }}
+										style={{ opacity: pressed ? 0.8 : 1, marginLeft: 5 }}
 									/>
 								)}
 							</Pressable>

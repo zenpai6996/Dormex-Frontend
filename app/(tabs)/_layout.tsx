@@ -1,18 +1,38 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Redirect, Tabs } from "expo-router";
-import React, { useContext } from "react";
-import { ActivityIndicator, Pressable, View } from "react-native";
-
 import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
 import { OnboardingContext } from "@/context/OnboardingContext";
 import { useAuth } from "@/src/context/AuthContext";
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-	name: React.ComponentProps<typeof FontAwesome>["name"];
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { LinearGradient } from "expo-linear-gradient";
+import { Link, Redirect, Tabs } from "expo-router";
+import { useContext } from "react";
+import { ActivityIndicator, Pressable, View } from "react-native";
+import { LuHome, LuMessageSquare, LuUtensilsCrossed } from "rn-icons/lu";
+
+function TabBarIcon({
+	name,
+	color,
+	focused,
+}: {
+	name: "home" | "utensils" | "alert-triangle";
 	color: string;
+	focused?: boolean;
 }) {
-	return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+	const iconSize = focused ? 32 : 26;
+
+	switch (name) {
+		case "home":
+			return <LuHome size={iconSize} color={color} strokeWidth={1.5} />;
+		case "utensils":
+			return (
+				<LuUtensilsCrossed size={iconSize} color={color} strokeWidth={1.5} />
+			);
+		case "alert-triangle":
+			return (
+				<LuMessageSquare size={iconSize} color={color} strokeWidth={1.5} />
+			);
+		default:
+			return null;
+	}
 }
 
 export default function TabLayout() {
@@ -22,35 +42,93 @@ export default function TabLayout() {
 
 	if (auth?.loading || onboarding?.loading) {
 		return (
-			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-				<ActivityIndicator size="large" />
-			</View>
+			<LinearGradient
+				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+			>
+				<ActivityIndicator size="large" color="#FFCC00" />
+			</LinearGradient>
 		);
 	}
 
 	if (!auth?.token) {
-		// If user hasn't completed onboarding, send them to onboarding
 		if (!onboarding?.hasCompletedOnboarding) {
 			return <Redirect href="/(onboarding)/screen1" />;
 		}
-		// If they've completed onboarding but aren't logged in, send to auth
 		return <Redirect href="/(auth)" />;
 	}
 
 	return (
 		<Tabs
 			screenOptions={{
-				tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-				// Disable the static render of the header on web
-				// to prevent a hydration error in React Navigation v6.
 				headerShown: false,
+				tabBarStyle: {
+					marginHorizontal: 20,
+					position: "absolute",
+					bottom: 20,
+					left: 20,
+					right: 20,
+					backgroundColor: "#1A1F32",
+					borderRadius: 40,
+					borderTopWidth: 0,
+					height: 70,
+					paddingBottom: 0,
+					paddingTop: 10,
+					elevation: 0,
+					shadowColor: "#FFCC00",
+					shadowOffset: {
+						width: 0,
+						height: 4,
+					},
+					shadowOpacity: 0.15,
+					shadowRadius: 8,
+					borderWidth: 1,
+					borderColor: "rgba(255,204,0,0.3)",
+				},
+
+				tabBarActiveTintColor: "#FFCC00",
+				tabBarInactiveTintColor: "#9CA3AF",
+				tabBarShowLabel: false,
+				tabBarLabelStyle: {
+					fontSize: 11,
+					fontWeight: "500",
+				},
+				tabBarItemStyle: {
+					paddingVertical: 5,
+				},
+				tabBarBackground: () => (
+					<LinearGradient
+						colors={["#1A1F32", "#1A1F32"]}
+						style={{
+							flex: 1,
+							borderRadius: 40,
+						}}
+					/>
+				),
 			}}
 		>
 			<Tabs.Screen
 				name="index"
 				options={{
-					title: "",
-					tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+					title: "Home",
+					tabBarIcon: ({ color, focused }) => (
+						<View
+							style={{
+								width: 56,
+								height: 46,
+								borderRadius: 28,
+								backgroundColor: focused
+									? "rgba(255, 204, 0, 0.07)"
+									: "transparent",
+								borderWidth: focused ? 1 : 0,
+								borderColor: focused ? "#FFCC00" : "transparent",
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<TabBarIcon name="home" color={color} focused={focused} />
+						</View>
+					),
 					headerRight: () => (
 						<Link href="/modal" asChild>
 							<Pressable>
@@ -58,7 +136,7 @@ export default function TabLayout() {
 									<FontAwesome
 										name="info-circle"
 										size={25}
-										color={Colors[colorScheme ?? "light"].text}
+										color="#FFCC00"
 										style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
 									/>
 								)}
@@ -70,17 +148,53 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="two"
 				options={{
-					headerShown: false,
 					title: "Mess",
-					tabBarIcon: ({ color }) => <TabBarIcon name="spoon" color={color} />,
+					tabBarIcon: ({ color, focused }) => (
+						<View
+							style={{
+								width: 56,
+								height: 46,
+								borderRadius: 28,
+								backgroundColor: focused
+									? "rgba(255, 204, 0, 0.07)"
+									: "transparent",
+								borderWidth: focused ? 1 : 0,
+								borderColor: focused ? "#FFCC00" : "transparent",
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<TabBarIcon name="utensils" color={color} focused={focused} />
+						</View>
+					),
 				}}
 			/>
 			<Tabs.Screen
 				name="three"
 				options={{
-					headerShown: false,
 					title: "Complaints",
-					tabBarIcon: ({ color }) => <TabBarIcon name="shield" color={color} />,
+					tabBarIcon: ({ color, focused }) => (
+						<View
+							style={{
+								width: 56,
+								height: 46,
+								borderRadius: 28,
+								backgroundColor: focused
+									? "rgba(255, 204, 0, 0.07)"
+									: "transparent",
+								borderWidth: focused ? 1 : 0,
+								borderColor: focused ? "#FFCC00" : "transparent",
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<TabBarIcon
+								name="alert-triangle"
+								color={color}
+								focused={focused}
+							/>
+						</View>
+					),
 				}}
 			/>
 		</Tabs>

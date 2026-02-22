@@ -15,6 +15,7 @@ import {
 	View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { ToastService } from "react-native-toastier";
 import { Alert } from "rn-custom-alert-prompt";
 
 const { width } = Dimensions.get("window");
@@ -57,7 +58,18 @@ export default function Login() {
 			}
 
 			await auth.login(data.token, data.role);
-
+			ToastService.show({
+				contentContainerStyle: {
+					borderStartColor: "#FFCC00",
+					borderStartWidth: 5,
+					borderEndColor: "#FFCC00",
+					borderEndWidth: 5,
+					backgroundColor: "#0A0F1E",
+				},
+				message: "Logged In Successfully",
+				duration: 3000,
+				position: "bottom",
+			});
 			router.replace("/(tabs)");
 		} catch (error) {
 			Alert.alert({

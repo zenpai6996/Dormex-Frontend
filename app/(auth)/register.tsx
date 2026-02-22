@@ -75,7 +75,7 @@ export default function Register() {
 			if (!res.ok) {
 				throw new Error(data.message || "Registration failed");
 			}
-
+      
 			Alert.alert({
 				title: "Success",
 				description: "Registration successful! Please log in.",

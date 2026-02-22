@@ -51,7 +51,6 @@ export default function BlocksEmptyState() {
 					marginBottom: 20,
 				}}
 			>
-				Blocks haven't been configured in the system.{"\n"}
 				They will appear here once added by an administrator.
 			</Text>
 

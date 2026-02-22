@@ -11,6 +11,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { ToastProvider } from "react-native-toastier";
 import { AlertContainer } from "rn-custom-alert-prompt";
 
 export {
@@ -59,31 +60,35 @@ function RootLayoutNav() {
 		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
 			<AuthProvider>
 				<OnboardingProvider>
-					<AlertContainer
-						animationType="fade"
-						theme="android"
-						appearance={colorScheme === "dark" ? "dark" : "light"}
-						personalTheme={{
-							backgroundColor: "rgba(0,0,0,0.5)",
-							cardBackgroundColor:
-								colorScheme === "dark" ? "#1A1F32" : "#ffffff",
-							titleColor: colorScheme === "dark" ? "#fff" : "#333333",
-							descriptionColor: colorScheme === "dark" ? "#9CA3AF" : "#666666",
-							textButtonColor: "#ffcc00",
-						}}
-					/>
-					<Stack>
-						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-						<Stack.Screen
-							name="(onboarding)"
-							options={{ headerShown: false }}
+					<ToastProvider>
+						<AlertContainer
+							animationType="fade"
+							theme="android"
+							appearance={colorScheme === "dark" ? "dark" : "light"}
+							personalTheme={{
+								backgroundColor: "rgba(0,0,0,0.5)",
+								cardBackgroundColor:
+									colorScheme === "dark" ? "#1A1F32" : "#ffffff",
+								titleColor: colorScheme === "dark" ? "#fff" : "#333333",
+								descriptionColor:
+									colorScheme === "dark" ? "#9CA3AF" : "#666666",
+								textButtonColor: "#ffcc00",
+							}}
 						/>
-						<Stack.Screen
-							name="modal"
-							options={{ presentation: "modal", headerShown: false }}
-						/>
-					</Stack>
+
+						<Stack>
+							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+							<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+							<Stack.Screen
+								name="(onboarding)"
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen
+								name="modal"
+								options={{ presentation: "modal", headerShown: false }}
+							/>
+						</Stack>
+					</ToastProvider>
 				</OnboardingProvider>
 			</AuthProvider>
 		</ThemeProvider>
