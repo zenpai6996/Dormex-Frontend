@@ -1,12 +1,21 @@
+import { fetchBlocks } from "@/src/api/block.api";
 import { useAuth } from "@/src/context/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+	ActivityIndicator,
+	Pressable,
+	RefreshControl,
+	ScrollView,
+	Text,
+	View,
+} from "react-native";
 import { ToastService } from "react-native-toastier";
 import { Alert } from "rn-custom-alert-prompt";
+import BlockList from "./blocks/blockList";
 import BlocksEmptyState from "./cards/BlockEmptyState";
-import BlockStatsCard from "./cards/BlockStatsCard";
 import MenuEmptyState from "./cards/MenuEmptyState";
 import StatsCard from "./cards/StatsCard";
 import TodayMenu from "./cards/TodayMenu";
@@ -17,6 +26,32 @@ import SectionHeader from "./SectionHeader";
 export default function AdminDashboard({ data }) {
 	const auth = useAuth();
 	const router = useRouter();
+	const [blocks, setBlocks] = useState([]);
+	const [loadingBlocks, setLoadingBlocks] = useState(false);
+	const [refreshing, setRefreshing] = useState(false);
+
+	const loadBlocks = async () => {
+		if (!auth.token) return;
+		setLoadingBlocks(true);
+		try {
+			const blocksData = await fetchBlocks(auth.token);
+			setBlocks(blocksData);
+		} catch (error) {
+			console.error("Failed to load blocks", error);
+		} finally {
+			setLoadingBlocks(false);
+		}
+	};
+
+	const onRefresh = async () => {
+		setRefreshing(true);
+		await loadBlocks();
+		setRefreshing(false);
+	};
+
+	useEffect(() => {
+		loadBlocks();
+	}, [auth.token]);
 
 	const handleLogoutPress = () => {
 		Alert.alert({
@@ -84,7 +119,7 @@ export default function AdminDashboard({ data }) {
 	const studentOccupancyRate = Math.round(
 		(data.students.active / data.students.total) * 100,
 	);
-	const hasBlocks = data.blocks?.blockStats?.length > 0;
+	const hasBlocks = blocks.length > 0;
 	const hasMenu = data.todayMenu !== null;
 
 	return (
@@ -100,10 +135,16 @@ export default function AdminDashboard({ data }) {
 					marginTop: 30,
 				}}
 				showsVerticalScrollIndicator={false}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor="#FFCC00"
+						colors={["#FFCC00"]}
+					/>
+				}
 			>
-				{/* Welcome Header with Actions */}
 				<View style={{ marginBottom: 24 }}>
-					{/* Header Row with Title and Action Buttons */}
 					<View
 						style={{
 							flexDirection: "row",
@@ -120,9 +161,7 @@ export default function AdminDashboard({ data }) {
 							</Text>
 						</View>
 
-						{/* Action Buttons Container */}
 						<View style={{ flexDirection: "row", gap: 12 }}>
-							{/* Profile Icon Button */}
 							<Pressable
 								onPress={() => router.push("/modal")}
 								style={({ pressed }) => ({
@@ -147,7 +186,6 @@ export default function AdminDashboard({ data }) {
 								)}
 							</Pressable>
 
-							{/* Logout/Power Button */}
 							<Pressable
 								onPress={handleLogoutPress}
 								style={({ pressed }) => ({
@@ -173,11 +211,8 @@ export default function AdminDashboard({ data }) {
 							</Pressable>
 						</View>
 					</View>
-
-					{/* Student Statistics Header */}
 				</View>
 
-				{/* Key Stats Grid */}
 				<SectionHeader title="Student Statistics" />
 
 				<View
@@ -217,7 +252,6 @@ export default function AdminDashboard({ data }) {
 					</View>
 				</View>
 
-				{/* Rooms Stats */}
 				<View style={{ marginBottom: 24 }}>
 					<SectionHeader title="Room Statistics" />
 					<View style={{ flexDirection: "row", gap: 12 }}>
@@ -240,7 +274,6 @@ export default function AdminDashboard({ data }) {
 					</View>
 				</View>
 
-				{/* Complaints Summary */}
 				{data.complaints.total > 0 ? (
 					<ComplaintsSummary
 						total={data.complaints.total}
@@ -293,7 +326,6 @@ export default function AdminDashboard({ data }) {
 					</View>
 				)}
 
-				{/* Today's Menu - with empty state */}
 				{hasMenu ? (
 					<TodayMenu
 						day={data.todayMenu.day}
@@ -308,36 +340,30 @@ export default function AdminDashboard({ data }) {
 					</View>
 				)}
 
-				{/* Blocks Section - with empty state */}
 				<View style={{ marginTop: 8 }}>
 					<SectionHeader
 						title="Blocks Overview"
-						subtitle={
-							hasBlocks ? `${data.blocks.total} total blocks` : undefined
+						subtitle={hasBlocks ? `${blocks.length} total blocks` : undefined}
+						action={
+							hasBlocks
+								? {
+										label: "Create Block",
+										onPress: () => router.push("/create"),
+										icon: "plus",
+									}
+								: undefined
 						}
 					/>
 
-					{hasBlocks ? (
-						data.blocks.blockStats.map((block) => (
-							<BlockStatsCard
-								key={block.blockId}
-								blockName={block.blockName}
-								totalStudents={block.totalStudents}
-								totalRooms={block.totalRooms}
-								occupiedRooms={block.occupiedRooms}
-								vacantRooms={block.vacantRooms}
-								totalCapacity={block.totalCapacity}
-								occupiedSeats={block.occupiedSeats}
-								availableSeats={block.availableSeats}
-								inviteCodeExpiresAt={block.inviteCodeExpiresAt}
-							/>
-						))
+					{loadingBlocks ? (
+						<ActivityIndicator color="#FFCC00" style={{ marginVertical: 20 }} />
+					) : hasBlocks ? (
+						<BlockList blocks={blocks} onRefresh={loadBlocks} />
 					) : (
 						<BlocksEmptyState />
 					)}
 				</View>
 
-				{/* Footer note for empty states */}
 				{(!hasBlocks || !hasMenu) && (
 					<Text
 						style={{

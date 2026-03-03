@@ -85,7 +85,33 @@ function RootLayoutNav() {
 							/>
 							<Stack.Screen
 								name="modal"
-								options={{ presentation: "modal", headerShown: false }}
+								options={{
+									presentation: "modal",
+									headerShown: false,
+									animation: "slide_from_bottom",
+								}}
+							/>
+							<Stack.Screen
+								name="create"
+								options={{
+									presentation: "modal",
+									headerShown: false,
+									animation: "slide_from_bottom",
+								}}
+							/>
+							<Stack.Screen
+								name="block/[id]"
+								options={{
+									headerShown: false,
+								}}
+							/>
+							<Stack.Screen
+								name="create-complaint"
+								options={{
+									presentation: "modal",
+									headerShown: false,
+									animation: "slide_from_bottom",
+								}}
 							/>
 						</Stack>
 					</ToastProvider>

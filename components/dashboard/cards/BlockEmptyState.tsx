@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 export default function BlocksEmptyState() {
 	const router = useRouter();
@@ -51,11 +51,44 @@ export default function BlocksEmptyState() {
 					marginBottom: 20,
 				}}
 			>
-				They will appear here once added by an administrator.
+				Create your first block to start managing hostel accommodations.
 			</Text>
 
-			{/* Feature suggestion cards */}
-			<View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
+			<Pressable
+				onPress={() => router.push("/create")}
+				style={({ pressed }) => ({
+					backgroundColor: "#FFCC00",
+					borderRadius: 12,
+					paddingVertical: 12,
+					paddingHorizontal: 24,
+					flexDirection: "row",
+					alignItems: "center",
+					transform: [{ scale: pressed ? 0.98 : 1 }],
+					opacity: pressed ? 0.9 : 1,
+				})}
+			>
+				<Text
+					style={{
+						color: "#0A0F1E",
+						fontSize: 16,
+						fontWeight: "bold",
+					}}
+				>
+					Create Block
+				</Text>
+			</Pressable>
+
+			<View
+				style={{
+					flexDirection: "row",
+					gap: 12,
+					marginTop: 24,
+					paddingTop: 24,
+					borderTopWidth: 1,
+					borderTopColor: "rgba(255,255,255,0.1)",
+					width: "100%",
+				}}
+			>
 				<View style={{ flex: 1, alignItems: "center" }}>
 					<View
 						style={{

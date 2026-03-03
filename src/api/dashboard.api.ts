@@ -28,3 +28,11 @@ export async function fetchDashboard(token: string) {
 
 	return parsed.data;
 }
+
+export async function fetchStudentDashboard(token: string) {
+	const res = await fetch(`${BASE_URL}/dashboard`, {
+		headers: { Authorization: `Bearer ${token}` },
+	});
+	if (!res.ok) throw new Error("Failed to fetch dashboard");
+	return res.json();
+}
