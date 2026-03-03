@@ -237,9 +237,10 @@ export default function AdminDashboard({ data }) {
 							value={data.students.active}
 							icon="✅"
 							trend={{ value: studentOccupancyRate, label: "rate" }}
+							gradient
 						/>
 					</View>
-					<View style={{ width: "48%" }}>
+					{/* <View style={{ width: "48%" }}>
 						<StatsCard label="Total Rooms" value={data.rooms.total} icon="🏠" />
 					</View>
 					<View style={{ width: "48%" }}>
@@ -249,7 +250,7 @@ export default function AdminDashboard({ data }) {
 							icon="📊"
 							gradient
 						/>
-					</View>
+					</View> */}
 				</View>
 
 				<View style={{ marginBottom: 24 }}>

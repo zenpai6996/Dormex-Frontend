@@ -63,7 +63,7 @@ export default function RoommateCard({
 							fontWeight: "bold",
 						}}
 					>
-						Room {roomNumber}
+						Roommates : {roomNumber}
 					</Text>
 					<Text
 						style={{
