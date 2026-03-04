@@ -224,27 +224,33 @@ export default function StudentDashboard({
 						/>
 
 						{todayMenu ? (
-							<MenuCard
-								day={todayMenu.day}
-								breakfast={todayMenu.breakfast}
-								lunch={todayMenu.lunch}
-								dinner={todayMenu.dinner}
-							/>
+							<Pressable onPress={() => router.push("/(tabs)/two")}>
+								<MenuCard
+									day={todayMenu.day}
+									breakfast={todayMenu.breakfast}
+									lunch={todayMenu.lunch}
+									dinner={todayMenu.dinner}
+								/>
+							</Pressable>
 						) : (
-							<MenuCard
-								day={new Date().toLocaleDateString("en-US", {
-									weekday: "long",
-								})}
-								breakfast=""
-								lunch=""
-								dinner=""
-							/>
+							<Pressable onPress={() => router.push("/(tabs)/two")}>
+								<MenuCard
+									day={new Date().toLocaleDateString("en-US", {
+										weekday: "long",
+									})}
+									breakfast=""
+									lunch=""
+									dinner=""
+								/>
+							</Pressable>
 						)}
 
-						<ComplaintsCard
-							onCreatePress={handleCreateComplaint}
-							refreshKey={refreshKey}
-						/>
+						<Pressable onPress={() => router.push("/(tabs)/three")}>
+							<ComplaintsCard
+								onCreatePress={handleCreateComplaint}
+								refreshKey={refreshKey}
+							/>
+						</Pressable>
 					</>
 				)}
 			</ScrollView>

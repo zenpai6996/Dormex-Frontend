@@ -93,7 +93,7 @@ export default function MenuCard({
 					key={item.label}
 					style={{
 						flexDirection: "row",
-						alignItems: "center",
+						alignItems: "flex-start",
 						paddingVertical: 12,
 						borderBottomWidth: index < items.length - 1 ? 1 : 0,
 						borderBottomColor: "rgba(255,255,255,0.05)",
@@ -108,29 +108,65 @@ export default function MenuCard({
 							alignItems: "center",
 							justifyContent: "center",
 							marginRight: 12,
+							marginTop: 2,
 						}}
 					>
 						<FontAwesome name={item.icon as any} size={14} color={item.color} />
 					</View>
+
 					<View style={{ flex: 1 }}>
 						<Text
 							style={{
-								color: "#6B7280",
-								fontSize: 12,
-								marginBottom: 2,
+								color: "#d8b817",
+								fontSize: 18,
+								marginBottom: 6,
 							}}
 						>
 							{item.label}
 						</Text>
-						<Text
-							style={{
-								color: "white",
-								fontSize: 15,
-								fontWeight: "500",
-							}}
-						>
-							{item.value || "Not set"}
-						</Text>
+
+						{item.value && item.value.includes(",") ? (
+							<View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+								{item.value.split(",").map((val: string, idx: number) => {
+									const trimmedVal = val.trim();
+									if (!trimmedVal) return null;
+									return (
+										<View
+											key={idx}
+											style={{
+												backgroundColor: `${item.color}15`,
+												paddingHorizontal: 10,
+												paddingVertical: 4,
+												borderRadius: 12,
+												borderWidth: 1,
+												borderColor: `${item.color}30`,
+											}}
+										>
+											<Text
+												style={{
+													color: "white",
+													fontSize: 13,
+													fontWeight: "500",
+												}}
+											>
+												{trimmedVal}
+											</Text>
+										</View>
+									);
+								})}
+							</View>
+						) : (
+							<Text
+								style={{
+									color: item.value ? "white" : "#6B7280",
+									fontSize: 15,
+									fontWeight: item.value ? "500" : "400",
+									fontStyle: item.value ? "normal" : "italic",
+								}}
+							>
+								{item.value || "Not set"}
+							</Text>
+						)}
 					</View>
 				</View>
 			))}

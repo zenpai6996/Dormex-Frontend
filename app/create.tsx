@@ -137,7 +137,7 @@ export default function CreateBlockModal() {
 							<TextInput
 								value={name}
 								onChangeText={setName}
-								placeholder="e.g., Block A"
+								placeholder="e.g : A or B"
 								placeholderTextColor="#6B7280"
 								style={{
 									color: "white",

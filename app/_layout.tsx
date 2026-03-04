@@ -11,6 +11,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "react-native-toastier";
 import { AlertContainer } from "rn-custom-alert-prompt";
 
@@ -57,66 +58,68 @@ function RootLayoutNav() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-			<AuthProvider>
-				<OnboardingProvider>
-					<ToastProvider>
-						<AlertContainer
-							animationType="fade"
-							theme="android"
-							appearance={colorScheme === "dark" ? "dark" : "light"}
-							personalTheme={{
-								backgroundColor: "rgba(0,0,0,0.5)",
-								cardBackgroundColor:
-									colorScheme === "dark" ? "#1A1F32" : "#ffffff",
-								titleColor: colorScheme === "dark" ? "#fff" : "#333333",
-								descriptionColor:
-									colorScheme === "dark" ? "#9CA3AF" : "#666666",
-								textButtonColor: "#ffcc00",
-							}}
-						/>
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+				<AuthProvider>
+					<OnboardingProvider>
+						<ToastProvider>
+							<AlertContainer
+								animationType="fade"
+								theme="android"
+								appearance={colorScheme === "dark" ? "dark" : "light"}
+								personalTheme={{
+									backgroundColor: "rgba(0,0,0,0.5)",
+									cardBackgroundColor:
+										colorScheme === "dark" ? "#1A1F32" : "#ffffff",
+									titleColor: colorScheme === "dark" ? "#fff" : "#333333",
+									descriptionColor:
+										colorScheme === "dark" ? "#9CA3AF" : "#666666",
+									textButtonColor: "#ffcc00",
+								}}
+							/>
 
-						<Stack>
-							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-							<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-							<Stack.Screen
-								name="(onboarding)"
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="modal"
-								options={{
-									presentation: "modal",
-									headerShown: false,
-									animation: "slide_from_bottom",
-								}}
-							/>
-							<Stack.Screen
-								name="create"
-								options={{
-									presentation: "modal",
-									headerShown: false,
-									animation: "slide_from_bottom",
-								}}
-							/>
-							<Stack.Screen
-								name="block/[id]"
-								options={{
-									headerShown: false,
-								}}
-							/>
-							<Stack.Screen
-								name="create-complaint"
-								options={{
-									presentation: "modal",
-									headerShown: false,
-									animation: "slide_from_bottom",
-								}}
-							/>
-						</Stack>
-					</ToastProvider>
-				</OnboardingProvider>
-			</AuthProvider>
-		</ThemeProvider>
+							<Stack>
+								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+								<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+								<Stack.Screen
+									name="(onboarding)"
+									options={{ headerShown: false }}
+								/>
+								<Stack.Screen
+									name="modal"
+									options={{
+										presentation: "modal",
+										headerShown: false,
+										animation: "slide_from_bottom",
+									}}
+								/>
+								<Stack.Screen
+									name="create"
+									options={{
+										presentation: "modal",
+										headerShown: false,
+										animation: "slide_from_bottom",
+									}}
+								/>
+								<Stack.Screen
+									name="block/[id]"
+									options={{
+										headerShown: false,
+									}}
+								/>
+								<Stack.Screen
+									name="create-complaint"
+									options={{
+										presentation: "modal",
+										headerShown: false,
+										animation: "slide_from_bottom",
+									}}
+								/>
+							</Stack>
+						</ToastProvider>
+					</OnboardingProvider>
+				</AuthProvider>
+			</ThemeProvider>
+		</GestureHandlerRootView>
 	);
 }

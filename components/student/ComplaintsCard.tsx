@@ -3,7 +3,7 @@ import { useAuth } from "@/src/context/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
 interface Complaint {
 	_id: string;
@@ -126,7 +126,7 @@ export default function ComplaintsCard({
 						</Text>
 					</View>
 				</View>
-				<Pressable
+				{/* <Pressable
 					onPress={onCreatePress}
 					style={({ pressed }) => ({
 						backgroundColor: "rgba(239,68,68,0.1)",
@@ -141,7 +141,7 @@ export default function ComplaintsCard({
 					})}
 				>
 					<FontAwesome name="plus" size={18} color="#EF4444" />
-				</Pressable>
+				</Pressable> */}
 			</View>
 
 			<View

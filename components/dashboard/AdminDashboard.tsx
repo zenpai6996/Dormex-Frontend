@@ -275,13 +275,35 @@ export default function AdminDashboard({ data }) {
 					</View>
 				</View> */}
 
+				{hasMenu ? (
+					<>
+						<SectionHeader title="Mess Menu" />
+						<TodayMenu
+							day={data.todayMenu.day}
+							breakfast={data.todayMenu.breakfast}
+							lunch={data.todayMenu.lunch}
+							dinner={data.todayMenu.dinner}
+						/>
+					</>
+				) : (
+					<View>
+						<Pressable onPress={() => router.push("/(tabs)/two")}>
+							<SectionHeader title="Complaints" />
+							<MenuEmptyState />
+						</Pressable>
+					</View>
+				)}
+
 				{data.complaints.total > 0 ? (
-					<ComplaintsSummary
-						total={data.complaints.total}
-						open={data.complaints.open}
-						inProgress={data.complaints.inProgress}
-						resolved={data.complaints.resolved}
-					/>
+					<Pressable onPress={() => router.push("/(tabs)/three")}>
+						<SectionHeader title="Complaints" />
+						<ComplaintsSummary
+							total={data.complaints.total}
+							open={data.complaints.open}
+							inProgress={data.complaints.inProgress}
+							resolved={data.complaints.resolved}
+						/>
+					</Pressable>
 				) : (
 					<View style={{ marginBottom: 16 }}>
 						<SectionHeader title="Complaints" />
@@ -324,20 +346,6 @@ export default function AdminDashboard({ data }) {
 								All clear! No complaints have been filed yet.
 							</Text>
 						</LinearGradient>
-					</View>
-				)}
-
-				{hasMenu ? (
-					<TodayMenu
-						day={data.todayMenu.day}
-						breakfast={data.todayMenu.breakfast}
-						lunch={data.todayMenu.lunch}
-						dinner={data.todayMenu.dinner}
-					/>
-				) : (
-					<View>
-						<SectionHeader title="Today's Menu" />
-						<MenuEmptyState />
 					</View>
 				)}
 

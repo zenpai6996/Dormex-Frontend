@@ -41,11 +41,34 @@ export async function regenerateInviteCode(token: string, blockId: string) {
 	return res.json();
 }
 
-export async function deleteBlock(token: string, blockId: string) {
+export async function deleteBlock(
+	token: string,
+	blockId: string,
+	password: string,
+) {
 	const res = await fetch(`${API_URL}/blocks/${blockId}`, {
 		method: "DELETE",
-		headers: { Authorization: `Bearer ${token}` },
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify({ password }),
 	});
-	if (!res.ok) throw new Error("Failed to delete block");
-	return res.json();
+
+	const text = await res.text();
+
+	if (!res.ok) {
+		try {
+			const err = JSON.parse(text);
+			throw new Error(err.message || "Failed to delete block");
+		} catch (e) {
+			throw new Error(text || "Failed to delete block");
+		}
+	}
+
+	try {
+		return JSON.parse(text);
+	} catch (e) {
+		return { message: "Block deleted successfully" };
+	}
 }

@@ -29,17 +29,6 @@ export default function ComplaintsSummary({
 				marginBottom: 16,
 			}}
 		>
-			<Text
-				style={{
-					color: "white",
-					fontSize: 16,
-					fontWeight: "600",
-					marginBottom: 12,
-				}}
-			>
-				Complaints Overview
-			</Text>
-
 			<View
 				style={{
 					flexDirection: "row",

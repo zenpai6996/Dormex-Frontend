@@ -75,16 +75,13 @@ export default function StudentHeader({
 							{name}
 						</Text>
 					</Text>
-					<Text
+					<View
 						style={{
-							color: "#9CA3AF",
-							fontSize: 14,
-							marginBottom: 6,
+							flexDirection: "row",
+							gap: 8,
+							marginTop: 10,
 						}}
 					>
-						{email}
-					</Text>
-					<View style={{ flexDirection: "row", gap: 8 }}>
 						<View
 							style={{
 								backgroundColor:
@@ -127,7 +124,36 @@ export default function StudentHeader({
 								</Text>
 							</View>
 						)}
+						{blockName && (
+							<View
+								style={{
+									backgroundColor: "rgba(255,204,0,0.2)",
+									paddingHorizontal: 10,
+									paddingVertical: 4,
+									borderRadius: 8,
+								}}
+							>
+								<Text
+									style={{
+										color: "#FFCC00",
+										fontSize: 11,
+										fontWeight: "600",
+									}}
+								>
+									Block {blockName}
+								</Text>
+							</View>
+						)}
 					</View>
+					{/* <Text
+						style={{
+							color: "white",
+							fontSize: 14,
+							marginBottom: 6,
+						}}
+					>
+						Email : {email}
+					</Text> */}
 				</View>
 			</View>
 		</LinearGradient>

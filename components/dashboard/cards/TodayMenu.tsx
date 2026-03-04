@@ -1,6 +1,9 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { LinearGradient } from "expo-linear-gradient";
-import { Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Dimensions, Pressable, Text, View } from "react-native";
+import Carousel from "react-native-reanimated-carousel";
+
+const { width: screenWidth } = Dimensions.get("window");
 
 interface TodayMenuProps {
 	day: string;
@@ -15,121 +18,176 @@ export default function TodayMenu({
 	lunch,
 	dinner,
 }: TodayMenuProps) {
-	return (
-		<LinearGradient
-			colors={["rgba(255,204,0,0.1)", "rgba(255,204,0,0.02)"]}
-			style={{
-				borderRadius: 16,
-				borderWidth: 1,
-				borderColor: "rgba(255,204,0,0.2)",
-				padding: 16,
-				marginBottom: 16,
-			}}
-		>
+	const router = useRouter();
+
+	const menuSlides = [
+		{
+			type: "Breakfast",
+			items: breakfast,
+			icon: "coffee",
+			color: "#FFCC00",
+		},
+		{
+			type: "Lunch",
+			items: lunch,
+			icon: "sun-o",
+			color: "#ff7300",
+		},
+		{
+			type: "Dinner",
+			items: dinner,
+			icon: "moon-o",
+			color: "#5100ff",
+		},
+	];
+
+	const renderSlide = ({ item }: { item: (typeof menuSlides)[0] }) => {
+		const items = item.items
+			.split(",")
+			.map((i) => i.trim())
+			.filter((i) => i);
+
+		return (
 			<View
-				style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}
+				style={{
+					alignItems: "center",
+					flex: 1,
+					paddingHorizontal: 8,
+				}}
 			>
-				<FontAwesome name="cutlery" size={20} color="#FFCC00" />
-				<Text
+				{/* Icon and Title */}
+				<View style={{ alignItems: "center", marginBottom: 12 }}>
+					<View
+						style={{
+							backgroundColor: "rgba(255,255,255,0.05)",
+							width: 60,
+							height: 60,
+							borderRadius: 30,
+							alignItems: "center",
+							justifyContent: "center",
+							marginBottom: 8,
+							borderWidth: 1,
+							borderColor: "rgba(255,255,255,0.1)",
+						}}
+					>
+						<FontAwesome name={item.icon as any} size={28} color={item.color} />
+					</View>
+					<Text
+						style={{
+							color: item.color,
+							fontSize: 16,
+							fontWeight: "700",
+							marginBottom: 2,
+						}}
+					>
+						{item.type}
+					</Text>
+				</View>
+
+				{/* Menu Items */}
+				<View style={{ width: "100%", alignItems: "center" }}>
+					{items.length > 0 ? (
+						items.map((menuItem, idx) => (
+							<View
+								key={idx}
+								style={{
+									backgroundColor: "rgba(255,255,255,0.05)",
+									paddingHorizontal: 14,
+									paddingVertical: 8,
+									borderRadius: 16,
+									borderWidth: 1,
+									borderColor: "rgba(255,255,255,0.1)",
+									marginBottom: 8,
+									width: "90%",
+									alignItems: "center",
+								}}
+							>
+								<Text
+									style={{
+										color: "white",
+										fontSize: 13,
+										fontWeight: "500",
+										textAlign: "center",
+									}}
+								>
+									{menuItem}
+								</Text>
+							</View>
+						))
+					) : (
+						<View
+							style={{
+								backgroundColor: "rgba(255,255,255,0.05)",
+								paddingHorizontal: 16,
+								paddingVertical: 12,
+								borderRadius: 12,
+								alignItems: "center",
+							}}
+						>
+							<Text
+								style={{
+									color: "#6B7280",
+									fontSize: 13,
+									fontStyle: "italic",
+								}}
+							>
+								Not set for today
+							</Text>
+						</View>
+					)}
+				</View>
+			</View>
+		);
+	};
+
+	return (
+		<Pressable onPress={() => router.push("/(tabs)/two")}>
+			<View
+				style={{
+					backgroundColor: "rgba(255,255,255,0.03)",
+					borderRadius: 20,
+					borderWidth: 1,
+					borderColor: "rgba(255,255,255,0.1)",
+					padding: 16,
+					marginBottom: 16,
+				}}
+			>
+				{/* Header */}
+				<View
 					style={{
-						color: "white",
-						fontSize: 16,
-						fontWeight: "600",
-						marginLeft: 8,
+						marginBottom: 16,
+						paddingHorizontal: 4,
 					}}
 				>
-					Today's Menu - {day}
-				</Text>
-			</View>
-
-			<View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-				<View style={{ alignItems: "center", flex: 1 }}>
-					<View
-						style={{
-							backgroundColor: "rgba(255,255,255,0.05)",
-							width: 40,
-							height: 40,
-							borderRadius: 20,
-							alignItems: "center",
-							justifyContent: "center",
-							marginBottom: 8,
-						}}
-					>
-						<FontAwesome name="sun-o" size={20} color="#FFCC00" />
-					</View>
-					<Text style={{ color: "#9CA3AF", fontSize: 12, marginBottom: 4 }}>
-						Breakfast
-					</Text>
 					<Text
 						style={{
-							color: "white",
-							fontSize: 14,
-							fontWeight: "500",
+							color: "rgba(223, 173, 24, 0.79)",
+							fontSize: 15,
 							textAlign: "center",
+							fontWeight: "600",
+							marginRight: 18,
 						}}
 					>
-						{breakfast}
+						{day}
 					</Text>
 				</View>
 
-				<View style={{ alignItems: "center", flex: 1 }}>
-					<View
+				{/* Carousel */}
+				<View style={{ alignItems: "center" }}>
+					<Carousel
+						data={menuSlides}
+						renderItem={renderSlide}
+						width={screenWidth - 80}
+						height={280}
+						loop={true}
+						autoPlay={true}
+						autoPlayInterval={3000}
 						style={{
-							backgroundColor: "rgba(255,255,255,0.05)",
-							width: 40,
-							height: 40,
-							borderRadius: 20,
-							alignItems: "center",
-							justifyContent: "center",
-							marginBottom: 8,
+							width: screenWidth - 64,
 						}}
-					>
-						<FontAwesome name="sun-o" size={20} color="#FFCC00" />
-					</View>
-					<Text style={{ color: "#9CA3AF", fontSize: 12, marginBottom: 4 }}>
-						Lunch
-					</Text>
-					<Text
-						style={{
-							color: "white",
-							fontSize: 14,
-							fontWeight: "500",
-							textAlign: "center",
-						}}
-					>
-						{lunch}
-					</Text>
-				</View>
-
-				<View style={{ alignItems: "center", flex: 1 }}>
-					<View
-						style={{
-							backgroundColor: "rgba(255,255,255,0.05)",
-							width: 40,
-							height: 40,
-							borderRadius: 20,
-							alignItems: "center",
-							justifyContent: "center",
-							marginBottom: 8,
-						}}
-					>
-						<FontAwesome name="moon-o" size={20} color="#FFCC00" />
-					</View>
-					<Text style={{ color: "#9CA3AF", fontSize: 12, marginBottom: 4 }}>
-						Dinner
-					</Text>
-					<Text
-						style={{
-							color: "white",
-							fontSize: 14,
-							fontWeight: "500",
-							textAlign: "center",
-						}}
-					>
-						{dinner}
-					</Text>
+					/>
 				</View>
 			</View>
-		</LinearGradient>
+		</Pressable>
 	);
 }
