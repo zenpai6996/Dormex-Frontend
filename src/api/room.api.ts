@@ -55,6 +55,21 @@ export async function removeStudentFromRoom(token: string, studentId: string) {
 		},
 		body: JSON.stringify({ studentId }),
 	});
-	if (!res.ok) throw new Error("Failed to remove student");
+	if (!res.ok) {
+		const err = await res.json();
+		throw new Error(err.message || "Failed to remove student");
+	}
+	return res.json();
+}
+
+export async function deleteRoom(token: string, roomId: string) {
+	const res = await fetch(`${API_URL}/rooms/${roomId}`, {
+		method: "DELETE",
+		headers: { Authorization: `Bearer ${token}` },
+	});
+	if (!res.ok) {
+		const err = await res.json();
+		throw new Error(err.message || "Failed to delete room");
+	}
 	return res.json();
 }

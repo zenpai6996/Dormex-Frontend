@@ -1,6 +1,7 @@
 import { deleteBlock, regenerateInviteCode } from "@/src/api/block.api";
 import { useAuth } from "@/src/context/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -37,7 +38,8 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 		router.push(`/block/${blockId}`);
 	};
 
-	const handleCopyCode = (code: string) => {
+	const handleCopyCode = async (code: string) => {
+		await Clipboard.setStringAsync(code);
 		ToastService.show({
 			contentContainerStyle: {
 				borderStartColor: "#4ADE80",
@@ -173,7 +175,7 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 					<LinearGradient
 						colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
 						style={{
-							width: 300,
+							width: 350,
 							borderRadius: 16,
 							borderWidth: 1,
 							borderColor: "rgba(255,255,255,0.1)",

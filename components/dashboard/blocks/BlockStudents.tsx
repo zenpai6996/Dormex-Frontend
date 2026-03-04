@@ -53,7 +53,7 @@ export default function BlockStudents({
 		}
 
 		const roomOptions = availableRooms.map((room) => ({
-			text: `Room ${room.roomNumber} (${room.occupants.length}/${room.capacity})`,
+			text: `Room ${room.roomNumber} `,
 			textStyle: { color: "#FFCC00" },
 			onPress: async () => {
 				setAssigningStudentId(student._id);

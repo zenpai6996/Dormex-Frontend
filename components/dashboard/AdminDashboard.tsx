@@ -253,7 +253,7 @@ export default function AdminDashboard({ data }) {
 					</View> */}
 				</View>
 
-				<View style={{ marginBottom: 24 }}>
+				{/* <View style={{ marginBottom: 24 }}>
 					<SectionHeader title="Room Statistics" />
 					<View style={{ flexDirection: "row", gap: 12 }}>
 						<View style={{ flex: 1 }}>
@@ -273,7 +273,7 @@ export default function AdminDashboard({ data }) {
 							/>
 						</View>
 					</View>
-				</View>
+				</View> */}
 
 				{data.complaints.total > 0 ? (
 					<ComplaintsSummary

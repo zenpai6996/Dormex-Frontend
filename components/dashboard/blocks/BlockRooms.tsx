@@ -1,4 +1,8 @@
-import { createRoom } from "@/src/api/room.api";
+import {
+	createRoom,
+	deleteRoom,
+	removeStudentFromRoom,
+} from "@/src/api/room.api";
 import { useAuth } from "@/src/context/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,6 +15,7 @@ import {
 	View,
 } from "react-native";
 import { ToastService } from "react-native-toastier";
+import { Alert } from "rn-custom-alert-prompt";
 
 interface Room {
 	_id: string;
@@ -42,6 +47,7 @@ export default function BlockRooms({
 	const [roomNumber, setRoomNumber] = useState("");
 	const [capacity, setCapacity] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [actionLoading, setActionLoading] = useState<string | null>(null);
 
 	const handleCreateRoom = async () => {
 		if (!roomNumber.trim() || !capacity.trim()) {
@@ -95,6 +101,106 @@ export default function BlockRooms({
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const handleUnassignStudent = (
+		studentId: string,
+		studentName: string,
+		roomId: string,
+	) => {
+		Alert.alert({
+			title: "Remove Student",
+			description: `Remove ${studentName} from this room? They will stay in the block and can be reassigned.`,
+			buttons: [
+				{ text: "Cancel", textStyle: { color: "#9CA3AF" }, onPress: () => {} },
+				{
+					text: "Remove",
+					textStyle: { color: "#EF4444" },
+					onPress: async () => {
+						setActionLoading(studentId);
+						try {
+							await removeStudentFromRoom(token!, studentId);
+							ToastService.show({
+								contentContainerStyle: {
+									borderStartColor: "#4ADE80",
+									borderStartWidth: 5,
+									borderEndColor: "#4ADE80",
+									borderEndWidth: 5,
+									backgroundColor: "#0A0F1E",
+								},
+								message: "Student removed from room",
+								duration: 3000,
+								position: "bottom",
+							});
+							onRefresh();
+						} catch (error: any) {
+							ToastService.showError({
+								message: error.message,
+								duration: 3000,
+								position: "bottom",
+							});
+						} finally {
+							setActionLoading(null);
+						}
+					},
+				},
+			],
+		});
+	};
+
+	const handleDeleteRoom = (
+		roomId: string,
+		roomNumber: string,
+		hasOccupants: boolean,
+	) => {
+		if (hasOccupants) {
+			ToastService.showError({
+				message:
+					"Cannot delete room with students. Please unassign all students first.",
+				duration: 3000,
+				position: "bottom",
+			});
+			return;
+		}
+
+		Alert.alert({
+			title: "Delete Room",
+			description: `Delete Room ${roomNumber}? This cannot be undone.`,
+			buttons: [
+				{ text: "Cancel", textStyle: { color: "#9CA3AF" }, onPress: () => {} },
+				{
+					text: "Delete",
+					textStyle: { color: "#EF4444" },
+					onPress: async () => {
+						setActionLoading(roomId);
+						try {
+							await deleteRoom(token!, roomId);
+							ToastService.show({
+								contentContainerStyle: {
+									borderStartColor: "#4ADE80",
+									borderStartWidth: 5,
+									borderEndColor: "#4ADE80",
+									borderEndWidth: 5,
+									backgroundColor: "#0A0F1E",
+								},
+								message: "Room deleted successfully",
+								duration: 3000,
+								position: "bottom",
+							});
+							onRefresh();
+						} catch (error: any) {
+							ToastService.showError({
+								message: error.message,
+								duration: 3000,
+								position: "bottom",
+							});
+						} finally {
+							setActionLoading(null);
+						}
+					},
+				},
+			],
+		});
 	};
 
 	const occupancyPercentage =
@@ -364,6 +470,7 @@ export default function BlockRooms({
 					const occupancy = Math.round(
 						(room.occupants.length / room.capacity) * 100,
 					);
+					const hasOccupants = room.occupants.length > 0;
 					return (
 						<LinearGradient
 							key={room._id}
@@ -424,30 +531,63 @@ export default function BlockRooms({
 									</View>
 								</View>
 								<View
-									style={{
-										backgroundColor:
-											room.occupants.length === room.capacity
-												? "rgba(239,68,68,0.1)"
-												: "rgba(34,197,94,0.1)",
-										paddingHorizontal: 10,
-										paddingVertical: 4,
-										borderRadius: 8,
-									}}
+									style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
 								>
-									<Text
+									<View
 										style={{
-											color:
+											backgroundColor:
 												room.occupants.length === room.capacity
-													? "#EF4444"
-													: "#4ADE80",
-											fontSize: 12,
-											fontWeight: "600",
+													? "rgba(239,68,68,0.1)"
+													: "rgba(34,197,94,0.1)",
+											paddingHorizontal: 10,
+											paddingVertical: 4,
+											borderRadius: 8,
 										}}
 									>
-										{room.occupants.length === room.capacity
-											? "Full"
-											: "Available"}
-									</Text>
+										<Text
+											style={{
+												color:
+													room.occupants.length === room.capacity
+														? "#EF4444"
+														: "#4ADE80",
+												fontSize: 12,
+												fontWeight: "600",
+											}}
+										>
+											{room.occupants.length === room.capacity
+												? "Full"
+												: "Available"}
+										</Text>
+									</View>
+									{/* Delete Room Button */}
+									{actionLoading === room._id ? (
+										<ActivityIndicator size="small" color="#EF4444" />
+									) : (
+										<Pressable
+											onPress={() =>
+												handleDeleteRoom(
+													room._id,
+													room.roomNumber,
+													hasOccupants,
+												)
+											}
+											disabled={hasOccupants}
+											style={({ pressed }) => ({
+												padding: 8,
+												borderRadius: 8,
+												backgroundColor: hasOccupants
+													? "rgba(107,114,128,0.1)"
+													: "rgba(239,68,68,0.1)",
+												opacity: pressed || hasOccupants ? 0.5 : 1,
+											})}
+										>
+											<FontAwesome
+												name="trash-o"
+												size={18}
+												color={hasOccupants ? "#6B7280" : "#EF4444"}
+											/>
+										</Pressable>
+									)}
 								</View>
 							</View>
 
@@ -501,38 +641,72 @@ export default function BlockRooms({
 							{room.occupants.length > 0 && (
 								<View
 									style={{
-										flexDirection: "row",
-										flexWrap: "wrap",
-										gap: 6,
+										flexDirection: "column",
+										gap: 8,
 										marginTop: 8,
+										paddingTop: 12,
+										borderTopWidth: 1,
+										borderTopColor: "rgba(255,255,255,0.05)",
 									}}
 								>
+									<Text
+										style={{ color: "#9CA3AF", fontSize: 12, marginBottom: 4 }}
+									>
+										Occupants:
+									</Text>
 									{room.occupants.map((occupant: any) => (
 										<View
 											key={occupant._id}
 											style={{
 												backgroundColor: "rgba(255,255,255,0.05)",
-												paddingHorizontal: 10,
-												paddingVertical: 4,
-												borderRadius: 6,
+												paddingHorizontal: 12,
+												paddingVertical: 8,
+												borderRadius: 8,
 												flexDirection: "row",
 												alignItems: "center",
+												justifyContent: "space-between",
 											}}
 										>
-											<FontAwesome
-												name="user"
-												size={10}
-												color="#9CA3AF"
-												style={{ marginRight: 4 }}
-											/>
-											<Text
-												style={{
-													color: "#9CA3AF",
-													fontSize: 12,
-												}}
+											<View
+												style={{ flexDirection: "row", alignItems: "center" }}
 											>
-												{occupant.name}
-											</Text>
+												<FontAwesome
+													name="user"
+													size={12}
+													color="#9CA3AF"
+													style={{ marginRight: 8 }}
+												/>
+												<Text
+													style={{
+														color: "white",
+														fontSize: 13,
+														fontWeight: "500",
+													}}
+												>
+													{occupant.name}
+												</Text>
+											</View>
+											{actionLoading === occupant._id ? (
+												<ActivityIndicator size="small" color="#FFCC00" />
+											) : (
+												<Pressable
+													onPress={() =>
+														handleUnassignStudent(
+															occupant._id,
+															occupant.name,
+															room._id,
+														)
+													}
+													style={({ pressed }) => ({
+														padding: 6,
+														borderRadius: 6,
+														backgroundColor: "rgba(239,68,68,0.1)",
+														opacity: pressed ? 0.7 : 1,
+													})}
+												>
+													<FontAwesome name="times" size={12} color="#EF4444" />
+												</Pressable>
+											)}
 										</View>
 									))}
 								</View>
