@@ -101,7 +101,7 @@ export default function StudentHeader({
 									textTransform: "uppercase",
 								}}
 							>
-								{status}
+								STATUS : {status}
 							</Text>
 						</View>
 						{roomNumber && (

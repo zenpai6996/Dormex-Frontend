@@ -4,7 +4,8 @@ import ErrorState from "@/components/dashboard/ErrorState";
 import StudentDashboard from "@/components/dashboard/StudentDashboard";
 import { fetchDashboard } from "@/src/api/dashboard.api";
 import { useAuth } from "@/src/context/AuthContext";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
 export default function TabOneScreen() {
@@ -15,6 +16,7 @@ export default function TabOneScreen() {
 	const loadDashboard = async () => {
 		if (!token) return;
 		try {
+			setLoading(true);
 			const dashboardData = await fetchDashboard(token);
 			setData(dashboardData);
 		} catch (error) {
@@ -23,6 +25,12 @@ export default function TabOneScreen() {
 			setLoading(false);
 		}
 	};
+
+	useFocusEffect(
+		useCallback(() => {
+			loadDashboard();
+		}, [token]),
+	);
 
 	useEffect(() => {
 		loadDashboard();

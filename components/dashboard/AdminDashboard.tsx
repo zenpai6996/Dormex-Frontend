@@ -2,8 +2,8 @@ import { fetchBlocks } from "@/src/api/block.api";
 import { useAuth } from "@/src/context/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
 	ActivityIndicator,
 	Pressable,
@@ -23,12 +23,26 @@ import ComplaintsSummary from "./ComplaintSummary";
 import EmptyState from "./EmptyState";
 import SectionHeader from "./SectionHeader";
 
-export default function AdminDashboard({ data }) {
+interface AdminDashboardProps {
+	data: any;
+	onRefresh?: () => Promise<void>; // Add this prop
+}
+
+export default function AdminDashboard({
+	data,
+	onRefresh,
+}: AdminDashboardProps) {
 	const auth = useAuth();
 	const router = useRouter();
 	const [blocks, setBlocks] = useState([]);
 	const [loadingBlocks, setLoadingBlocks] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
+	const [dashboardData, setDashboardData] = useState(data);
+
+	// Update local state when prop changes
+	useEffect(() => {
+		setDashboardData(data);
+	}, [data]);
 
 	const loadBlocks = async () => {
 		if (!auth.token) return;
@@ -43,11 +57,23 @@ export default function AdminDashboard({ data }) {
 		}
 	};
 
-	const onRefresh = async () => {
+	const onRefreshHandler = async () => {
 		setRefreshing(true);
-		await loadBlocks();
+		await Promise.all([
+			loadBlocks(),
+			onRefresh ? onRefresh() : Promise.resolve(),
+		]);
 		setRefreshing(false);
 	};
+
+	// Refresh data when screen comes into focus
+	useFocusEffect(
+		useCallback(() => {
+			if (onRefresh) {
+				onRefresh();
+			}
+		}, [onRefresh]),
+	);
 
 	useEffect(() => {
 		loadBlocks();
@@ -102,7 +128,7 @@ export default function AdminDashboard({ data }) {
 		}
 	};
 
-	if (data.students.total === 0) {
+	if (dashboardData?.students?.total === 0) {
 		return (
 			<LinearGradient
 				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
@@ -114,13 +140,13 @@ export default function AdminDashboard({ data }) {
 	}
 
 	const occupancyRate = Math.round(
-		(data.rooms.occupied / data.rooms.total) * 100,
+		(dashboardData?.rooms?.occupied / dashboardData?.rooms?.total) * 100,
 	);
 	const studentOccupancyRate = Math.round(
-		(data.students.active / data.students.total) * 100,
+		(dashboardData?.students?.active / dashboardData?.students?.total) * 100,
 	);
 	const hasBlocks = blocks.length > 0;
-	const hasMenu = data.todayMenu !== null;
+	const hasMenu = dashboardData?.todayMenu !== null;
 
 	return (
 		<LinearGradient
@@ -138,7 +164,7 @@ export default function AdminDashboard({ data }) {
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
-						onRefresh={onRefresh}
+						onRefresh={onRefreshHandler}
 						tintColor="#FFCC00"
 						colors={["#FFCC00"]}
 					/>
@@ -226,7 +252,7 @@ export default function AdminDashboard({ data }) {
 					<View style={{ width: "48%" }}>
 						<StatsCard
 							label="Total "
-							value={data.students.total}
+							value={dashboardData?.students?.total}
 							icon="👥"
 							gradient
 						/>
@@ -234,74 +260,41 @@ export default function AdminDashboard({ data }) {
 					<View style={{ width: "48%" }}>
 						<StatsCard
 							label="Active "
-							value={data.students.active}
+							value={dashboardData?.students?.active}
 							icon="✅"
 							trend={{ value: studentOccupancyRate, label: "rate" }}
 							gradient
 						/>
 					</View>
-					{/* <View style={{ width: "48%" }}>
-						<StatsCard label="Total Rooms" value={data.rooms.total} icon="🏠" />
-					</View>
-					<View style={{ width: "48%" }}>
-						<StatsCard
-							label="Occupancy "
-							value={`${occupancyRate}%`}
-							icon="📊"
-							gradient
-						/>
-					</View> */}
 				</View>
-
-				{/* <View style={{ marginBottom: 24 }}>
-					<SectionHeader title="Room Statistics" />
-					<View style={{ flexDirection: "row", gap: 12 }}>
-						<View style={{ flex: 1 }}>
-							<StatsCard
-								label="Occupied"
-								value={data.rooms.occupied}
-								icon="🔒"
-								gradient
-							/>
-						</View>
-						<View style={{ flex: 1 }}>
-							<StatsCard
-								label="Vacant"
-								value={data.rooms.vacant}
-								icon="🔐"
-								gradient
-							/>
-						</View>
-					</View>
-				</View> */}
 
 				{hasMenu ? (
 					<>
 						<SectionHeader title="Mess Menu" />
 						<TodayMenu
-							day={data.todayMenu.day}
-							breakfast={data.todayMenu.breakfast}
-							lunch={data.todayMenu.lunch}
-							dinner={data.todayMenu.dinner}
+							day={dashboardData?.todayMenu?.day}
+							breakfast={dashboardData?.todayMenu?.breakfast}
+							lunch={dashboardData?.todayMenu?.lunch}
+							dinner={dashboardData?.todayMenu?.dinner}
 						/>
 					</>
 				) : (
 					<View>
 						<Pressable onPress={() => router.push("/(tabs)/two")}>
-							<SectionHeader title="Complaints" />
+							<SectionHeader title="Mess Menu" />
 							<MenuEmptyState />
 						</Pressable>
 					</View>
 				)}
 
-				{data.complaints.total > 0 ? (
+				{dashboardData?.complaints?.total > 0 ? (
 					<Pressable onPress={() => router.push("/(tabs)/three")}>
 						<SectionHeader title="Complaints" />
 						<ComplaintsSummary
-							total={data.complaints.total}
-							open={data.complaints.open}
-							inProgress={data.complaints.inProgress}
-							resolved={data.complaints.resolved}
+							total={dashboardData?.complaints?.total}
+							open={dashboardData?.complaints?.open}
+							inProgress={dashboardData?.complaints?.inProgress}
+							resolved={dashboardData?.complaints?.resolved}
 						/>
 					</Pressable>
 				) : (
