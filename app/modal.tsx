@@ -1,68 +1,70 @@
-import { Text, View } from "@/components/Themed";
+import AdminProfileModal from "@/components/profile/AdminProfileModal";
+import StudentProfileModal from "@/components/profile/StudentProfileModal";
+import { fetchProfile } from "@/src/api/profile.api";
 import { useAuth } from "@/src/context/AuthContext";
+import { UserProfile } from "@/src/types/profile.types";
 import { useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { Platform, Pressable, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 export default function ModalScreen() {
-	const auth = useAuth();
+	const { token, role } = useAuth();
 	const router = useRouter();
-	const handleLogout = async () => {
-		await auth?.logout();
-		router.replace("/(auth)");
-	};
-	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Modal</Text>
-			<View
-				style={styles.separator}
-				lightColor="#eee"
-				darkColor="rgba(255,255,255,0.1)"
-			/>
-			<Pressable
-				onPress={handleLogout}
-				style={({ pressed }) => [
-					styles.logoutButton,
-					pressed && styles.logoutPressed,
-				]}
-			>
-				<Text style={styles.logoutText}>Logout</Text>
-			</Pressable>
-			<Text>Modal</Text>
+	const [profile, setProfile] = useState<UserProfile | null>(null);
+	const [loading, setLoading] = useState(false);
 
-			{/* Use a light status bar on iOS to account for the black space above the modal */}
-			<StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-		</View>
+	useEffect(() => {
+		if (token) {
+			loadProfile();
+		}
+	}, [token]);
+
+	const loadProfile = async () => {
+		setLoading(true);
+		try {
+			const data = await fetchProfile(token!);
+			setProfile(data);
+		} catch (error) {
+			console.error("Failed to load profile", error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleClose = () => {
+		router.back();
+	};
+
+	if (loading) {
+		return (
+			<View
+				style={{
+					flex: 1,
+					justifyContent: "center",
+					alignItems: "center",
+					backgroundColor: "#0A0F1E",
+				}}
+			>
+				<ActivityIndicator size="large" color="#FFCC00" />
+			</View>
+		);
+	}
+
+	if (role === "ADMIN") {
+		return (
+			<AdminProfileModal
+				onClose={handleClose}
+				profile={profile}
+				loading={loading}
+			/>
+		);
+	}
+
+	return (
+		<StudentProfileModal
+			onClose={handleClose}
+			profile={profile}
+			loading={loading}
+		/>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: "80%",
-	},
-	logoutButton: {
-		backgroundColor: "#EF4444",
-		paddingVertical: 12,
-		paddingHorizontal: 40,
-		borderRadius: 10,
-	},
-	logoutPressed: {
-		backgroundColor: "#DC2626",
-	},
-	logoutText: {
-		color: "white",
-		fontSize: 16,
-		fontWeight: "600",
-	},
-});

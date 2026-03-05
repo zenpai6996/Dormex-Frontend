@@ -12,8 +12,6 @@ import {
 	Text,
 	View,
 } from "react-native";
-import { ToastService } from "react-native-toastier";
-import { Alert } from "rn-custom-alert-prompt";
 import BlockList from "./blocks/blockList";
 import BlocksEmptyState from "./cards/BlockEmptyState";
 import MenuEmptyState from "./cards/MenuEmptyState";
@@ -79,54 +77,54 @@ export default function AdminDashboard({
 		loadBlocks();
 	}, [auth.token]);
 
-	const handleLogoutPress = () => {
-		Alert.alert({
-			title: "Logout",
-			description: "Are you sure you want to logout?",
-			buttons: [
-				{
-					text: "Cancel",
-					textStyle: {
-						color: "#00ff1a",
-					},
-					onPress: () => {},
-				},
-				{
-					text: "Yes",
-					textStyle: {
-						color: "#EF4444",
-					},
-					onPress: handleLogout,
-				},
-			],
-			showCancelButton: true,
-		});
-	};
+	// const handleLogoutPress = () => {
+	// 	Alert.alert({
+	// 		title: "Logout",
+	// 		description: "Are you sure you want to logout?",
+	// 		buttons: [
+	// 			{
+	// 				text: "Cancel",
+	// 				textStyle: {
+	// 					color: "#00ff1a",
+	// 				},
+	// 				onPress: () => {},
+	// 			},
+	// 			{
+	// 				text: "Yes",
+	// 				textStyle: {
+	// 					color: "#EF4444",
+	// 				},
+	// 				onPress: handleLogout,
+	// 			},
+	// 		],
+	// 		showCancelButton: true,
+	// 	});
+	// };
 
-	const handleLogout = async () => {
-		try {
-			await auth?.logout();
-			ToastService.showError({
-				contentContainerStyle: {
-					borderStartColor: "#FFCC00",
-					borderStartWidth: 5,
-					borderEndColor: "#FFCC00",
-					borderEndWidth: 5,
-					backgroundColor: "#0A0F1E",
-				},
-				message: "Logged Out Successfully",
-				duration: 3000,
-				position: "bottom",
-			});
-			router.replace("/(auth)");
-		} catch (error) {
-			Alert.alert({
-				title: "Error",
-				description: "Failed to logout. Please try again.",
-				showCancelButton: false,
-			});
-		}
-	};
+	// const handleLogout = async () => {
+	// 	try {
+	// 		await auth?.logout();
+	// 		ToastService.showError({
+	// 			contentContainerStyle: {
+	// 				borderStartColor: "#FFCC00",
+	// 				borderStartWidth: 5,
+	// 				borderEndColor: "#FFCC00",
+	// 				borderEndWidth: 5,
+	// 				backgroundColor: "#0A0F1E",
+	// 			},
+	// 			message: "Logged Out Successfully",
+	// 			duration: 3000,
+	// 			position: "bottom",
+	// 		});
+	// 		router.replace("/(auth)");
+	// 	} catch (error) {
+	// 		Alert.alert({
+	// 			title: "Error",
+	// 			description: "Failed to logout. Please try again.",
+	// 			showCancelButton: false,
+	// 		});
+	// 	}
+	// };
 
 	if (dashboardData?.students?.total === 0) {
 		return (
@@ -212,7 +210,7 @@ export default function AdminDashboard({
 								)}
 							</Pressable>
 
-							<Pressable
+							{/* <Pressable
 								onPress={handleLogoutPress}
 								style={({ pressed }) => ({
 									backgroundColor: "rgba(255,255,255,0.1)",
@@ -234,7 +232,7 @@ export default function AdminDashboard({
 										style={{ opacity: pressed ? 0.8 : 1, marginLeft: 5 }}
 									/>
 								)}
-							</Pressable>
+							</Pressable> */}
 						</View>
 					</View>
 				</View>
@@ -270,7 +268,6 @@ export default function AdminDashboard({
 
 				{hasMenu ? (
 					<>
-						<SectionHeader title="Mess Menu" />
 						<TodayMenu
 							day={dashboardData?.todayMenu?.day}
 							breakfast={dashboardData?.todayMenu?.breakfast}

@@ -1,15 +1,20 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Dimensions, Pressable, Text, View } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
-
-const { width: screenWidth } = Dimensions.get("window");
+import { Pressable, Text, View } from "react-native";
 
 interface TodayMenuProps {
 	day: string;
 	breakfast: string;
 	lunch: string;
 	dinner: string;
+}
+
+interface MenuItem {
+	icon: string;
+	label: string;
+	value: string;
+	color: string;
 }
 
 export default function TodayMenu({
@@ -20,174 +25,162 @@ export default function TodayMenu({
 }: TodayMenuProps) {
 	const router = useRouter();
 
-	const menuSlides = [
-		{
-			type: "Breakfast",
-			items: breakfast,
-			icon: "coffee",
-			color: "#FFCC00",
-		},
-		{
-			type: "Lunch",
-			items: lunch,
-			icon: "sun-o",
-			color: "#ff7300",
-		},
-		{
-			type: "Dinner",
-			items: dinner,
-			icon: "moon-o",
-			color: "#5100ff",
-		},
+	const items: MenuItem[] = [
+		{ icon: "coffee", label: "Breakfast", value: breakfast, color: "#F59E0B" },
+		{ icon: "sun-o", label: "Lunch", value: lunch, color: "#EF4444" },
+		{ icon: "moon-o", label: "Dinner", value: dinner, color: "#8B5CF6" },
 	];
-
-	const renderSlide = ({ item }: { item: (typeof menuSlides)[0] }) => {
-		const items = item.items
-			.split(",")
-			.map((i) => i.trim())
-			.filter((i) => i);
-
-		return (
-			<View
-				style={{
-					alignItems: "center",
-					flex: 1,
-					paddingHorizontal: 8,
-				}}
-			>
-				{/* Icon and Title */}
-				<View style={{ alignItems: "center", marginBottom: 12 }}>
-					<View
-						style={{
-							backgroundColor: "rgba(255,255,255,0.05)",
-							width: 60,
-							height: 60,
-							borderRadius: 30,
-							alignItems: "center",
-							justifyContent: "center",
-							marginBottom: 8,
-							borderWidth: 1,
-							borderColor: "rgba(255,255,255,0.1)",
-						}}
-					>
-						<FontAwesome name={item.icon as any} size={28} color={item.color} />
-					</View>
-					<Text
-						style={{
-							color: item.color,
-							fontSize: 16,
-							fontWeight: "700",
-							marginBottom: 2,
-						}}
-					>
-						{item.type}
-					</Text>
-				</View>
-
-				{/* Menu Items */}
-				<View style={{ width: "100%", alignItems: "center" }}>
-					{items.length > 0 ? (
-						items.map((menuItem, idx) => (
-							<View
-								key={idx}
-								style={{
-									backgroundColor: "rgba(255,255,255,0.05)",
-									paddingHorizontal: 14,
-									paddingVertical: 8,
-									borderRadius: 16,
-									borderWidth: 1,
-									borderColor: "rgba(255,255,255,0.1)",
-									marginBottom: 8,
-									width: "90%",
-									alignItems: "center",
-								}}
-							>
-								<Text
-									style={{
-										color: "white",
-										fontSize: 13,
-										fontWeight: "500",
-										textAlign: "center",
-									}}
-								>
-									{menuItem}
-								</Text>
-							</View>
-						))
-					) : (
-						<View
-							style={{
-								backgroundColor: "rgba(255,255,255,0.05)",
-								paddingHorizontal: 16,
-								paddingVertical: 12,
-								borderRadius: 12,
-								alignItems: "center",
-							}}
-						>
-							<Text
-								style={{
-									color: "#6B7280",
-									fontSize: 13,
-									fontStyle: "italic",
-								}}
-							>
-								Not set for today
-							</Text>
-						</View>
-					)}
-				</View>
-			</View>
-		);
-	};
 
 	return (
 		<Pressable onPress={() => router.push("/(tabs)/two")}>
-			<View
+			<LinearGradient
+				colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
 				style={{
-					backgroundColor: "rgba(255,255,255,0.03)",
 					borderRadius: 20,
 					borderWidth: 1,
 					borderColor: "rgba(255,255,255,0.1)",
-					padding: 16,
+					padding: 20,
 					marginBottom: 16,
 				}}
 			>
-				{/* Header */}
 				<View
 					style={{
+						flexDirection: "row",
+						alignItems: "center",
 						marginBottom: 16,
-						paddingHorizontal: 4,
 					}}
 				>
-					<Text
+					<View
 						style={{
-							color: "rgba(223, 173, 24, 0.79)",
-							fontSize: 15,
-							textAlign: "center",
-							fontWeight: "600",
-							marginRight: 18,
+							width: 48,
+							height: 48,
+							borderRadius: 12,
+							backgroundColor: "rgba(34,197,94,0.1)",
+							alignItems: "center",
+							justifyContent: "center",
+							marginRight: 12,
 						}}
 					>
-						{day}
-					</Text>
+						<FontAwesome name="cutlery" size={20} color="#4ADE80" />
+					</View>
+					<View>
+						<Text
+							style={{
+								color: "white",
+								fontSize: 18,
+								fontWeight: "bold",
+							}}
+						>
+							Today's Menu
+						</Text>
+						<Text
+							style={{
+								color: "#9CA3AF",
+								fontSize: 13,
+							}}
+						>
+							{day}
+						</Text>
+					</View>
 				</View>
 
-				{/* Carousel */}
-				<View style={{ alignItems: "center" }}>
-					<Carousel
-						data={menuSlides}
-						renderItem={renderSlide}
-						width={screenWidth - 80}
-						height={280}
-						loop={true}
-						autoPlay={true}
-						autoPlayInterval={3000}
+				<View
+					style={{
+						height: 1,
+						backgroundColor: "rgba(255,255,255,0.1)",
+						marginBottom: 16,
+					}}
+				/>
+
+				{items.map((item, index) => (
+					<View
+						key={item.label}
 						style={{
-							width: screenWidth - 64,
+							flexDirection: "row",
+							alignItems: "flex-start",
+							paddingVertical: 12,
+							borderBottomWidth: index < items.length - 1 ? 1 : 0,
+							borderBottomColor: "rgba(255,255,255,0.05)",
 						}}
-					/>
-				</View>
-			</View>
+					>
+						<View
+							style={{
+								width: 36,
+								height: 36,
+								borderRadius: 10,
+								backgroundColor: `${item.color}20`,
+								alignItems: "center",
+								justifyContent: "center",
+								marginRight: 12,
+								marginTop: 2,
+							}}
+						>
+							<FontAwesome
+								name={item.icon as any}
+								size={14}
+								color={item.color}
+							/>
+						</View>
+
+						<View style={{ flex: 1 }}>
+							<Text
+								style={{
+									color: "#d8b817",
+									fontSize: 18,
+									marginBottom: 6,
+								}}
+							>
+								{item.label}
+							</Text>
+
+							{item.value && item.value.includes(",") ? (
+								<View
+									style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}
+								>
+									{item.value.split(",").map((val: string, idx: number) => {
+										const trimmedVal = val.trim();
+										if (!trimmedVal) return null;
+										return (
+											<View
+												key={idx}
+												style={{
+													backgroundColor: `${item.color}15`,
+													paddingHorizontal: 10,
+													paddingVertical: 4,
+													borderRadius: 12,
+													borderWidth: 1,
+													borderColor: `${item.color}30`,
+												}}
+											>
+												<Text
+													style={{
+														color: "white",
+														fontSize: 13,
+														fontWeight: "500",
+													}}
+												>
+													{trimmedVal}
+												</Text>
+											</View>
+										);
+									})}
+								</View>
+							) : (
+								<Text
+									style={{
+										color: item.value ? "white" : "#6B7280",
+										fontSize: 15,
+										fontWeight: item.value ? "500" : "400",
+										fontStyle: item.value ? "normal" : "italic",
+									}}
+								>
+									{item.value || "Not set"}
+								</Text>
+							)}
+						</View>
+					</View>
+				))}
+			</LinearGradient>
 		</Pressable>
 	);
 }

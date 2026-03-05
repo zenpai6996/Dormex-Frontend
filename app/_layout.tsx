@@ -62,7 +62,7 @@ function RootLayoutNav() {
 			<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
 				<AuthProvider>
 					<OnboardingProvider>
-						<ToastProvider>
+						<ToastProvider position="bottom" animation="zoomIn">
 							<AlertContainer
 								animationType="fade"
 								theme="android"

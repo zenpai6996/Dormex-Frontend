@@ -243,7 +243,7 @@ export default function StudentMessMenu() {
 											{selectedMenu.day}
 										</Text>
 									</View>
-									<View
+									{/* <View
 										style={{
 											backgroundColor: "rgba(255,204,0,0.1)",
 											paddingHorizontal: 10,
@@ -260,7 +260,7 @@ export default function StudentMessMenu() {
 										>
 											Today's Special
 										</Text>
-									</View>
+									</View> */}
 								</LinearGradient>
 
 								{/* Meal Table */}
@@ -271,7 +271,6 @@ export default function StudentMessMenu() {
 										accent: "#FFCC00",
 										icon: "coffee",
 										time: "6:00 AM - 10:00 AM",
-										description: "Start your day with a healthy meal",
 									},
 									{
 										label: "Lunch",
@@ -279,7 +278,6 @@ export default function StudentMessMenu() {
 										accent: "#FFB347",
 										icon: "sun-o",
 										time: "1:00 PM - 3:00 PM",
-										description: "Midday refreshment",
 									},
 									{
 										label: "Dinner",
@@ -287,7 +285,6 @@ export default function StudentMessMenu() {
 										accent: "#A78BFA",
 										icon: "moon-o",
 										time: "8:00 PM - 10:00 PM",
-										description: "Evening feast",
 									},
 								].map((meal, index) => (
 									<View
@@ -362,6 +359,17 @@ export default function StudentMessMenu() {
 													</View>
 												</View>
 											</View>
+											<View
+												style={{
+													marginTop: 2,
+													paddingTop: 12,
+													borderTopWidth: 1,
+													borderTopColor: "rgba(240, 193, 22, 0.34)",
+													flexDirection: "row",
+													alignItems: "center",
+													gap: 8,
+												}}
+											></View>
 
 											{/* Menu Items with better spacing */}
 											<View
@@ -406,30 +414,6 @@ export default function StudentMessMenu() {
 															</Text>
 														</View>
 													))}
-											</View>
-
-											{/* Nutritional Info or Description */}
-											<View
-												style={{
-													marginTop: 12,
-													paddingTop: 12,
-													borderTopWidth: 1,
-													borderTopColor: "rgba(255,255,255,0.05)",
-													flexDirection: "row",
-													alignItems: "center",
-													gap: 8,
-												}}
-											>
-												<FontAwesome
-													name="info-circle"
-													size={12}
-													color="#6B7280"
-												/>
-												<Text
-													style={{ color: "#6B7280", fontSize: 11, flex: 1 }}
-												>
-													{meal.description}
-												</Text>
 											</View>
 										</View>
 									</View>
