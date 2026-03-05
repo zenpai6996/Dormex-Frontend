@@ -1,9 +1,10 @@
 import { createComplaint } from "@/src/api/complaint.api";
+import { fetchProfile } from "@/src/api/profile.api";
 import { useAuth } from "@/src/context/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
 	KeyboardAvoidingView,
@@ -31,6 +32,30 @@ export default function CreateComplaintModal() {
 	const [category, setCategory] = useState("");
 	const [description, setDescription] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [checkingBlock, setCheckingBlock] = useState(true);
+	const [hasBlock, setHasBlock] = useState(false);
+	const [blockName, setBlockName] = useState("");
+
+	// Check if student has joined a block
+	useEffect(() => {
+		checkBlockStatus();
+	}, []);
+
+	const checkBlockStatus = async () => {
+		try {
+			const profile = await fetchProfile(token!);
+			if (profile.block) {
+				setHasBlock(true);
+				setBlockName(profile.block.name);
+			} else {
+				setHasBlock(false);
+			}
+		} catch (error) {
+			console.error("Failed to check block status", error);
+		} finally {
+			setCheckingBlock(false);
+		}
+	};
 
 	const handleSubmit = async () => {
 		if (!category || !description.trim()) {
@@ -61,9 +86,9 @@ export default function CreateComplaintModal() {
 				position: "bottom",
 			});
 			router.back();
-		} catch (error) {
+		} catch (error: any) {
 			ToastService.showError({
-				message: "Failed to submit complaint",
+				message: error.message || "Failed to submit complaint",
 				duration: 3000,
 				position: "bottom",
 			});
@@ -71,6 +96,102 @@ export default function CreateComplaintModal() {
 			setLoading(false);
 		}
 	};
+
+	if (checkingBlock) {
+		return (
+			<LinearGradient
+				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				style={{ flex: 1 }}
+			>
+				<View
+					style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+				>
+					<ActivityIndicator size="large" color="#FFCC00" />
+					<Text style={{ color: "white", marginTop: 12 }}>
+						Checking eligibility...
+					</Text>
+				</View>
+			</LinearGradient>
+		);
+	}
+
+	if (!hasBlock) {
+		return (
+			<LinearGradient
+				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				style={{ flex: 1 }}
+			>
+				<View
+					style={{
+						flex: 1,
+						justifyContent: "center",
+						alignItems: "center",
+						padding: 24,
+					}}
+				>
+					<View
+						style={{
+							width: 80,
+							height: 80,
+							borderRadius: 40,
+							backgroundColor: "rgba(255,204,0,0.1)",
+							alignItems: "center",
+							justifyContent: "center",
+							marginBottom: 20,
+							borderWidth: 1,
+							borderColor: "rgba(255,204,0,0.3)",
+						}}
+					>
+						<FontAwesome
+							name="exclamation-triangle"
+							size={40}
+							color="#FFCC00"
+						/>
+					</View>
+
+					<Text
+						style={{
+							color: "white",
+							fontSize: 22,
+							fontWeight: "bold",
+							marginBottom: 12,
+							textAlign: "center",
+						}}
+					>
+						Cannot File Complaint
+					</Text>
+
+					<Text
+						style={{
+							color: "#9CA3AF",
+							fontSize: 16,
+							textAlign: "center",
+							marginBottom: 24,
+						}}
+					>
+						You need to join a block before you can file complaints.
+					</Text>
+
+					<Pressable
+						onPress={() => router.back()}
+						style={({ pressed }) => ({
+							backgroundColor: "#FFCC00",
+							paddingHorizontal: 32,
+							paddingVertical: 16,
+							borderRadius: 12,
+							opacity: pressed ? 0.8 : 1,
+						})}
+					>
+						<Text
+							style={{ color: "#0A0F1E", fontSize: 16, fontWeight: "bold" }}
+						>
+							Go Back
+						</Text>
+					</Pressable>
+				</View>
+			</LinearGradient>
+		);
+	}
 
 	return (
 		<LinearGradient
@@ -90,27 +211,47 @@ export default function CreateComplaintModal() {
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
+							justifyContent: "space-between",
 							marginBottom: 32,
 						}}
 					>
-						<Pressable
-							onPress={() => router.back()}
-							style={({ pressed }) => ({
-								width: 44,
-								height: 44,
-								borderRadius: 22,
-								backgroundColor: "rgba(255,255,255,0.1)",
-								alignItems: "center",
-								justifyContent: "center",
-								marginRight: 16,
-								transform: [{ scale: pressed ? 0.95 : 1 }],
-							})}
+						<View style={{ flexDirection: "row", alignItems: "center" }}>
+							<Pressable
+								onPress={() => router.back()}
+								style={({ pressed }) => ({
+									width: 44,
+									height: 44,
+									borderRadius: 22,
+									backgroundColor: "rgba(255,255,255,0.1)",
+									alignItems: "center",
+									justifyContent: "center",
+									marginRight: 16,
+									transform: [{ scale: pressed ? 0.95 : 1 }],
+								})}
+							>
+								<FontAwesome name="arrow-left" size={20} color="#FFCC00" />
+							</Pressable>
+							<Text
+								style={{ color: "white", fontSize: 24, fontWeight: "bold" }}
+							>
+								File Complaint
+							</Text>
+						</View>
+
+						<View
+							style={{
+								backgroundColor: "rgba(255,204,0,0.1)",
+								paddingHorizontal: 12,
+								paddingVertical: 6,
+								borderRadius: 8,
+								borderWidth: 1,
+								borderColor: "rgba(255,204,0,0.3)",
+							}}
 						>
-							<FontAwesome name="arrow-left" size={20} color="#FFCC00" />
-						</Pressable>
-						<Text style={{ color: "white", fontSize: 24, fontWeight: "bold" }}>
-							File Complaint
-						</Text>
+							<Text style={{ color: "#FFCC00", fontSize: 12 }}>
+								{blockName}
+							</Text>
+						</View>
 					</View>
 
 					<Text

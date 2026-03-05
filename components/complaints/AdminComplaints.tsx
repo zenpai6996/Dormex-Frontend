@@ -559,6 +559,29 @@ export default function AdminComplaints() {
 										>
 											From: {complaint.student.name}
 										</Text>
+										{complaint.student?.block?.name && (
+											<View
+												style={{
+													backgroundColor: "rgba(255, 204, 0, 0)",
+													paddingHorizontal: 0,
+													paddingVertical: 2,
+													borderRadius: 4,
+													flexDirection: "row",
+													alignItems: "center",
+													gap: 4,
+												}}
+											>
+												<Text
+													style={{
+														color: "#FFCC00",
+														fontSize: 11,
+														fontWeight: "600",
+													}}
+												>
+													Block {complaint.student?.block?.name}
+												</Text>
+											</View>
+										)}
 									</View>
 								</View>
 
@@ -675,21 +698,6 @@ export default function AdminComplaints() {
 										</Text>
 									</View>
 								</View>
-
-								{complaint.student.room && (
-									<View
-										style={{
-											flexDirection: "row",
-											alignItems: "center",
-											gap: 4,
-										}}
-									>
-										<FontAwesome name="bed" size={12} color="#6B7280" />
-										<Text style={{ color: "#6B7280", fontSize: 11 }}>
-											Room {complaint.student.room.roomNumber}
-										</Text>
-									</View>
-								)}
 							</View>
 						</LinearGradient>
 					))

@@ -1,4 +1,5 @@
 import { deleteComplaint, fetchComplaints } from "@/src/api/complaint.api";
+import { fetchProfile } from "@/src/api/profile.api";
 import { useAuth } from "@/src/context/AuthContext";
 import {
 	Complaint,
@@ -30,6 +31,23 @@ export default function StudentComplaints() {
 	const [refreshing, setRefreshing] = useState(false);
 	const [filter, setFilter] = useState<ComplaintStatus | "ALL">("ALL");
 	const [deletingId, setDeletingId] = useState<string | null>(null);
+	const [hasBlock, setHasBlock] = useState(false);
+	const [checkingBlock, setCheckingBlock] = useState(true);
+
+	useEffect(() => {
+		checkBlockStatus();
+	}, []);
+
+	const checkBlockStatus = async () => {
+		try {
+			const profile = await fetchProfile(token!);
+			setHasBlock(!!profile.block);
+		} catch (error) {
+			console.error("Failed to check block status", error);
+		} finally {
+			setCheckingBlock(false);
+		}
+	};
 
 	const loadComplaints = async () => {
 		if (!token) return;
@@ -144,7 +162,7 @@ export default function StudentComplaints() {
 		return complaints.filter((c) => c.status === status).length;
 	};
 
-	if (loading) {
+	if (loading || checkingBlock) {
 		return (
 			<LinearGradient
 				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
@@ -190,28 +208,76 @@ export default function StudentComplaints() {
 							My Complaints
 						</Text>
 						<Text style={{ color: "#9CA3AF", fontSize: 14, marginTop: 4 }}>
-							Track and manage your reported issues
+							Track your reported issues
 						</Text>
 					</View>
 
-					<Pressable
-						onPress={() => router.push("/create-complaint")}
-						style={({ pressed }) => ({
-							backgroundColor: "rgba(239,68,68,0.1)",
-							width: 48,
-							height: 48,
-							borderRadius: 12,
-							alignItems: "center",
-							justifyContent: "center",
-							borderWidth: 1,
-							borderColor: "rgba(239,68,68,0.3)",
-							transform: [{ scale: pressed ? 0.95 : 1 }],
-						})}
-					>
-						<FontAwesome name="plus" size={22} color="#EF4444" />
-					</Pressable>
+					{hasBlock && (
+						<Pressable
+							onPress={() => router.push("/create-complaint")}
+							style={({ pressed }) => ({
+								backgroundColor: "rgba(239,68,68,0.1)",
+								width: 48,
+								height: 48,
+								borderRadius: 12,
+								alignItems: "center",
+								justifyContent: "center",
+								borderWidth: 1,
+								borderColor: "rgba(239,68,68,0.3)",
+								transform: [{ scale: pressed ? 0.95 : 1 }],
+							})}
+						>
+							<FontAwesome name="plus" size={22} color="#EF4444" />
+						</Pressable>
+					)}
 				</View>
-
+				{!hasBlock && (
+					<LinearGradient
+						colors={["rgba(255,204,0,0.05)", "rgba(255,204,0,0.02)"]}
+						style={{
+							borderRadius: 16,
+							borderWidth: 1,
+							borderColor: "rgba(255,204,0,0.2)",
+							padding: 24,
+							alignItems: "center",
+							marginBottom: 20,
+						}}
+					>
+						<View
+							style={{
+								width: 60,
+								height: 60,
+								borderRadius: 30,
+								backgroundColor: "rgba(255,204,0,0.1)",
+								alignItems: "center",
+								justifyContent: "center",
+								marginBottom: 12,
+							}}
+						>
+							<FontAwesome name="info-circle" size={30} color="#FFCC00" />
+						</View>
+						<Text
+							style={{
+								color: "white",
+								fontSize: 16,
+								fontWeight: "600",
+								marginBottom: 4,
+								textAlign: "center",
+							}}
+						>
+							Join a Block First
+						</Text>
+						<Text
+							style={{
+								color: "#9CA3AF",
+								fontSize: 14,
+								textAlign: "center",
+							}}
+						>
+							You need to join a block before you can file complaints
+						</Text>
+					</LinearGradient>
+				)}
 				{/* Stats Cards with Filter */}
 				<View style={{ flexDirection: "row", gap: 8, marginBottom: 20 }}>
 					<Pressable onPress={() => setFilter("ALL")} style={{ flex: 1 }}>
