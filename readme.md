@@ -61,37 +61,7 @@
   <!-- Divider -->
   <line x1="160" y1="165" x2="420" y2="165" stroke="#2d3352" stroke-width="1"/>
 
-  <!-- Tags -->
-  <rect x="163" y="175" width="68" height="22" fill="#1e2235" rx="11" stroke="#6366f1" stroke-width="1" stroke-opacity="0.6"/>
-  <text x="197" y="190" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#a78bfa" text-anchor="middle">React Native</text>
 
-  <rect x="240" y="175" width="50" height="22" fill="#1e2235" rx="11" stroke="#6366f1" stroke-width="1" stroke-opacity="0.6"/>
-  <text x="265" y="190" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#a78bfa" text-anchor="middle">Expo</text>
-
-  <rect x="299" y="175" width="72" height="22" fill="#1e2235" rx="11" stroke="#6366f1" stroke-width="1" stroke-opacity="0.6"/>
-  <text x="335" y="190" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#a78bfa" text-anchor="middle">TypeScript</text>
-
-  <!-- Right side: feature cards -->
-  <rect x="490" y="48" width="160" height="52" fill="url(#cardGrad)" rx="8" stroke="#2d3352" stroke-width="1"/>
-  <text x="510" y="72" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#6366f1">🏠</text>
-  <text x="528" y="72" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#e2e8f0" font-weight="600">Room Allocation</text>
-  <text x="528" y="89" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#64748b">Booking &amp; management</text>
-
-  <rect x="665" y="48" width="160" height="52" fill="url(#cardGrad)" rx="8" stroke="#2d3352" stroke-width="1"/>
-  <text x="685" y="72" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#a78bfa">🔧</text>
-  <text x="703" y="72" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#e2e8f0" font-weight="600">Complaints</text>
-  <text x="703" y="89" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#64748b">Maintenance tracking</text>
-
-  <rect x="490" y="118" width="160" height="52" fill="url(#cardGrad)" rx="8" stroke="#2d3352" stroke-width="1"/>
-  <text x="510" y="142" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#6366f1">🍽️</text>
-  <text x="528" y="142" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#e2e8f0" font-weight="600">Mess Menu</text>
-  <text x="528" y="159" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#64748b">Admin &amp; student view</text>
-
-  <rect x="665" y="118" width="160" height="52" fill="url(#cardGrad)" rx="8" stroke="#2d3352" stroke-width="1"/>
-  <text x="685" y="142" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#a78bfa">👥</text>
-  <text x="703" y="142" font-family="'Segoe UI', Arial, sans-serif" font-size="11" fill="#e2e8f0" font-weight="600">Dual Roles</text>
-  <text x="703" y="159" font-family="'Segoe UI', Arial, sans-serif" font-size="10" fill="#64748b">Admin &amp; Student portals</text>
-</svg>
 
 <br/>
 
@@ -166,7 +136,7 @@ npx expo start
 
 Scan the QR code with **Expo Go** (Android) or the **Camera app** (iOS) to run the app on your device.
 
-> ⚠️ This frontend requires the [Dormex Backend](https://github.com/zenpai6996) to be running. Make sure to configure your API base URL in the constants before starting.
+> ⚠️ This frontend requires the [Dormex Backend](https://github.com/zenpai6996/Dormex-Backend) to be running. Make sure to configure your API base URL in the constants before starting.
 
 ---
 
@@ -177,7 +147,6 @@ Dormex-Frontend/
 ├── app/          # Expo Router screens & navigation
 ├── components/   # Reusable UI components
 ├── context/      # React Context providers
-├── constants/    # App-wide constants & config
 ├── assets/       # Images, fonts & static files
 └── src/          # Core utilities & helpers
 ```
@@ -195,7 +164,4 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 This project is licensed under the [MIT License](LICENSE).
 
 ---
-
-<div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/zenpai6996">zenpai6996</a></sub>
-</div>
+>
