@@ -94,11 +94,11 @@ export default function ChangePasswordModal({
 						style={{ width: "100%", maxWidth: 400 }}
 					>
 						<LinearGradient
-							colors={["#1A1F32", "#0A0F1E"]}
+							colors={["#0A0F1E", "#0A0F1E"]}
 							style={{
 								borderRadius: 24,
 								borderWidth: 1,
-								borderColor: "rgba(255,204,0,0.3)",
+								borderColor: "#1A1F32",
 								padding: 20,
 							}}
 						>

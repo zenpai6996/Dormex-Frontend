@@ -68,11 +68,11 @@ export default function PasswordConfirmModal({
 						style={{ width: "100%", maxWidth: 400 }}
 					>
 						<LinearGradient
-							colors={["#1A1F32", "#0A0F1E"]}
+							colors={["#1A1F32", "#1A1F32"]}
 							style={{
 								borderRadius: 24,
 								borderWidth: 1,
-								borderColor: "rgba(255,204,0,0.3)",
+								borderColor: "rgba(0,0,0,0.7)",
 								padding: 20,
 							}}
 						>
@@ -116,7 +116,7 @@ export default function PasswordConfirmModal({
 							<Text
 								style={{
 									color: "#EF4444",
-									fontSize: 14,
+									fontSize: 10,
 									textAlign: "center",
 									marginBottom: 16,
 									backgroundColor: "rgba(239,68,68,0.1)",

@@ -13,7 +13,7 @@ export default function Onboarding() {
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<View style={{ flex: 1, justifyContent: "space-between", padding: 24 }}>

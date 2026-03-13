@@ -43,7 +43,13 @@ export const COMPLAINT_CATEGORIES = [
 ] as const;
 
 export const COMPLAINT_STATUS_COLORS = {
-	OPEN: "#EF4444",
+	OPEN: "#e70c0c",
+	IN_PROGRESS: "#F59E0B",
+	RESOLVED: "#4ADE80",
+} as const;
+
+export const COMPLAINT_STATUS_BACKGROUND = {
+	OPEN: "#e70c0c",
 	IN_PROGRESS: "#F59E0B",
 	RESOLVED: "#4ADE80",
 } as const;

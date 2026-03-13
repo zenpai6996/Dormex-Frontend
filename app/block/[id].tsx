@@ -48,7 +48,7 @@ export default function BlockManagementScreen() {
 	if (loading) {
 		return (
 			<LinearGradient
-				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 			>
 				<ActivityIndicator size="large" color="#FFCC00" />
@@ -59,7 +59,7 @@ export default function BlockManagementScreen() {
 	if (!blockData) {
 		return (
 			<LinearGradient
-				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 			>
 				<Text style={{ color: "white" }}>Block not found</Text>
@@ -71,7 +71,7 @@ export default function BlockManagementScreen() {
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<ScrollView

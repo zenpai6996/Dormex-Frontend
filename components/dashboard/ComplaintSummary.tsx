@@ -20,7 +20,7 @@ export default function ComplaintsSummary({
 
 	return (
 		<LinearGradient
-			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 			style={{
 				borderRadius: 16,
 				borderWidth: 1,

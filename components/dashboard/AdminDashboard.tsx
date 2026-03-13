@@ -148,7 +148,7 @@ export default function AdminDashboard({
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<ScrollView
@@ -298,7 +298,7 @@ export default function AdminDashboard({
 					<View style={{ marginBottom: 16 }}>
 						<SectionHeader title="Complaints" />
 						<LinearGradient
-							colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]}
+							colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 							style={{
 								borderRadius: 16,
 								borderWidth: 1,

@@ -112,7 +112,7 @@ function EditMenuModal({
 				>
 					<Pressable onPress={(e) => e.stopPropagation()}>
 						<LinearGradient
-							colors={["#1A1F32", "#0A0F1E"]}
+							colors={["#0A0F1E", "#0A0F1E"]}
 							style={{
 								borderTopLeftRadius: 24,
 								borderTopRightRadius: 24,
@@ -367,7 +367,7 @@ export default function AdminMessMenu() {
 	if (loading) {
 		return (
 			<LinearGradient
-				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				colors={["#0a0f1e8b", "#0A0F1E", "#0A0F1E"]}
 				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 			>
 				<ActivityIndicator size="large" color="#FFCC00" />
@@ -381,7 +381,7 @@ export default function AdminMessMenu() {
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<ScrollView
@@ -446,7 +446,7 @@ export default function AdminMessMenu() {
 
 				{menuItems.length === 0 ? (
 					<LinearGradient
-						colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]}
+						colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.05)"]}
 						style={{
 							borderRadius: 16,
 							borderWidth: 1,
@@ -518,14 +518,14 @@ export default function AdminMessMenu() {
 								colors={[
 									menuItem
 										? "rgba(255,255,255,0.08)"
-										: "rgba(255,255,255,0.03)",
-									"rgba(255,255,255,0.02)",
+										: "rgba(255,255,255,0.08)",
+									"rgba(255,255,255,0.08)",
 								]}
 								style={{
 									borderRadius: 16,
 									borderWidth: 1,
 									borderColor: menuItem
-										? "rgba(255,204,0,0.3)"
+										? "rgba(255,255,255,0.1)"
 										: "rgba(255,255,255,0.1)",
 									marginBottom: 12,
 									overflow: "hidden",
@@ -557,47 +557,67 @@ export default function AdminMessMenu() {
 													color: menuItem ? "#FFCC00" : "#9CA3AF",
 													fontSize: 18,
 													fontWeight: "bold",
-													marginBottom: 8,
+													marginBottom: 10,
 												}}
 											>
 												{day}
 											</Text>
 
+											<View
+												style={{
+													height: 1,
+													backgroundColor: "rgba(255,255,255,0.1)",
+													marginBottom: 10,
+												}}
+											/>
+
 											{menuItem ? (
 												<>
-													<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
-														Breakfast
+													<Text style={{ color: "#9CA3AF", fontSize: 14 }}>
+														Breakfast :
 													</Text>
 													<Text
 														style={{
 															color: "white",
-															fontSize: 14,
-															marginBottom: 4,
+															fontSize: 12,
+															marginBottom: 10,
 														}}
 														numberOfLines={1}
 													>
 														{menuItem.breakfast}
 													</Text>
-
-													<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
-														Lunch
+													<View
+														style={{
+															height: 1,
+															backgroundColor: "rgba(255,255,255,0.1)",
+															marginBottom: 10,
+														}}
+													/>
+													<Text style={{ color: "#9CA3AF", fontSize: 14 }}>
+														Lunch :
 													</Text>
 													<Text
 														style={{
 															color: "white",
-															fontSize: 14,
-															marginBottom: 4,
+															fontSize: 12,
+															marginBottom: 10,
 														}}
 														numberOfLines={1}
 													>
 														{menuItem.lunch}
 													</Text>
-
-													<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
-														Dinner
+													<View
+														style={{
+															height: 1,
+															backgroundColor: "rgba(255,255,255,0.1)",
+															marginBottom: 10,
+														}}
+													/>
+													<Text style={{ color: "#9CA3AF", fontSize: 14 }}>
+														Dinner :
 													</Text>
 													<Text
-														style={{ color: "white", fontSize: 14 }}
+														style={{ color: "white", fontSize: 12 }}
 														numberOfLines={1}
 													>
 														{menuItem.dinner}
@@ -625,7 +645,8 @@ export default function AdminMessMenu() {
 
 										<FontAwesome
 											name="chevron-right"
-											size={20}
+											size={30}
+											style={{ marginBottom: 10 }}
 											color={menuItem ? "#FFCC00" : "#4B5563"}
 										/>
 									</View>

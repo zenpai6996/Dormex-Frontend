@@ -27,14 +27,14 @@ export default function TodayMenu({
 
 	const items: MenuItem[] = [
 		{ icon: "coffee", label: "Breakfast", value: breakfast, color: "#F59E0B" },
-		{ icon: "sun-o", label: "Lunch", value: lunch, color: "#EF4444" },
-		{ icon: "moon-o", label: "Dinner", value: dinner, color: "#8B5CF6" },
+		{ icon: "sun-o", label: "Lunch", value: lunch, color: "#F59E0B" },
+		{ icon: "moon-o", label: "Dinner", value: dinner, color: "#F59E0B" },
 	];
 
 	return (
 		<Pressable onPress={() => router.push("/(tabs)/two")}>
 			<LinearGradient
-				colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+				colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 				style={{
 					borderRadius: 20,
 					borderWidth: 1,
@@ -54,7 +54,7 @@ export default function TodayMenu({
 						style={{
 							width: 48,
 							height: 48,
-							borderRadius: 12,
+							borderRadius: 25,
 							backgroundColor: "rgba(34,197,94,0.1)",
 							alignItems: "center",
 							justifyContent: "center",
@@ -71,15 +71,15 @@ export default function TodayMenu({
 								fontWeight: "bold",
 							}}
 						>
-							Today's Menu
-						</Text>
-						<Text
-							style={{
-								color: "#9CA3AF",
-								fontSize: 13,
-							}}
-						>
-							{day}
+							Today's Menu{" "}
+							<Text
+								style={{
+									color: "#9CA3AF",
+									fontSize: 13,
+								}}
+							>
+								- {day}
+							</Text>
 						</Text>
 					</View>
 				</View>
@@ -107,7 +107,7 @@ export default function TodayMenu({
 							style={{
 								width: 36,
 								height: 36,
-								borderRadius: 10,
+								borderRadius: 20,
 								backgroundColor: `${item.color}20`,
 								alignItems: "center",
 								justifyContent: "center",
@@ -126,7 +126,7 @@ export default function TodayMenu({
 							<Text
 								style={{
 									color: "#d8b817",
-									fontSize: 18,
+									fontSize: 15,
 									marginBottom: 6,
 								}}
 							>
@@ -144,10 +144,10 @@ export default function TodayMenu({
 											<View
 												key={idx}
 												style={{
-													backgroundColor: `${item.color}15`,
-													paddingHorizontal: 10,
-													paddingVertical: 4,
-													borderRadius: 12,
+													backgroundColor: "#f59f0b00",
+													paddingHorizontal: 15,
+													paddingVertical: 2,
+													borderRadius: 5,
 													borderWidth: 1,
 													borderColor: `${item.color}30`,
 												}}
@@ -155,7 +155,7 @@ export default function TodayMenu({
 												<Text
 													style={{
 														color: "white",
-														fontSize: 13,
+														fontSize: 12,
 														fontWeight: "500",
 													}}
 												>

@@ -76,11 +76,11 @@ function StatusUpdateModal({
 					style={{ width: "100%", maxWidth: 400 }}
 				>
 					<LinearGradient
-						colors={["#1A1F32", "#0A0F1E"]}
+						colors={["#1A1F32", "#1A1F32"]}
 						style={{
 							borderRadius: 24,
 							borderWidth: 1,
-							borderColor: "rgba(255,204,0,0.3)",
+							borderColor: "rgba(0,0,0,0.7)",
 							padding: 20,
 						}}
 					>
@@ -97,7 +97,7 @@ function StatusUpdateModal({
 									borderColor: "rgba(255,204,0,0.3)",
 								}}
 							>
-								<FontAwesome name="edit" size={28} color="#FFCC00" />
+								<FontAwesome name="pencil" size={28} color="#FFCC00" />
 							</View>
 						</View>
 
@@ -107,13 +107,13 @@ function StatusUpdateModal({
 								fontSize: 20,
 								fontWeight: "bold",
 								textAlign: "center",
-								marginBottom: 8,
+								marginBottom: 15,
 							}}
 						>
 							Update Status
 						</Text>
 
-						<Text
+						{/* <Text
 							style={{
 								color: "#9CA3AF",
 								fontSize: 14,
@@ -125,7 +125,7 @@ function StatusUpdateModal({
 							<Text style={{ color: COMPLAINT_STATUS_COLORS[currentStatus] }}>
 								{COMPLAINT_STATUS_LABELS[currentStatus]}
 							</Text>
-						</Text>
+						</Text> */}
 
 						<View style={{ gap: 12, marginBottom: 20 }}>
 							{statusOptions.map((status) => (
@@ -136,7 +136,7 @@ function StatusUpdateModal({
 									style={({ pressed }) => ({
 										backgroundColor: `${COMPLAINT_STATUS_COLORS[status]}10`,
 										padding: 16,
-										borderRadius: 12,
+										borderRadius: 20,
 										borderWidth: 2,
 										borderColor:
 											status === currentStatus
@@ -177,17 +177,17 @@ function StatusUpdateModal({
 						<Pressable
 							onPress={onClose}
 							style={({ pressed }) => ({
-								backgroundColor: "rgba(255,255,255,0.05)",
+								backgroundColor: "rgba(28, 25, 25, 0.33)",
 								padding: 14,
-								borderRadius: 12,
+								borderRadius: 20,
 								alignItems: "center",
 								borderWidth: 1,
-								borderColor: "rgba(255,255,255,0.1)",
+								borderColor: "rgba(221, 191, 109, 0.74)",
 								opacity: pressed ? 0.8 : 1,
 							})}
 						>
 							<Text
-								style={{ color: "#9CA3AF", fontSize: 16, fontWeight: "600" }}
+								style={{ color: "#dee2e9", fontSize: 16, fontWeight: "600" }}
 							>
 								Cancel
 							</Text>
@@ -282,7 +282,7 @@ export default function AdminComplaints() {
 	if (loading) {
 		return (
 			<LinearGradient
-				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 			>
 				<ActivityIndicator size="large" color="#FFCC00" />
@@ -292,7 +292,7 @@ export default function AdminComplaints() {
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<StatusUpdateModal
@@ -325,7 +325,7 @@ export default function AdminComplaints() {
 			>
 				<View style={{ marginBottom: 24 }}>
 					<Text style={{ color: "white", fontSize: 24, fontWeight: "bold" }}>
-						Complaint Management
+						Complaints
 					</Text>
 					<Text style={{ color: "#9CA3AF", fontSize: 14, marginTop: 4 }}>
 						View and manage student complaints
@@ -448,7 +448,7 @@ export default function AdminComplaints() {
 
 				{filteredComplaints.length === 0 ? (
 					<LinearGradient
-						colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]}
+						colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 						style={{
 							borderRadius: 16,
 							borderWidth: 1,
@@ -497,7 +497,15 @@ export default function AdminComplaints() {
 					filteredComplaints.map((complaint) => (
 						<LinearGradient
 							key={complaint._id}
-							colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+							colors={
+								complaint.status === "OPEN"
+									? ["rgba(239, 68, 68, 0.4)", "rgba(239,68,68,0.05)"]
+									: complaint.status === "IN_PROGRESS"
+										? ["rgba(245,158,11,0.4)", "rgba(245,158,11,0.05)"]
+										: complaint.status === "RESOLVED"
+											? ["rgba(74,222,128,0.4)", "rgba(74,222,128,0.05)"]
+											: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]
+							}
 							style={{
 								borderRadius: 16,
 								borderWidth: 1,
@@ -525,11 +533,12 @@ export default function AdminComplaints() {
 										style={{
 											width: 44,
 											height: 44,
-											borderRadius: 12,
+											borderRadius: 20,
 											backgroundColor: `${COMPLAINT_STATUS_COLORS[complaint.status]}20`,
 											alignItems: "center",
 											justifyContent: "center",
 											marginRight: 12,
+											marginBottom: 12,
 											borderWidth: 1,
 											borderColor: `${COMPLAINT_STATUS_COLORS[complaint.status]}30`,
 										}}
@@ -544,7 +553,7 @@ export default function AdminComplaints() {
 										<Text
 											style={{
 												color: "white",
-												fontSize: 16,
+												fontSize: 14,
 												fontWeight: "600",
 												marginBottom: 2,
 											}}
@@ -597,7 +606,7 @@ export default function AdminComplaints() {
 											backgroundColor: "rgba(255,204,0,0.1)",
 											paddingHorizontal: 12,
 											paddingVertical: 6,
-											borderRadius: 8,
+											borderRadius: 20,
 											borderWidth: 1,
 											borderColor: "rgba(255,204,0,0.3)",
 											opacity: pressed ? 0.8 : 1,
@@ -627,7 +636,7 @@ export default function AdminComplaints() {
 								<Text
 									style={{
 										color: "#9CA3AF",
-										fontSize: 12,
+										fontSize: 14,
 										marginBottom: 4,
 									}}
 								>
@@ -636,7 +645,7 @@ export default function AdminComplaints() {
 								<Text
 									style={{
 										color: "white",
-										fontSize: 14,
+										fontSize: 12,
 										lineHeight: 20,
 									}}
 								>
@@ -648,7 +657,7 @@ export default function AdminComplaints() {
 								style={{
 									flexDirection: "row",
 									alignItems: "center",
-									justifyContent: "space-between",
+									justifyContent: "flex-end",
 								}}
 							>
 								<View
@@ -658,7 +667,7 @@ export default function AdminComplaints() {
 										gap: 8,
 									}}
 								>
-									<View
+									{/* <View
 										style={{
 											backgroundColor: `${COMPLAINT_STATUS_COLORS[complaint.status]}20`,
 											paddingHorizontal: 10,
@@ -683,7 +692,7 @@ export default function AdminComplaints() {
 										>
 											{COMPLAINT_STATUS_LABELS[complaint.status]}
 										</Text>
-									</View>
+									</View> */}
 
 									<View
 										style={{

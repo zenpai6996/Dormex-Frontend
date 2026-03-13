@@ -173,7 +173,7 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 			})}
 		>
 			<LinearGradient
-				colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+				colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 				style={{
 					borderRadius: 16,
 					borderWidth: 1,
@@ -382,7 +382,7 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 
 			{blocks.length === 0 ? (
 				<LinearGradient
-					colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]}
+					colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 					style={{
 						borderRadius: 16,
 						borderWidth: 1,

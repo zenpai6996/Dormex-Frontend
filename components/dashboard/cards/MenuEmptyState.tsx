@@ -5,7 +5,7 @@ import { Text, View } from "react-native";
 export default function MenuEmptyState() {
 	return (
 		<LinearGradient
-			colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]}
+			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 			style={{
 				borderRadius: 16,
 				borderWidth: 1,

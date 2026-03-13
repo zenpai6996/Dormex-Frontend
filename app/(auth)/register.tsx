@@ -75,7 +75,7 @@ export default function Register() {
 			if (!res.ok) {
 				throw new Error(data.message || "Registration failed");
 			}
-      
+
 			Alert.alert({
 				title: "Success",
 				description: "Registration successful! Please log in.",
@@ -100,7 +100,7 @@ export default function Register() {
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<KeyboardAvoidingView

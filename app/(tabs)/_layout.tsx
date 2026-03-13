@@ -43,7 +43,7 @@ export default function TabLayout() {
 	if (auth?.loading || onboarding?.loading) {
 		return (
 			<LinearGradient
-				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 			>
 				<ActivityIndicator size="large" color="#FFCC00" />
@@ -68,9 +68,9 @@ export default function TabLayout() {
 					bottom: 20,
 					left: 20,
 					right: 20,
-					backgroundColor: "#1A1F32",
+					backgroundColor: "#0A0F1E",
 					borderRadius: 40,
-					borderTopWidth: 0,
+					borderTopWidth: 1,
 					height: 70,
 					paddingBottom: 0,
 					paddingTop: 10,
@@ -83,10 +83,10 @@ export default function TabLayout() {
 					shadowOpacity: 0.15,
 					shadowRadius: 8,
 					borderWidth: 1,
-					borderColor: "rgba(255,204,0,0.3)",
+					borderColor: "#21222599",
 				},
 
-				tabBarActiveTintColor: "#FFCC00",
+				tabBarActiveTintColor: "#9dacc1",
 				tabBarInactiveTintColor: "#9CA3AF",
 				tabBarShowLabel: false,
 				tabBarLabelStyle: {
@@ -98,7 +98,7 @@ export default function TabLayout() {
 				},
 				tabBarBackground: () => (
 					<LinearGradient
-						colors={["#1A1F32", "#1A1F32"]}
+						colors={["rgba(255,255,255,0.09)", "rgba(255,255,255,0.09)"]}
 						style={{
 							flex: 1,
 							borderRadius: 40,
@@ -117,11 +117,9 @@ export default function TabLayout() {
 								width: 56,
 								height: 46,
 								borderRadius: 28,
-								backgroundColor: focused
-									? "rgba(255, 204, 0, 0.07)"
-									: "transparent",
-								borderWidth: focused ? 1 : 0,
-								borderColor: focused ? "#FFCC00" : "transparent",
+								backgroundColor: focused ? "#35415499" : "transparent",
+								borderWidth: focused ? 2 : 0,
+								borderColor: focused ? "rgba(29, 28, 26, 0.75)" : "transparent",
 								alignItems: "center",
 								justifyContent: "center",
 							}}
@@ -155,11 +153,9 @@ export default function TabLayout() {
 								width: 56,
 								height: 46,
 								borderRadius: 28,
-								backgroundColor: focused
-									? "rgba(255, 204, 0, 0.07)"
-									: "transparent",
-								borderWidth: focused ? 1 : 0,
-								borderColor: focused ? "#FFCC00" : "transparent",
+								backgroundColor: focused ? "#35415499" : "transparent",
+								borderWidth: focused ? 2 : 0,
+								borderColor: focused ? "rgba(29, 28, 26, 0.75)" : "transparent",
 								alignItems: "center",
 								justifyContent: "center",
 							}}
@@ -179,11 +175,9 @@ export default function TabLayout() {
 								width: 56,
 								height: 46,
 								borderRadius: 28,
-								backgroundColor: focused
-									? "rgba(255, 204, 0, 0.07)"
-									: "transparent",
-								borderWidth: focused ? 1 : 0,
-								borderColor: focused ? "#FFCC00" : "transparent",
+								backgroundColor: focused ? "#35415499" : "transparent",
+								borderWidth: focused ? 2 : 0,
+								borderColor: focused ? "rgba(29, 28, 26, 0.75)" : "transparent",
 								alignItems: "center",
 								justifyContent: "center",
 							}}
