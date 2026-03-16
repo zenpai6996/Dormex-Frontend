@@ -4,12 +4,12 @@
 		"slug": "Dormex",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/images/icon1.png",
+		"icon": "./assets/images/icon2.png",
 		"scheme": "dormex",
 		"userInterfaceStyle": "automatic",
 		"newArchEnabled": true,
 		"splash": {
-			"image": "./assets/images/icon1.png",
+			"image": "./assets/images/icon2.png",
 			"resizeMode": "contain",
 			"backgroundColor": "#ffffff"
 		},
@@ -18,7 +18,7 @@
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./assets/images/icon1.png",
+				"foregroundImage": "./assets/images/icon2.png",
 				"backgroundColor": "#ffffff"
 			},
 			"edgeToEdgeEnabled": true,

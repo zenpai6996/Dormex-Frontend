@@ -24,13 +24,13 @@ export default function MenuCard({
 }: MenuCardProps) {
 	const items: MenuItem[] = [
 		{ icon: "coffee", label: "Breakfast", value: breakfast, color: "#F59E0B" },
-		{ icon: "sun-o", label: "Lunch", value: lunch, color: "#EF4444" },
-		{ icon: "moon-o", label: "Dinner", value: dinner, color: "#8B5CF6" },
+		{ icon: "sun-o", label: "Lunch", value: lunch, color: "#F59E0B" },
+		{ icon: "moon-o", label: "Dinner", value: dinner, color: "#F59E0B" },
 	];
 
 	return (
 		<LinearGradient
-			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 			style={{
 				borderRadius: 20,
 				borderWidth: 1,
@@ -50,11 +50,11 @@ export default function MenuCard({
 					style={{
 						width: 48,
 						height: 48,
-						borderRadius: 12,
+						borderRadius: 25,
 						backgroundColor: "rgba(34,197,94,0.1)",
 						alignItems: "center",
 						justifyContent: "center",
-						marginRight: 12,
+						marginRight: 10,
 					}}
 				>
 					<FontAwesome name="cutlery" size={20} color="#4ADE80" />
@@ -84,7 +84,6 @@ export default function MenuCard({
 				style={{
 					height: 1,
 					backgroundColor: "rgba(255,255,255,0.1)",
-					marginBottom: 16,
 				}}
 			/>
 
@@ -103,7 +102,7 @@ export default function MenuCard({
 						style={{
 							width: 36,
 							height: 36,
-							borderRadius: 10,
+							borderRadius: 20,
 							backgroundColor: `${item.color}20`,
 							alignItems: "center",
 							justifyContent: "center",
@@ -134,18 +133,18 @@ export default function MenuCard({
 										<View
 											key={idx}
 											style={{
-												backgroundColor: `${item.color}15`,
+												backgroundColor: `${item.color}10`,
 												paddingHorizontal: 10,
 												paddingVertical: 4,
 												borderRadius: 12,
 												borderWidth: 1,
-												borderColor: `${item.color}30`,
+												borderColor: `${item.color}10`,
 											}}
 										>
 											<Text
 												style={{
 													color: "white",
-													fontSize: 13,
+													fontSize: 11,
 													fontWeight: "500",
 												}}
 											>

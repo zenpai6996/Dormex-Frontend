@@ -26,7 +26,7 @@ export default function RoommateCard({
 
 	return (
 		<LinearGradient
-			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 			style={{
 				borderRadius: 20,
 				borderWidth: 1,
@@ -46,7 +46,7 @@ export default function RoommateCard({
 					style={{
 						width: 48,
 						height: 48,
-						borderRadius: 12,
+						borderRadius: 25,
 						backgroundColor: "rgba(255,204,0,0.1)",
 						alignItems: "center",
 						justifyContent: "center",
@@ -117,7 +117,7 @@ export default function RoommateCard({
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
-							paddingVertical: 10,
+							paddingVertical: 5,
 							borderBottomWidth: index < validRoommates.length - 1 ? 1 : 0,
 							borderBottomColor: "rgba(255,255,255,0.05)",
 						}}

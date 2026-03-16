@@ -104,7 +104,7 @@ export default function StudentHeader({
 								STATUS : {status}
 							</Text>
 						</View>
-						{roomNumber && (
+						{/* {roomNumber && (
 							<View
 								style={{
 									backgroundColor: "rgba(255,204,0,0.2)",
@@ -123,7 +123,7 @@ export default function StudentHeader({
 									Room {roomNumber}
 								</Text>
 							</View>
-						)}
+						)} */}
 						{blockName && (
 							<View
 								style={{

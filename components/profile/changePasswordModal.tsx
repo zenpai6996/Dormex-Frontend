@@ -108,7 +108,7 @@ export default function ChangePasswordModal({
 										width: 60,
 										height: 60,
 										borderRadius: 30,
-										backgroundColor: "rgba(255,204,0,0.1)",
+										backgroundColor: "rgba(255,204,0,0.08)",
 										alignItems: "center",
 										justifyContent: "center",
 										borderWidth: 1,

@@ -64,7 +64,7 @@ export default function StudentMessMenu() {
 	if (loading) {
 		return (
 			<LinearGradient
-				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 			>
 				<ActivityIndicator size="large" color="#FFCC00" />
@@ -74,7 +74,7 @@ export default function StudentMessMenu() {
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<ScrollView
@@ -105,7 +105,7 @@ export default function StudentMessMenu() {
 
 				{menuItems.length === 0 ? (
 					<LinearGradient
-						colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]}
+						colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 						style={{
 							borderRadius: 16,
 							borderWidth: 1,
@@ -118,7 +118,7 @@ export default function StudentMessMenu() {
 							style={{
 								width: 64,
 								height: 64,
-								borderRadius: 32,
+								borderRadius: 20,
 								backgroundColor: "rgba(255,204,0,0.1)",
 								alignItems: "center",
 								justifyContent: "center",
@@ -164,9 +164,9 @@ export default function StudentMessMenu() {
 											key={day}
 											onPress={() => setSelectedDay(day)}
 											style={({ pressed }) => ({
-												width: dayButtonWidth - 4, // Subtract gap
+												width: dayButtonWidth - 4,
 												paddingVertical: 10,
-												borderRadius: 8,
+												borderRadius: 25,
 												backgroundColor:
 													selectedDay === day
 														? "#FFCC00"
@@ -189,7 +189,7 @@ export default function StudentMessMenu() {
 												style={{
 													color: selectedDay === day ? "#0A0F1E" : "white",
 													fontWeight: "600",
-													fontSize: 14, // Slightly smaller font
+													fontSize: 14,
 												}}
 											>
 												{day.slice(0, 3)}
@@ -202,21 +202,21 @@ export default function StudentMessMenu() {
 
 						{selectedMenu ? (
 							<LinearGradient
-								colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.02)"]}
+								colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 								style={{
-									borderRadius: 24,
+									borderRadius: 14,
 									borderWidth: 1,
-									borderColor: "rgba(255,255,255,0.1)",
+									borderColor: "#ffcc0045",
 									overflow: "hidden",
 								}}
 							>
 								{/* Header */}
 								<LinearGradient
-									colors={["rgba(255,204,0,0.18)", "rgba(255,204,0,0.06)"]}
+									colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 									style={{
 										padding: 18,
 										borderBottomWidth: 1,
-										borderBottomColor: "rgba(255,255,255,0.08)",
+										borderBottomColor: "#ffcc0045",
 										flexDirection: "row",
 										alignItems: "center",
 										justifyContent: "space-between",
@@ -275,14 +275,14 @@ export default function StudentMessMenu() {
 									{
 										label: "Lunch",
 										value: selectedMenu.lunch,
-										accent: "#FFB347",
+										accent: "#FFCC00",
 										icon: "sun-o",
 										time: "1:00 PM - 3:00 PM",
 									},
 									{
 										label: "Dinner",
 										value: selectedMenu.dinner,
-										accent: "#A78BFA",
+										accent: "#FFCC00",
 										icon: "moon-o",
 										time: "8:00 PM - 10:00 PM",
 									},
@@ -291,14 +291,14 @@ export default function StudentMessMenu() {
 										key={meal.label}
 										style={{
 											borderBottomWidth: index === 2 ? 0 : 1,
-											borderBottomColor: "rgba(255,255,255,0.07)",
+											borderBottomColor: "#ffcc0045",
 										}}
 									>
 										{/* Left label column — fixed width */}
 										<View
 											style={{
 												width: "100%",
-												backgroundColor: `${meal.accent}08`,
+												backgroundColor: "rgba(255,255,255,0.01)",
 												padding: 16,
 											}}
 										>
@@ -314,7 +314,7 @@ export default function StudentMessMenu() {
 													style={{
 														width: 36,
 														height: 36,
-														borderRadius: 10,
+														borderRadius: 20,
 														backgroundColor: `${meal.accent}15`,
 														alignItems: "center",
 														justifyContent: "center",
@@ -332,7 +332,7 @@ export default function StudentMessMenu() {
 													<Text
 														style={{
 															color: meal.accent,
-															fontSize: 15,
+															fontSize: 13,
 															fontWeight: "800",
 															letterSpacing: 1,
 															textTransform: "uppercase",
@@ -406,7 +406,7 @@ export default function StudentMessMenu() {
 															<Text
 																style={{
 																	color: "rgba(255,255,255,0.9)",
-																	fontSize: 13,
+																	fontSize: 11,
 																	fontWeight: "500",
 																}}
 															>
@@ -421,11 +421,11 @@ export default function StudentMessMenu() {
 
 								{/* Footer with additional info */}
 								<LinearGradient
-									colors={["rgba(255,255,255,0.03)", "rgba(255,255,255,0.01)"]}
+									colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 									style={{
 										padding: 14,
 										borderTopWidth: 1,
-										borderTopColor: "rgba(255,255,255,0.07)",
+										borderTopColor: "rgba(240, 193, 22, 0.34)",
 										flexDirection: "row",
 										justifyContent: "space-around",
 									}}

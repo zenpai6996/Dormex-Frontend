@@ -83,7 +83,7 @@ export default function TabLayout() {
 					shadowOpacity: 0.15,
 					shadowRadius: 8,
 					borderWidth: 1,
-					borderColor: "#21222599",
+					borderColor: "#ffcc004a",
 				},
 
 				tabBarActiveTintColor: "#9dacc1",
@@ -118,8 +118,8 @@ export default function TabLayout() {
 								height: 46,
 								borderRadius: 28,
 								backgroundColor: focused ? "#35415499" : "transparent",
-								borderWidth: focused ? 2 : 0,
-								borderColor: focused ? "rgba(29, 28, 26, 0.75)" : "transparent",
+								borderWidth: focused ? 1 : 0,
+								borderColor: focused ? "#ffcc004a" : "transparent",
 								alignItems: "center",
 								justifyContent: "center",
 							}}
@@ -154,8 +154,8 @@ export default function TabLayout() {
 								height: 46,
 								borderRadius: 28,
 								backgroundColor: focused ? "#35415499" : "transparent",
-								borderWidth: focused ? 2 : 0,
-								borderColor: focused ? "rgba(29, 28, 26, 0.75)" : "transparent",
+								borderWidth: focused ? 1 : 0,
+								borderColor: focused ? "#ffcc004a" : "transparent",
 								alignItems: "center",
 								justifyContent: "center",
 							}}
@@ -176,8 +176,8 @@ export default function TabLayout() {
 								height: 46,
 								borderRadius: 28,
 								backgroundColor: focused ? "#35415499" : "transparent",
-								borderWidth: focused ? 2 : 0,
-								borderColor: focused ? "rgba(29, 28, 26, 0.75)" : "transparent",
+								borderWidth: focused ? 1 : 0,
+								borderColor: focused ? "#ffcc004a" : "transparent",
 								alignItems: "center",
 								justifyContent: "center",
 							}}

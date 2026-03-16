@@ -70,7 +70,7 @@ export default function ComplaintsCard({
 
 	return (
 		<LinearGradient
-			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 			style={{
 				borderRadius: 20,
 				borderWidth: 1,
@@ -97,7 +97,7 @@ export default function ComplaintsCard({
 						style={{
 							width: 48,
 							height: 48,
-							borderRadius: 12,
+							borderRadius: 25,
 							backgroundColor: "rgba(239,68,68,0.1)",
 							alignItems: "center",
 							justifyContent: "center",
@@ -195,7 +195,7 @@ export default function ComplaintsCard({
 							style={{
 								width: 36,
 								height: 36,
-								borderRadius: 10,
+								borderRadius: 20,
 								backgroundColor: `${getStatusColor(complaint.status)}20`,
 								alignItems: "center",
 								justifyContent: "center",

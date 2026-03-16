@@ -165,7 +165,7 @@ export default function StudentComplaints() {
 	if (loading || checkingBlock) {
 		return (
 			<LinearGradient
-				colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 			>
 				<ActivityIndicator size="large" color="#FFCC00" />
@@ -175,7 +175,7 @@ export default function StudentComplaints() {
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<ScrollView
@@ -219,7 +219,7 @@ export default function StudentComplaints() {
 								backgroundColor: "rgba(239,68,68,0.1)",
 								width: 48,
 								height: 48,
-								borderRadius: 12,
+								borderRadius: 25,
 								alignItems: "center",
 								justifyContent: "center",
 								borderWidth: 1,
@@ -288,7 +288,7 @@ export default function StudentComplaints() {
 									: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]
 							}
 							style={{
-								borderRadius: 12,
+								borderRadius: 25,
 								borderWidth: 1,
 								borderColor:
 									filter === "ALL"
@@ -315,7 +315,7 @@ export default function StudentComplaints() {
 									: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]
 							}
 							style={{
-								borderRadius: 12,
+								borderRadius: 25,
 								borderWidth: 1,
 								borderColor:
 									filter === "OPEN"
@@ -345,7 +345,7 @@ export default function StudentComplaints() {
 									: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]
 							}
 							style={{
-								borderRadius: 12,
+								borderRadius: 25,
 								borderWidth: 1,
 								borderColor:
 									filter === "IN_PROGRESS"
@@ -372,7 +372,7 @@ export default function StudentComplaints() {
 									: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]
 							}
 							style={{
-								borderRadius: 12,
+								borderRadius: 25,
 								borderWidth: 1,
 								borderColor:
 									filter === "RESOLVED"
@@ -477,9 +477,9 @@ export default function StudentComplaints() {
 								onPress={() => router.push("/create-complaint")}
 								style={({ pressed }) => ({
 									backgroundColor: "#EF4444",
-									paddingHorizontal: 24,
+									paddingHorizontal: 18,
 									paddingVertical: 14,
-									borderRadius: 12,
+									borderRadius: 25,
 									flexDirection: "row",
 									alignItems: "center",
 									gap: 8,
@@ -487,11 +487,6 @@ export default function StudentComplaints() {
 								})}
 							>
 								<FontAwesome name="plus" size={16} color="white" />
-								<Text
-									style={{ color: "white", fontSize: 16, fontWeight: "600" }}
-								>
-									File a Complaint
-								</Text>
 							</Pressable>
 						)}
 					</LinearGradient>
@@ -499,7 +494,15 @@ export default function StudentComplaints() {
 					filteredComplaints.map((complaint) => (
 						<LinearGradient
 							key={complaint._id}
-							colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+							colors={
+								complaint.status === "OPEN"
+									? ["rgba(239, 68, 68, 0.4)", "rgba(239,68,68,0.05)"]
+									: complaint.status === "IN_PROGRESS"
+										? ["rgba(245,158,11,0.4)", "rgba(245,158,11,0.05)"]
+										: complaint.status === "RESOLVED"
+											? ["rgba(74,222,128,0.4)", "rgba(74,222,128,0.05)"]
+											: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]
+							}
 							style={{
 								borderRadius: 16,
 								borderWidth: 1,
@@ -519,7 +522,7 @@ export default function StudentComplaints() {
 									style={{
 										width: 44,
 										height: 44,
-										borderRadius: 12,
+										borderRadius: 20,
 										backgroundColor: `${COMPLAINT_STATUS_COLORS[complaint.status]}20`,
 										alignItems: "center",
 										justifyContent: "center",
@@ -589,9 +592,12 @@ export default function StudentComplaints() {
 												<Pressable
 													onPress={() => handleDeletePress(complaint)}
 													style={({ pressed }) => ({
-														padding: 6,
-														borderRadius: 6,
-														backgroundColor: "rgba(239,68,68,0.1)",
+														padding: 7,
+														paddingHorizontal: 9,
+														borderColor: "#EF4444",
+														borderWidth: 1,
+														borderRadius: 15,
+														backgroundColor: "#ef444400",
 														opacity: pressed ? 0.7 : 1,
 													})}
 												>

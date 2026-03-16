@@ -166,7 +166,7 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 		<Pressable
 			onPress={() => handlePressBlock(block._id)}
 			style={({ pressed }) => ({
-				transform: [{ scale: pressed ? 0.98 : 1 }],
+				transform: [{ scale: pressed ? 0.99 : 1 }],
 				opacity: pressed ? 0.9 : 1,
 				width: screenWidth - 60,
 				marginHorizontal: 10,
@@ -432,7 +432,7 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 						data={blocks}
 						renderItem={renderBlockItem}
 						width={screenWidth - 20}
-						height={360}
+						height={300}
 						loop={blocks.length > 1}
 						autoPlay={false}
 						onSnapToItem={(index) => setCurrentIndex(index)}

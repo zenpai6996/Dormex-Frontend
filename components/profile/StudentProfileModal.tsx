@@ -111,7 +111,7 @@ export default function StudentProfileModal({
 
 	return (
 		<LinearGradient
-			colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
 			style={{ flex: 1 }}
 		>
 			<ScrollView
@@ -156,7 +156,7 @@ export default function StudentProfileModal({
 					>
 						<FontAwesome name="user-circle" size={60} color="#FFCC00" />
 					</View>
-					<Text
+					{/* <Text
 						style={{
 							color: "white",
 							fontSize: 28,
@@ -164,7 +164,7 @@ export default function StudentProfileModal({
 						}}
 					>
 						Profile
-					</Text>
+					</Text> */}
 				</View>
 
 				{loading ? (
@@ -173,7 +173,7 @@ export default function StudentProfileModal({
 					<>
 						{/* Profile Info Card */}
 						<LinearGradient
-							colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.03)"]}
+							colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 							style={{
 								borderRadius: 20,
 								borderWidth: 1,
@@ -184,11 +184,11 @@ export default function StudentProfileModal({
 						>
 							<View style={{ gap: 18 }}>
 								<View style={{ gap: 4 }}>
-									<Text style={{ color: "#9CA3AF", fontSize: 13 }}>Name</Text>
+									<Text style={{ color: "white", fontSize: 18 }}>Name</Text>
 									<Text
 										style={{
-											color: "white",
-											fontSize: 18,
+											color: "#9CA3AF",
+											fontSize: 13,
 											fontWeight: "600",
 										}}
 									>
@@ -197,11 +197,11 @@ export default function StudentProfileModal({
 								</View>
 
 								<View style={{ gap: 4 }}>
-									<Text style={{ color: "#9CA3AF", fontSize: 13 }}>Email</Text>
+									<Text style={{ color: "white", fontSize: 18 }}>Email</Text>
 									<Text
 										style={{
-											color: "white",
-											fontSize: 16,
+											color: "#9CA3AF",
+											fontSize: 13,
 										}}
 									>
 										{profile.email}
@@ -216,9 +216,7 @@ export default function StudentProfileModal({
 									}}
 								>
 									<View style={{ gap: 4 }}>
-										<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
-											Status
-										</Text>
+										<Text style={{ color: "white", fontSize: 15 }}>Status</Text>
 										<View
 											style={{
 												flexDirection: "row",
@@ -248,7 +246,7 @@ export default function StudentProfileModal({
 
 									{profile.block && (
 										<View style={{ alignItems: "center", gap: 4 }}>
-											<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
+											<Text style={{ color: "white", fontSize: 15 }}>
 												Block
 											</Text>
 											<Text
@@ -265,12 +263,10 @@ export default function StudentProfileModal({
 
 									{profile.room && (
 										<View style={{ alignItems: "flex-end", gap: 4 }}>
-											<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
-												Room
-											</Text>
+											<Text style={{ color: "white", fontSize: 15 }}>Room</Text>
 											<Text
 												style={{
-													color: "white",
+													color: "#9CA3AF",
 													fontSize: 14,
 													fontWeight: "500",
 												}}
