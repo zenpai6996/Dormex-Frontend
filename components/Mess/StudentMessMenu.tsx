@@ -166,7 +166,7 @@ export default function StudentMessMenu() {
 											style={({ pressed }) => ({
 												width: dayButtonWidth - 4,
 												paddingVertical: 10,
-												borderRadius: 25,
+												borderRadius: 15,
 												backgroundColor:
 													selectedDay === day
 														? "#FFCC00"

@@ -35,18 +35,18 @@ export default function Onboarding() {
 				<Animated.View entering={FadeInDown.delay(100).duration(500)}>
 					<FeatureItem
 						icon="users"
-						title="Roommate Matcher"
+						title="Roommate Allocation"
 						description="Find compatible roommates "
 					/>
 					<FeatureItem
-						icon="spoon"
+						icon="cutlery"
 						title="Mess Timetable"
-						description="Get updates about attendance and mess"
+						description="Get mess updates everyday"
 					/>
 					<FeatureItem
 						icon="shield"
 						title="Complaint"
-						description="Get issues and complaints resolved"
+						description="Get issues resolved easily"
 					/>
 				</Animated.View>
 

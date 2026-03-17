@@ -101,7 +101,7 @@ export default function StudentComplaints() {
 		// 	);
 		Alert.alert({
 			title: "Delete Complaint",
-			description: `Are you sure you want to delete this complaint? This action cannot be undone.`,
+			description: `Are you sure you want to delete this complaint?`,
 			buttons: [
 				{
 					text: "Cancel",

@@ -310,7 +310,7 @@ export default function Login() {
 								</Text>
 							</Pressable>
 
-							{/* Terms */}
+							{/* Terms
 							<Text
 								style={{
 									color: "#d0d7e6",
@@ -324,7 +324,7 @@ export default function Login() {
 									Terms of Service
 								</Text> and{" "}
 								<Text style={{ color: "#ffcc00" }}>Privacy Policy</Text>
-							</Text>
+							</Text> */}
 						</Animated.View>
 					</View>
 				</ScrollView>

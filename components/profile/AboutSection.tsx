@@ -44,8 +44,7 @@ export default function AboutSection() {
 				}}
 			>
 				A comprehensive solution for managing hostel operations, student
-				assignments, complaints, and mess menu. Built with React Native and
-				Node.js.
+				assignments, complaints, and mess menu.
 			</Text>
 
 			<View
