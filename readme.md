@@ -1,4 +1,4 @@
-# Dormex (Frontend)
+# Dormex 
 
 React Native + Expo mobile app for hostel management. Includes dedicated student and admin experiences for rooms, complaints, and mess menus.
 
@@ -49,8 +49,8 @@ src/          # APIs, schemas, utils, types
 
 ## Related
 
-- Backend: https://github.com/zenpai6996/Dormex-Backend
+- [Backend](https://github.com/zenpai6996/Dormex-Backend)
 
 ## License
 
-See LICENSE.
+[LICENSE](LICENSE).
