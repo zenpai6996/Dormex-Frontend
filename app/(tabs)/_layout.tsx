@@ -1,9 +1,10 @@
+// app/(tabs)/_layout.tsx
 import { useColorScheme } from "@/components/useColorScheme";
 import { OnboardingContext } from "@/context/OnboardingContext";
 import { useAuth } from "@/src/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, Redirect, Tabs } from "expo-router";
+import { Link, Redirect, Tabs, useRootNavigationState } from "expo-router";
 import { useContext } from "react";
 import { ActivityIndicator, Pressable, View } from "react-native";
 import { LuHome, LuMessageSquare, LuUtensilsCrossed } from "rn-icons/lu";
@@ -39,7 +40,21 @@ export default function TabLayout() {
 	const colorScheme = useColorScheme();
 	const auth = useAuth();
 	const onboarding = useContext(OnboardingContext);
+	const rootNavigationState = useRootNavigationState(); // Add this
 
+	// Wait for navigation to be ready
+	if (!rootNavigationState?.key) {
+		return (
+			<LinearGradient
+				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
+				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+			>
+				<ActivityIndicator size="large" color="#FFCC00" />
+			</LinearGradient>
+		);
+	}
+
+	// Show loading while either auth or onboarding is loading
 	if (auth?.loading || onboarding?.loading) {
 		return (
 			<LinearGradient
@@ -51,6 +66,7 @@ export default function TabLayout() {
 		);
 	}
 
+	// Only redirect after everything is loaded and we're sure there's no token
 	if (!auth?.token) {
 		if (!onboarding?.hasCompletedOnboarding) {
 			return <Redirect href="/(onboarding)/screen1" />;

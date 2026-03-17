@@ -1,6 +1,6 @@
 import { useColorScheme } from "@/components/useColorScheme";
 import { OnboardingProvider } from "@/context/OnboardingContext";
-import { AuthProvider } from "@/src/context/AuthContext";
+import { AuthProvider, useAuth } from "@/src/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
 	DarkTheme,
@@ -8,25 +8,100 @@ import {
 	ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ToastProvider } from "react-native-toastier";
 import { AlertContainer } from "rn-custom-alert-prompt";
 
-export {
-	// Catch any errors thrown by the Layout component.
-	ErrorBoundary,
-} from "expo-router";
+export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
-	// Ensure that reloading on `/modal` keeps a back button present.
 	initialRouteName: "(tabs)",
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+// Separate component that uses auth - rendered INSIDE AuthProvider
+function AppContent() {
+	const { loading } = useAuth();
+	const colorScheme = useColorScheme();
+
+	// Show loading screen while auth is initializing
+	if (loading) {
+		return (
+			<LinearGradient
+				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
+				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+			>
+				<ActivityIndicator size="large" color="#FFCC00" />
+			</LinearGradient>
+		);
+	}
+
+	return (
+		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+			<OnboardingProvider>
+				<ToastProvider position="bottom" animation="zoomIn">
+					<AlertContainer
+						animationType="fade"
+						theme="android"
+						appearance={colorScheme === "dark" ? "dark" : "light"}
+						personalTheme={{
+							backgroundColor: "rgba(0,0,0,0.5)",
+							cardBackgroundColor:
+								colorScheme === "dark" ? "#1A1F32" : "#ffffff",
+							titleColor: colorScheme === "dark" ? "#fff" : "#333333",
+							descriptionColor: colorScheme === "dark" ? "#9CA3AF" : "#666666",
+							textButtonColor: "#ffcc00",
+						}}
+					/>
+					<Stack>
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+						<Stack.Screen
+							name="(onboarding)"
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen
+							name="modal"
+							options={{
+								presentation: "modal",
+								headerShown: false,
+								animation: "slide_from_bottom",
+							}}
+						/>
+						<Stack.Screen
+							name="create"
+							options={{
+								presentation: "modal",
+								headerShown: false,
+								animation: "slide_from_bottom",
+							}}
+						/>
+						<Stack.Screen
+							name="block/[id]"
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name="create-complaint"
+							options={{
+								presentation: "modal",
+								headerShown: false,
+								animation: "slide_from_bottom",
+							}}
+						/>
+					</Stack>
+				</ToastProvider>
+			</OnboardingProvider>
+		</ThemeProvider>
+	);
+}
 
 export default function RootLayout() {
 	const [loaded, error] = useFonts({
@@ -36,7 +111,6 @@ export default function RootLayout() {
 		...FontAwesome.font,
 	});
 
-	// Expo Router uses Error Boundaries to catch errors in the navigation tree.
 	useEffect(() => {
 		if (error) throw error;
 	}, [error]);
@@ -51,75 +125,11 @@ export default function RootLayout() {
 		return null;
 	}
 
-	return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-	const colorScheme = useColorScheme();
-
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
-			<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-				<AuthProvider>
-					<OnboardingProvider>
-						<ToastProvider position="bottom" animation="zoomIn">
-							<AlertContainer
-								animationType="fade"
-								theme="android"
-								appearance={colorScheme === "dark" ? "dark" : "light"}
-								personalTheme={{
-									backgroundColor: "rgba(0,0,0,0.5)",
-									cardBackgroundColor:
-										colorScheme === "dark" ? "#1A1F32" : "#ffffff",
-									titleColor: colorScheme === "dark" ? "#fff" : "#333333",
-									descriptionColor:
-										colorScheme === "dark" ? "#9CA3AF" : "#666666",
-									textButtonColor: "#ffcc00",
-								}}
-							/>
-
-							<Stack>
-								<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-								<Stack.Screen name="(auth)" options={{ headerShown: false }} />
-								<Stack.Screen
-									name="(onboarding)"
-									options={{ headerShown: false }}
-								/>
-								<Stack.Screen
-									name="modal"
-									options={{
-										presentation: "modal",
-										headerShown: false,
-										animation: "slide_from_bottom",
-									}}
-								/>
-								<Stack.Screen
-									name="create"
-									options={{
-										presentation: "modal",
-										headerShown: false,
-										animation: "slide_from_bottom",
-									}}
-								/>
-								<Stack.Screen
-									name="block/[id]"
-									options={{
-										headerShown: false,
-									}}
-								/>
-								<Stack.Screen
-									name="create-complaint"
-									options={{
-										presentation: "modal",
-										headerShown: false,
-										animation: "slide_from_bottom",
-									}}
-								/>
-							</Stack>
-						</ToastProvider>
-					</OnboardingProvider>
-				</AuthProvider>
-			</ThemeProvider>
+			<AuthProvider>
+				<AppContent />
+			</AuthProvider>
 		</GestureHandlerRootView>
 	);
 }
