@@ -18,6 +18,7 @@ import MenuEmptyState from "./cards/MenuEmptyState";
 import StatsCard from "./cards/StatsCard";
 import TodayMenu from "./cards/TodayMenu";
 import ComplaintsSummary from "./ComplaintSummary";
+import DashboardSkeleton from "./DashboardSkeleton";
 import EmptyState from "./EmptyState";
 import SectionHeader from "./SectionHeader";
 
@@ -125,6 +126,10 @@ export default function AdminDashboard({
 	// 		});
 	// 	}
 	// };
+
+	if (!dashboardData) {
+		return <DashboardSkeleton />;
+	}
 
 	if (dashboardData?.students?.total === 0) {
 		return (
@@ -345,7 +350,6 @@ export default function AdminDashboard({
 						action={
 							hasBlocks
 								? {
-										label: "Create Block",
 										onPress: () => router.push("/create"),
 										icon: "plus",
 									}

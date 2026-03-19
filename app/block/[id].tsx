@@ -106,7 +106,7 @@ export default function BlockManagementScreen() {
 							Block {block.name}
 						</Text>
 						<Text style={{ color: "#9CA3AF", fontSize: 14 }}>
-							{stats.totalStudents} students · {stats.totalRooms} rooms
+							{stats.totalRooms} rooms
 						</Text>
 					</View>
 				</View>
@@ -137,7 +137,7 @@ export default function BlockManagementScreen() {
 								fontWeight: activeTab === "rooms" ? "600" : "400",
 							}}
 						>
-							Rooms ({stats.totalRooms})
+							Rooms
 						</Text>
 					</Pressable>
 					<Pressable
@@ -159,7 +159,12 @@ export default function BlockManagementScreen() {
 								fontWeight: activeTab === "students" ? "600" : "400",
 							}}
 						>
-							Students ({stats.unassignedStudents})
+							Students{" "}
+							{stats.unassignedStudents == 0 ? (
+								<></>
+							) : (
+								-stats.unassignedStudents
+							)}
 						</Text>
 					</Pressable>
 				</View>

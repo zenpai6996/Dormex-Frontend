@@ -6,6 +6,7 @@ export interface Complaint {
 		_id: string;
 		name: string;
 		email: string;
+		rollNo?: string;
 		room?: {
 			roomNumber: string;
 		};

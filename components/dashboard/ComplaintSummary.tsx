@@ -22,134 +22,128 @@ export default function ComplaintsSummary({
 		<LinearGradient
 			colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 			style={{
-				borderRadius: 16,
+				borderRadius: 20,
 				borderWidth: 1,
 				borderColor: "rgba(255,255,255,0.1)",
-				padding: 16,
+				padding: 20,
 				marginBottom: 16,
 			}}
 		>
-			<View
-				style={{
-					flexDirection: "row",
-					justifyContent: "space-around",
-					marginBottom: 16,
-				}}
-			>
-				<View style={{ alignItems: "center" }}>
-					<Text style={{ color: "#EF4444", fontSize: 24, fontWeight: "bold" }}>
-						{open}
-					</Text>
-					<Text style={{ color: "#9CA3AF", fontSize: 12 }}>Open</Text>
-				</View>
-				<View style={{ alignItems: "center" }}>
-					<Text style={{ color: "#FFCC00", fontSize: 24, fontWeight: "bold" }}>
-						{inProgress}
-					</Text>
-					<Text style={{ color: "#9CA3AF", fontSize: 12 }}>In Progress</Text>
-				</View>
-				<View style={{ alignItems: "center" }}>
-					<Text style={{ color: "#4ADE80", fontSize: 24, fontWeight: "bold" }}>
-						{resolved}
-					</Text>
-					<Text style={{ color: "#9CA3AF", fontSize: 12 }}>Resolved</Text>
-				</View>
+			{/* Stat boxes */}
+			<View style={{ flexDirection: "row", gap: 10, marginBottom: 20 }}>
+				{[
+					{
+						label: "Open",
+						value: open,
+						color: "#EF4444",
+						bg: "rgba(239, 68, 68, 0.07)",
+						border: "rgba(239,68,68,0.2)",
+					},
+					{
+						label: "In Progress",
+						value: inProgress,
+						color: "#FFCC00",
+						bg: "rgba(255,204,0,0.07)",
+						border: "rgba(255,204,0,0.2)",
+					},
+					{
+						label: "Resolved",
+						value: resolved,
+						color: "#4ADE80",
+						bg: "rgba(74,222,128,0.07)",
+						border: "rgba(74,222,128,0.2)",
+					},
+				].map((item) => (
+					<View
+						key={item.label}
+						style={{
+							flex: 1,
+							backgroundColor: item.bg,
+							borderRadius: 20,
+							borderWidth: 1,
+							borderColor: item.border,
+							paddingVertical: 14,
+							alignItems: "center",
+						}}
+					>
+						<Text
+							style={{
+								color: item.color,
+								fontSize: 26,
+								fontWeight: "700",
+								lineHeight: 30,
+							}}
+						>
+							{item.value}
+						</Text>
+						<Text style={{ color: "#6B7280", fontSize: 11, marginTop: 4 }}>
+							{item.label}
+						</Text>
+					</View>
+				))}
 			</View>
 
+			{/* Divider */}
+			<View
+				style={{
+					height: 1,
+					backgroundColor: "rgba(255,255,255,0.07)",
+					marginBottom: 16,
+				}}
+			/>
+
 			{/* Progress bars */}
-			<View style={{ marginTop: 8 }}>
-				<View style={{ marginBottom: 8 }}>
-					<View
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between",
-							marginBottom: 4,
-						}}
-					>
-						<Text style={{ color: "#9CA3AF", fontSize: 12 }}>Open</Text>
-						<Text style={{ color: "#EF4444", fontSize: 12 }}>
-							{openPercentage}%
-						</Text>
-					</View>
-					<View
-						style={{
-							height: 4,
-							backgroundColor: "rgba(255,255,255,0.1)",
-							borderRadius: 2,
-						}}
-					>
+			<View style={{ gap: 10 }}>
+				{[
+					{ label: "Open", percentage: openPercentage, color: "#EF4444" },
+					{
+						label: "In Progress",
+						percentage: inProgressPercentage,
+						color: "#FFCC00",
+					},
+					{
+						label: "Resolved",
+						percentage: resolvedPercentage,
+						color: "#4ADE80",
+					},
+				].map((item) => (
+					<View key={item.label}>
 						<View
 							style={{
-								width: `${openPercentage}%`,
-								height: "100%",
-								backgroundColor: "#EF4444",
-								borderRadius: 2,
+								flexDirection: "row",
+								justifyContent: "space-between",
+								marginBottom: 6,
 							}}
-						/>
-					</View>
-				</View>
-
-				<View style={{ marginBottom: 8 }}>
-					<View
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between",
-							marginBottom: 4,
-						}}
-					>
-						<Text style={{ color: "#9CA3AF", fontSize: 12 }}>In Progress</Text>
-						<Text style={{ color: "#FFCC00", fontSize: 12 }}>
-							{inProgressPercentage}%
-						</Text>
-					</View>
-					<View
-						style={{
-							height: 4,
-							backgroundColor: "rgba(255,255,255,0.1)",
-							borderRadius: 2,
-						}}
-					>
+						>
+							<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
+								{item.label}
+							</Text>
+							<Text
+								style={{ color: item.color, fontSize: 12, fontWeight: "600" }}
+							>
+								{item.percentage}%
+							</Text>
+						</View>
 						<View
 							style={{
-								width: `${inProgressPercentage}%`,
-								height: "100%",
-								backgroundColor: "#FFCC00",
-								borderRadius: 2,
+								height: 5,
+								backgroundColor: "rgba(255,255,255,0.08)",
+								borderRadius: 3,
+								overflow: "hidden",
 							}}
-						/>
+						>
+							<View
+								style={{
+									width: `${item.percentage}%`,
+									height: "100%",
+									backgroundColor: item.color,
+									borderRadius: 3,
+									opacity: 0.85,
+								}}
+							/>
+						</View>
 					</View>
-				</View>
-
-				<View>
-					<View
-						style={{
-							flexDirection: "row",
-							justifyContent: "space-between",
-							marginBottom: 4,
-						}}
-					>
-						<Text style={{ color: "#9CA3AF", fontSize: 12 }}>Resolved</Text>
-						<Text style={{ color: "#4ADE80", fontSize: 12 }}>
-							{resolvedPercentage}%
-						</Text>
-					</View>
-					<View
-						style={{
-							height: 4,
-							backgroundColor: "rgba(255,255,255,0.1)",
-							borderRadius: 2,
-						}}
-					>
-						<View
-							style={{
-								width: `${resolvedPercentage}%`,
-								height: "100%",
-								backgroundColor: "#4ADE80",
-								borderRadius: 2,
-							}}
-						/>
-					</View>
-				</View>
+				))}
 			</View>
 		</LinearGradient>
 	);

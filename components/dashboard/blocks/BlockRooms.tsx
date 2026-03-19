@@ -950,7 +950,7 @@ export default function BlockRooms({
 			{/* Create form */}
 			{showCreateForm && (
 				<LinearGradient
-					colors={["rgba(255,255,255,0.06)", "rgba(255,255,255,0.03)"]}
+					colors={["rgba(255,255,255,0.06)", "rgba(255,255,255,0.06)"]}
 					style={{
 						borderRadius: 14,
 						borderWidth: 1,
@@ -1033,7 +1033,7 @@ export default function BlockRooms({
 			{/* Rooms */}
 			{rooms.length === 0 ? (
 				<LinearGradient
-					colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.02)"]}
+					colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.05)"]}
 					style={{
 						borderRadius: 16,
 						borderWidth: 1,

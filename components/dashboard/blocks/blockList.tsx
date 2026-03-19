@@ -27,8 +27,12 @@ interface Block {
 	inviteCode: string;
 	inviteCodeExpiresAt: string;
 	createdAt: string;
-	totalStudents: number;
-	unassignedStudents: number;
+	stats?: {
+		totalStudents: number;
+		unassignedStudents: number;
+	};
+	totalStudents?: number;
+	unassignedStudents?: number;
 }
 
 interface BlockListProps {
@@ -164,210 +168,235 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 		return new Date(expiresAt).getTime() < new Date().getTime();
 	};
 
-	const renderBlockItem = ({ item: block }: { item: Block }) => (
-		<Pressable
-			onPress={() => handlePressBlock(block._id)}
-			style={({ pressed }) => ({
-				transform: [{ scale: pressed ? 0.99 : 1 }],
-				opacity: pressed ? 0.9 : 1,
-				width: screenWidth - 60,
-				marginHorizontal: 10,
-			})}
-		>
-			<LinearGradient
-				colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
-				style={{
-					borderRadius: 16,
-					borderWidth: 1,
-					borderColor: "rgba(255,255,255,0.1)",
-					padding: 16,
-				}}
+	const renderBlockItem = ({ item: block }: { item: Block }) => {
+		const totalStudents =
+			block.stats?.totalStudents ?? block.totalStudents ?? null;
+		const unassignedStudents =
+			block.stats?.unassignedStudents ?? block.unassignedStudents ?? null;
+
+		return (
+			<Pressable
+				onPress={() => handlePressBlock(block._id)}
+				style={({ pressed }) => ({
+					transform: [{ scale: pressed ? 0.99 : 1 }],
+					opacity: pressed ? 0.9 : 1,
+					width: screenWidth - 60,
+					marginHorizontal: 15,
+				})}
 			>
-				<View
+				<LinearGradient
+					colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 					style={{
-						flexDirection: "row",
-						justifyContent: "space-between",
-						alignItems: "flex-start",
-						marginBottom: 5,
-					}}
-				>
-					<Text
-						style={{
-							color: "#FFCC00",
-							fontSize: 18,
-							fontWeight: "600",
-						}}
-					>
-						Block {block.name}
-					</Text>
-					<View style={{ flexDirection: "row", gap: 8 }}>
-						{loadingId === block._id ? (
-							<ActivityIndicator size="small" color="#FFCC00" />
-						) : (
-							<>
-								<Pressable
-									onPress={(e) => {
-										e.stopPropagation();
-										handleDeletePress(block._id, block.name);
-									}}
-									style={({ pressed }) => ({
-										padding: 8,
-										opacity: pressed ? 0.7 : 1,
-									})}
-								>
-									<FontAwesome name="trash-o" size={20} color="#EF4444" />
-								</Pressable>
-							</>
-						)}
-					</View>
-				</View>
-
-				<Text
-					style={{
-						color: "#9CA3AF",
-						fontSize: 14,
-						marginBottom: 16,
-					}}
-				>
-					Capacity: {block.maxCapacity} students
-				</Text>
-
-				<View
-					style={{
-						backgroundColor: "rgba(0,0,0,0.3)",
-						borderRadius: 12,
-						padding: 12,
-						marginBottom: 12,
+						borderRadius: 16,
+						borderWidth: 1,
+						borderColor: "rgba(255,255,255,0.1)",
+						padding: 20,
 					}}
 				>
 					<View
 						style={{
 							flexDirection: "row",
 							justifyContent: "space-between",
-							alignItems: "center",
-							marginBottom: 8,
+							alignItems: "flex-start",
+							marginBottom: 5,
 						}}
 					>
 						<Text
 							style={{
-								color: "#6B7280",
-								fontSize: 12,
+								color: "#FFCC00",
+								fontSize: 18,
+								fontWeight: "600",
 							}}
 						>
-							INVITE CODE
+							Block {block.name}
 						</Text>
-						{isExpired(block.inviteCodeExpiresAt) ? (
-							<View
-								style={{
-									backgroundColor: "rgba(239,68,68,0.2)",
-									paddingHorizontal: 8,
-									paddingVertical: 2,
-									borderRadius: 8,
-								}}
-							>
-								<Text
-									style={{
-										color: "#EF4444",
-										fontSize: 10,
-										fontWeight: "500",
-									}}
-								>
-									Expired
-								</Text>
-							</View>
-						) : isExpiringSoon(block.inviteCodeExpiresAt) ? (
-							<View
-								style={{
-									backgroundColor: "rgba(255,204,0,0.2)",
-									paddingHorizontal: 8,
-									paddingVertical: 2,
-									borderRadius: 8,
-								}}
-							>
-								<Text
-									style={{
-										color: "#FFCC00",
-										fontSize: 10,
-										fontWeight: "500",
-									}}
-								>
-									Expiring soon
-								</Text>
-							</View>
-						) : null}
+						<View style={{ flexDirection: "row", gap: 8 }}>
+							{loadingId === block._id ? (
+								<ActivityIndicator size="small" color="#FFCC00" />
+							) : (
+								<>
+									<Pressable
+										onPress={(e) => {
+											e.stopPropagation();
+											handleDeletePress(block._id, block.name);
+										}}
+										style={({ pressed }) => ({
+											padding: 8,
+											opacity: pressed ? 0.7 : 1,
+										})}
+									>
+										<FontAwesome name="trash-o" size={20} color="#EF4444" />
+									</Pressable>
+								</>
+							)}
+						</View>
 					</View>
+
+					<Text
+						style={{
+							color: "#9CA3AF",
+							fontSize: 12,
+							marginBottom: 5,
+						}}
+					>
+						Capacity : {block.maxCapacity}
+					</Text>
+					<Text
+						style={{
+							color: "#9CA3AF",
+							fontSize: 12,
+							marginBottom: 5,
+						}}
+					>
+						Total Students : {totalStudents ?? "--"}
+					</Text>
+					<Text
+						style={{
+							color: "#9CA3AF",
+							fontSize: 12,
+							marginBottom: 10,
+						}}
+					>
+						Unassigned Students : {unassignedStudents ?? "--"}
+					</Text>
+
+					<View
+						style={{
+							backgroundColor: "rgba(0,0,0,0.3)",
+							borderRadius: 12,
+							padding: 12,
+							marginBottom: 12,
+						}}
+					>
+						<View
+							style={{
+								flexDirection: "row",
+								justifyContent: "space-between",
+								alignItems: "center",
+								marginBottom: 1,
+							}}
+						>
+							<Text
+								style={{
+									color: "#6B7280",
+									fontSize: 12,
+								}}
+							>
+								INVITE CODE
+							</Text>
+							{isExpired(block.inviteCodeExpiresAt) ? (
+								<View
+									style={{
+										backgroundColor: "rgba(239,68,68,0.2)",
+										paddingHorizontal: 8,
+										paddingVertical: 2,
+										borderRadius: 8,
+									}}
+								>
+									<Text
+										style={{
+											color: "#EF4444",
+											fontSize: 10,
+											fontWeight: "500",
+										}}
+									>
+										Expired
+									</Text>
+								</View>
+							) : isExpiringSoon(block.inviteCodeExpiresAt) ? (
+								<View
+									style={{
+										backgroundColor: "rgba(255,204,0,0.2)",
+										paddingHorizontal: 8,
+										paddingVertical: 2,
+										borderRadius: 8,
+									}}
+								>
+									<Text
+										style={{
+											color: "#FFCC00",
+											fontSize: 10,
+											fontWeight: "500",
+										}}
+									>
+										Expiring soon
+									</Text>
+								</View>
+							) : null}
+						</View>
+						<Pressable
+							onPress={(e) => {
+								e.stopPropagation();
+								handleCopyCode(block.inviteCode);
+							}}
+							style={({ pressed }) => ({
+								flexDirection: "row",
+								alignItems: "center",
+								backgroundColor: pressed
+									? "rgba(255,255,255,0.1)"
+									: "transparent",
+								borderRadius: 8,
+								padding: 8,
+								marginHorizontal: -8,
+							})}
+						>
+							<Text
+								style={{
+									color: "white",
+									fontSize: 15,
+									fontWeight: "bold",
+									letterSpacing: 2,
+									flex: 1,
+									fontFamily: "monospace",
+								}}
+							>
+								{block.inviteCode}
+							</Text>
+							<FontAwesome
+								name="copy"
+								size={18}
+								color="#FFCC00"
+								style={{ marginLeft: 12 }}
+							/>
+						</Pressable>
+					</View>
+
 					<Pressable
 						onPress={(e) => {
 							e.stopPropagation();
-							handleCopyCode(block.inviteCode);
+							handleRegenerate(block._id, block.name);
 						}}
+						disabled={loadingId === block._id}
 						style={({ pressed }) => ({
 							flexDirection: "row",
 							alignItems: "center",
-							backgroundColor: pressed
-								? "rgba(255,255,255,0.1)"
-								: "transparent",
+							justifyContent: "center",
+							backgroundColor: "rgba(255,204,0,0.1)",
 							borderRadius: 8,
-							padding: 8,
-							marginHorizontal: -8,
+							padding: 10,
+							opacity: pressed ? 0.8 : 1,
 						})}
 					>
+						<FontAwesome
+							name="refresh"
+							size={14}
+							color="#FFCC00"
+							style={{ marginRight: 8 }}
+						/>
 						<Text
 							style={{
-								color: "white",
-								fontSize: 24,
-								fontWeight: "bold",
-								letterSpacing: 2,
-								flex: 1,
-								fontFamily: "monospace",
+								color: "#FFCC00",
+								fontSize: 13,
+								fontWeight: "500",
 							}}
 						>
-							{block.inviteCode}
+							Regenerate Code
 						</Text>
-						<FontAwesome
-							name="copy"
-							size={18}
-							color="#FFCC00"
-							style={{ marginLeft: 12 }}
-						/>
 					</Pressable>
-				</View>
-
-				<Pressable
-					onPress={(e) => {
-						e.stopPropagation();
-						handleRegenerate(block._id, block.name);
-					}}
-					disabled={loadingId === block._id}
-					style={({ pressed }) => ({
-						flexDirection: "row",
-						alignItems: "center",
-						justifyContent: "center",
-						backgroundColor: "rgba(255,204,0,0.1)",
-						borderRadius: 8,
-						padding: 10,
-						opacity: pressed ? 0.8 : 1,
-					})}
-				>
-					<FontAwesome
-						name="refresh"
-						size={14}
-						color="#FFCC00"
-						style={{ marginRight: 8 }}
-					/>
-					<Text
-						style={{
-							color: "#FFCC00",
-							fontSize: 13,
-							fontWeight: "500",
-						}}
-					>
-						Regenerate Code
-					</Text>
-				</Pressable>
-			</LinearGradient>
-		</Pressable>
-	);
+				</LinearGradient>
+			</Pressable>
+		);
+	};
 
 	return (
 		<>
@@ -433,7 +462,7 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 						ref={carouselRef}
 						data={blocks}
 						renderItem={renderBlockItem}
-						width={screenWidth - 20}
+						width={screenWidth - 15}
 						height={300}
 						loop={blocks.length > 1}
 						autoPlay={false}
@@ -443,8 +472,8 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 						}}
 						mode="parallax"
 						modeConfig={{
-							parallaxScrollingScale: 0.95,
-							parallaxScrollingOffset: 40,
+							parallaxScrollingScale: 1,
+							parallaxScrollingOffset: 20,
 						}}
 					/>
 

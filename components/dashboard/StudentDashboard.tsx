@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-	ActivityIndicator,
 	Pressable,
 	RefreshControl,
 	ScrollView,
@@ -17,6 +16,7 @@ import MenuCard from "../student/MenuCard";
 import RoommateCard from "../student/RoommateCard";
 import StudentHeader from "../student/StudentHeader";
 import WaitingForRoomCard from "../student/WaitingForRoomCard";
+import DashboardSkeleton from "./DashboardSkeleton";
 
 interface StudentDashboardProps {
 	data: any;
@@ -96,14 +96,7 @@ export default function StudentDashboard({
 	// };
 
 	if (!data) {
-		return (
-			<LinearGradient
-				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
-				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-			>
-				<ActivityIndicator size="large" color="#FFCC00" />
-			</LinearGradient>
-		);
+		return <DashboardSkeleton />;
 	}
 
 	const { student, todayMenu } = data;

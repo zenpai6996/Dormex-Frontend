@@ -42,29 +42,40 @@ export default function ComplaintsCard({
 		}
 	};
 
-	const getStatusColor = (status: string) => {
+	const getStatusConfig = (status: string) => {
 		switch (status) {
 			case "OPEN":
-				return "#EF4444";
+				return {
+					color: "#EF4444",
+					bg: "rgba(239,68,68,0.12)",
+					border: "rgba(239,68,68,0.25)",
+					icon: "exclamation-circle",
+					label: "Open",
+				};
 			case "IN_PROGRESS":
-				return "#F59E0B";
+				return {
+					color: "#FFCC00",
+					bg: "rgba(255,204,0,0.12)",
+					border: "rgba(255,204,0,0.25)",
+					icon: "clock-o",
+					label: "In Progress",
+				};
 			case "RESOLVED":
-				return "#4ADE80";
+				return {
+					color: "#4ADE80",
+					bg: "rgba(74,222,128,0.12)",
+					border: "rgba(74,222,128,0.25)",
+					icon: "check-circle",
+					label: "Resolved",
+				};
 			default:
-				return "#9CA3AF";
-		}
-	};
-
-	const getStatusIcon = (status: string) => {
-		switch (status) {
-			case "OPEN":
-				return "exclamation-circle";
-			case "IN_PROGRESS":
-				return "clock-o";
-			case "RESOLVED":
-				return "check-circle";
-			default:
-				return "circle";
+				return {
+					color: "#9CA3AF",
+					bg: "rgba(156,163,175,0.12)",
+					border: "rgba(156,163,175,0.25)",
+					icon: "circle",
+					label: status,
+				};
 		}
 	};
 
@@ -75,182 +86,163 @@ export default function ComplaintsCard({
 				borderRadius: 20,
 				borderWidth: 1,
 				borderColor: "rgba(255,255,255,0.1)",
-				padding: 20,
+				overflow: "hidden",
 				marginBottom: 16,
 			}}
 		>
+			{/* Header */}
 			<View
 				style={{
 					flexDirection: "row",
 					alignItems: "center",
 					justifyContent: "space-between",
-					marginBottom: 16,
+					paddingHorizontal: 20,
+					paddingTop: 20,
+					paddingBottom: 16,
 				}}
 			>
-				<View
-					style={{
-						flexDirection: "row",
-						alignItems: "center",
-					}}
-				>
+				<View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
 					<View
 						style={{
-							width: 48,
-							height: 48,
-							borderRadius: 25,
-							backgroundColor: "rgba(239,68,68,0.1)",
+							width: 44,
+							height: 44,
+							borderRadius: 12,
+							backgroundColor: "rgba(239,68,68,0.12)",
+							borderWidth: 1,
+							borderColor: "rgba(239,68,68,0.2)",
 							alignItems: "center",
 							justifyContent: "center",
-							marginRight: 12,
 						}}
 					>
-						<FontAwesome name="bullhorn" size={20} color="#EF4444" />
+						<FontAwesome name="bullhorn" size={18} color="#EF4444" />
 					</View>
 					<View>
-						<Text
-							style={{
-								color: "white",
-								fontSize: 18,
-								fontWeight: "bold",
-							}}
-						>
+						<Text style={{ color: "white", fontSize: 17, fontWeight: "700" }}>
 							My Complaints
 						</Text>
-						<Text
-							style={{
-								color: "#9CA3AF",
-								fontSize: 13,
-							}}
-						>
-							{complaints.length} active
+						<Text style={{ color: "#6B7280", fontSize: 12, marginTop: 1 }}>
+							{complaints.length} recent
 						</Text>
 					</View>
 				</View>
-				{/* <Pressable
-					onPress={onCreatePress}
-					style={({ pressed }) => ({
-						backgroundColor: "rgba(239,68,68,0.1)",
-						width: 40,
-						height: 40,
-						borderRadius: 10,
-						alignItems: "center",
-						justifyContent: "center",
-						borderWidth: 1,
-						borderColor: "rgba(239,68,68,0.3)",
-						opacity: pressed ? 0.8 : 1,
-					})}
-				>
-					<FontAwesome name="plus" size={18} color="#EF4444" />
-				</Pressable> */}
 			</View>
 
-			<View
-				style={{
-					height: 1,
-					backgroundColor: "rgba(255,255,255,0.1)",
-					marginBottom: 16,
-				}}
-			/>
+			<View style={{ height: 1, backgroundColor: "rgba(255,255,255,0.07)" }} />
 
-			{loading ? (
-				<ActivityIndicator color="#FFCC00" style={{ paddingVertical: 20 }} />
-			) : complaints.length === 0 ? (
-				<View
-					style={{
-						alignItems: "center",
-						paddingVertical: 20,
-					}}
-				>
-					<Text
-						style={{
-							color: "#6B7280",
-							fontSize: 14,
-							marginBottom: 4,
-						}}
-					>
-						No complaints filed
-					</Text>
-					<Text
-						style={{
-							color: "#4B5563",
-							fontSize: 12,
-						}}
-					>
-						Tap + to report an issue
-					</Text>
-				</View>
-			) : (
-				complaints.map((complaint, index) => (
-					<View
-						key={complaint._id}
-						style={{
-							flexDirection: "row",
-							alignItems: "center",
-							paddingVertical: 12,
-							borderBottomWidth: index < complaints.length - 1 ? 1 : 0,
-							borderBottomColor: "rgba(255,255,255,0.05)",
-						}}
-					>
+			{/* Body */}
+			<View style={{ padding: 16 }}>
+				{loading ? (
+					<ActivityIndicator color="#FFCC00" style={{ paddingVertical: 24 }} />
+				) : complaints.length === 0 ? (
+					<View style={{ alignItems: "center", paddingVertical: 28 }}>
 						<View
 							style={{
-								width: 36,
-								height: 36,
-								borderRadius: 20,
-								backgroundColor: `${getStatusColor(complaint.status)}20`,
+								width: 48,
+								height: 48,
+								borderRadius: 24,
+								backgroundColor: "rgba(255,255,255,0.06)",
 								alignItems: "center",
 								justifyContent: "center",
-								marginRight: 12,
+								marginBottom: 10,
 							}}
 						>
-							<FontAwesome
-								name={getStatusIcon(complaint.status) as any}
-								size={14}
-								color={getStatusColor(complaint.status)}
-							/>
+							<FontAwesome name="check" size={20} color="#4ADE80" />
 						</View>
-						<View style={{ flex: 1 }}>
-							<Text
-								style={{
-									color: "white",
-									fontSize: 14,
-									fontWeight: "500",
-									marginBottom: 2,
-								}}
-								numberOfLines={1}
-							>
-								{complaint.category}
-							</Text>
-							<Text
-								style={{
-									color: "#6B7280",
-									fontSize: 12,
-								}}
-								numberOfLines={1}
-							>
-								{complaint.description}
-							</Text>
-						</View>
-						<View
-							style={{
-								backgroundColor: `${getStatusColor(complaint.status)}20`,
-								paddingHorizontal: 8,
-								paddingVertical: 3,
-								borderRadius: 6,
-							}}
-						>
-							<Text
-								style={{
-									color: getStatusColor(complaint.status),
-									fontSize: 10,
-									fontWeight: "600",
-								}}
-							>
-								{complaint.status.replace("_", " ")}
-							</Text>
-						</View>
+						<Text style={{ color: "#9CA3AF", fontSize: 14, fontWeight: "500" }}>
+							No complaints filed
+						</Text>
+						<Text style={{ color: "#4B5563", fontSize: 12, marginTop: 3 }}>
+							Tap + to report an issue
+						</Text>
 					</View>
-				))
-			)}
+				) : (
+					<View style={{ gap: 10 }}>
+						{complaints.map((complaint) => {
+							const config = getStatusConfig(complaint.status);
+							return (
+								<View
+									key={complaint._id}
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										backgroundColor: "rgba(255,255,255,0.04)",
+										borderRadius: 14,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.07)",
+										padding: 12,
+										gap: 12,
+									}}
+								>
+									{/* Icon */}
+									<View
+										style={{
+											width: 40,
+											height: 40,
+											borderRadius: 10,
+											backgroundColor: config.bg,
+											borderWidth: 1,
+											borderColor: config.border,
+											alignItems: "center",
+											justifyContent: "center",
+											flexShrink: 0,
+										}}
+									>
+										<FontAwesome
+											name={config.icon as any}
+											size={15}
+											color={config.color}
+										/>
+									</View>
+
+									{/* Text */}
+									<View style={{ flex: 1 }}>
+										<Text
+											style={{
+												color: "white",
+												fontSize: 14,
+												fontWeight: "600",
+												marginBottom: 3,
+											}}
+											numberOfLines={1}
+										>
+											{complaint.category}
+										</Text>
+										<Text
+											style={{ color: "#6B7280", fontSize: 12 }}
+											numberOfLines={1}
+										>
+											{complaint.description}
+										</Text>
+									</View>
+
+									{/* Status badge */}
+									<View
+										style={{
+											backgroundColor: config.bg,
+											borderWidth: 1,
+											borderColor: config.border,
+											paddingHorizontal: 9,
+											paddingVertical: 4,
+											borderRadius: 20,
+											flexShrink: 0,
+										}}
+									>
+										<Text
+											style={{
+												color: config.color,
+												fontSize: 10,
+												fontWeight: "700",
+											}}
+										>
+											{config.label}
+										</Text>
+									</View>
+								</View>
+							);
+						})}
+					</View>
+				)}
+			</View>
 		</LinearGradient>
 	);
 }

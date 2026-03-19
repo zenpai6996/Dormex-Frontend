@@ -126,8 +126,8 @@ export default function PasswordConfirmModal({
 									borderColor: "rgba(239,68,68,0.2)",
 								}}
 							>
-								This action cannot be undone. All rooms and student assignments
-								in this block will be permanently deleted.
+								This action cannot be undone !! {"\n"}All rooms and student
+								assignments in this block will be permanently deleted.
 							</Text>
 
 							{/* Password Input */}

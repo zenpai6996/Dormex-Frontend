@@ -5,7 +5,6 @@ import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import {
-	ActivityIndicator,
 	Dimensions,
 	Pressable,
 	RefreshControl,
@@ -13,6 +12,7 @@ import {
 	Text,
 	View,
 } from "react-native";
+import MessMenuSkeleton from "../skeletons/MessMenuSkeleton";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -62,14 +62,7 @@ export default function StudentMessMenu() {
 	const selectedMenu = menuItems.find((item) => item.day === selectedDay);
 
 	if (loading) {
-		return (
-			<LinearGradient
-				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
-				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-			>
-				<ActivityIndicator size="large" color="#FFCC00" />
-			</LinearGradient>
-		);
+		return <MessMenuSkeleton />;
 	}
 
 	return (

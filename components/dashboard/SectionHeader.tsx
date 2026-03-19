@@ -5,7 +5,7 @@ interface SectionHeaderProps {
 	title: string;
 	subtitle?: string;
 	action?: {
-		label: string;
+		label?: string;
 		onPress: () => void;
 		icon?: string;
 	};
@@ -56,18 +56,20 @@ export default function SectionHeader({
 						backgroundColor: pressed
 							? "rgba(255,204,0,0.2)"
 							: "rgba(255,204,0,0.1)",
-						paddingHorizontal: 12,
-						paddingVertical: 6,
-						borderRadius: 8,
+						paddingHorizontal: 15,
+						paddingVertical: 12,
+						borderRadius: 20,
 						transform: [{ scale: pressed ? 0.98 : 1 }],
+						borderColor: "#FFCC00",
+						borderWidth: pressed ? 1 : 0.5,
 					})}
 				>
 					{action.icon && (
 						<FontAwesome
 							name={action.icon as any}
-							size={12}
+							size={20}
 							color="#FFCC00"
-							style={{ marginRight: 6 }}
+							style={{ marginRight: 0 }}
 						/>
 					)}
 					<Text

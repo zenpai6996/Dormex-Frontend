@@ -23,6 +23,7 @@ import {
 	View,
 } from "react-native";
 import { ToastService } from "react-native-toastier";
+import ComplaintsSkeleton from "../skeletons/ComplaintsSkeleton";
 
 interface StatusUpdateModalProps {
 	visible: boolean;
@@ -280,14 +281,7 @@ export default function AdminComplaints() {
 	};
 
 	if (loading) {
-		return (
-			<LinearGradient
-				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
-				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-			>
-				<ActivityIndicator size="large" color="#FFCC00" />
-			</LinearGradient>
-		);
+		return <ComplaintsSkeleton />;
 	}
 
 	return (
@@ -481,7 +475,7 @@ export default function AdminComplaints() {
 						>
 							No Complaints
 						</Text>
-						<Text
+						{/* <Text
 							style={{
 								color: "#9CA3AF",
 								fontSize: 14,
@@ -491,7 +485,7 @@ export default function AdminComplaints() {
 							{filter === "ALL"
 								? "No complaints have been filed yet"
 								: `No ${filter.toLowerCase().replace("_", " ")} complaints`}
-						</Text>
+						</Text> */}
 					</LinearGradient>
 				) : (
 					filteredComplaints.map((complaint) => (
@@ -538,7 +532,7 @@ export default function AdminComplaints() {
 											alignItems: "center",
 											justifyContent: "center",
 											marginRight: 12,
-											marginBottom: 12,
+											marginBottom: 15,
 											borderWidth: 1,
 											borderColor: `${COMPLAINT_STATUS_COLORS[complaint.status]}30`,
 										}}
@@ -568,29 +562,82 @@ export default function AdminComplaints() {
 										>
 											From: {complaint.student.name}
 										</Text>
-										{complaint.student?.block?.name && (
-											<View
-												style={{
-													backgroundColor: "rgba(255, 204, 0, 0)",
-													paddingHorizontal: 0,
-													paddingVertical: 2,
-													borderRadius: 4,
-													flexDirection: "row",
-													alignItems: "center",
-													gap: 4,
-												}}
-											>
-												<Text
+										<View
+											style={{
+												flexDirection: "row",
+												justifyContent: "space-between",
+											}}
+										>
+											{complaint.student?.block?.name && (
+												<View
 													style={{
-														color: "#FFCC00",
-														fontSize: 11,
-														fontWeight: "600",
+														backgroundColor: "rgba(255, 204, 0, 0)",
+														paddingHorizontal: 0,
+														paddingVertical: 2,
+														borderRadius: 4,
+														flexDirection: "row",
+														alignItems: "center",
+														gap: 4,
 													}}
 												>
-													Block {complaint.student?.block?.name}
-												</Text>
-											</View>
-										)}
+													<Text
+														style={{
+															color: "#9CA3AF",
+															fontSize: 11,
+															fontWeight: "600",
+														}}
+													>
+														Block {complaint.student?.block?.name}
+													</Text>
+												</View>
+											)}
+											{complaint.student?.room?.roomNumber && (
+												<View
+													style={{
+														backgroundColor: "rgba(255, 204, 0, 0)",
+														paddingHorizontal: 0,
+														paddingVertical: 2,
+														borderRadius: 4,
+														flexDirection: "row",
+														alignItems: "center",
+														gap: 4,
+													}}
+												>
+													<Text
+														style={{
+															color: "#9CA3AF",
+															fontSize: 11,
+															fontWeight: "600",
+														}}
+													>
+														Room : {complaint.student?.room?.roomNumber}
+													</Text>
+												</View>
+											)}
+											{complaint.student?.rollNo && (
+												<View
+													style={{
+														backgroundColor: "rgba(255, 204, 0, 0)",
+														paddingHorizontal: 0,
+														paddingVertical: 2,
+														borderRadius: 4,
+														flexDirection: "row",
+														alignItems: "center",
+														gap: 4,
+													}}
+												>
+													<Text
+														style={{
+															color: "#9CA3AF",
+															fontSize: 11,
+															fontWeight: "600",
+														}}
+													>
+														Roll : {complaint.student?.rollNo}
+													</Text>
+												</View>
+											)}
+										</View>
 									</View>
 								</View>
 
@@ -604,15 +651,15 @@ export default function AdminComplaints() {
 										}}
 										style={({ pressed }) => ({
 											backgroundColor: "rgba(255,204,0,0.1)",
-											paddingHorizontal: 12,
-											paddingVertical: 6,
+											paddingHorizontal: 10,
+											paddingVertical: 10,
 											borderRadius: 20,
 											borderWidth: 1,
 											borderColor: "rgba(255,204,0,0.3)",
 											opacity: pressed ? 0.8 : 1,
 										})}
 									>
-										<Text
+										{/* <Text
 											style={{
 												color: "#FFCC00",
 												fontSize: 12,
@@ -620,7 +667,13 @@ export default function AdminComplaints() {
 											}}
 										>
 											Update
-										</Text>
+										</Text> */}
+										<FontAwesome
+											name="pencil"
+											size={15}
+											color={"#FFCC00"}
+											style={{ marginLeft: 2 }}
+										/>
 									</Pressable>
 								)}
 							</View>
@@ -647,6 +700,7 @@ export default function AdminComplaints() {
 										color: "white",
 										fontSize: 12,
 										lineHeight: 20,
+										fontWeight: 600,
 									}}
 								>
 									{complaint.description}
@@ -701,8 +755,14 @@ export default function AdminComplaints() {
 											gap: 4,
 										}}
 									>
-										<FontAwesome name="calendar" size={12} color="#6B7280" />
-										<Text style={{ color: "#6B7280", fontSize: 11 }}>
+										<FontAwesome name="calendar" size={12} color="#f8f7f5" />
+										<Text
+											style={{
+												color: "#f8f7f5",
+												fontSize: 11,
+												fontWeight: 600,
+											}}
+										>
 											{new Date(complaint.createdAt).toLocaleDateString()}
 										</Text>
 									</View>

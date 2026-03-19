@@ -22,6 +22,7 @@ import {
 } from "react-native";
 import { ToastService } from "react-native-toastier";
 import { Alert } from "rn-custom-alert-prompt";
+import ComplaintsSkeleton from "../skeletons/ComplaintsSkeleton";
 
 export default function StudentComplaints() {
 	const { token } = useAuth();
@@ -163,14 +164,7 @@ export default function StudentComplaints() {
 	};
 
 	if (loading || checkingBlock) {
-		return (
-			<LinearGradient
-				colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
-				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-			>
-				<ActivityIndicator size="large" color="#FFCC00" />
-			</LinearGradient>
-		);
+		return <ComplaintsSkeleton />;
 	}
 
 	return (

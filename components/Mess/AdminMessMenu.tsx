@@ -13,7 +13,6 @@ import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import {
-	ActivityIndicator,
 	KeyboardAvoidingView,
 	Modal,
 	Platform,
@@ -25,6 +24,7 @@ import {
 	View,
 } from "react-native";
 import { ToastService } from "react-native-toastier";
+import MessMenuSkeleton from "../skeletons/MessMenuSkeleton";
 
 const DAYS_OF_WEEK: DayOfWeek[] = [
 	"Monday",
@@ -365,14 +365,7 @@ export default function AdminMessMenu() {
 	}, [token]);
 
 	if (loading) {
-		return (
-			<LinearGradient
-				colors={["#0a0f1e8b", "#0A0F1E", "#0A0F1E"]}
-				style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-			>
-				<ActivityIndicator size="large" color="#FFCC00" />
-			</LinearGradient>
-		);
+		return <MessMenuSkeleton />;
 	}
 
 	const hasAllDays = DAYS_OF_WEEK.every((day) =>
