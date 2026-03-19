@@ -109,6 +109,63 @@ export default function StudentProfileModal({
 		}
 	};
 
+	const getBranchFullName = (branch?: string) => {
+		const branchMap: Record<string, string> = {
+			IT: "Information Technology",
+			CS: "Computer Science",
+			ECE: "Electronics & Communication",
+			EE: "Electrical Engineering",
+			ME: "Mechanical Engineering",
+			CE: "Civil Engineering",
+			OTHER: "Other",
+		};
+		return branchMap[branch || ""] || branch || "N/A";
+	};
+
+	const formatDate = (dateString?: string) => {
+		if (!dateString) return "N/A";
+		try {
+			const date = new Date(dateString);
+			return date.toLocaleDateString("en-US", {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+			});
+		} catch {
+			return dateString;
+		}
+	};
+
+	const InfoRow = ({
+		label,
+		value,
+		icon,
+		highlight = false,
+	}: {
+		label: string;
+		value: string;
+		icon?: string;
+		highlight?: boolean;
+	}) => (
+		<View style={{ gap: 4 }}>
+			<View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+				{icon && <FontAwesome name={icon as any} size={12} color="#6B7280" />}
+				<Text style={{ color: "#6B7280", fontSize: 12, fontWeight: "500" }}>
+					{label}
+				</Text>
+			</View>
+			<Text
+				style={{
+					color: highlight ? "#FFCC00" : "white",
+					fontSize: 13,
+					fontWeight: highlight ? "600" : "500",
+				}}
+			>
+				{value}
+			</Text>
+		</View>
+	);
+
 	return (
 		<LinearGradient
 			colors={["#0A0F1E", "#0A0F1E", "#0A0F1E"]}
@@ -156,162 +213,234 @@ export default function StudentProfileModal({
 					>
 						<FontAwesome name="user-circle" size={60} color="#FFCC00" />
 					</View>
-					{/* <Text
+					<Text
 						style={{
 							color: "white",
-							fontSize: 28,
+							fontSize: 24,
 							fontWeight: "bold",
 						}}
 					>
-						Profile
-					</Text> */}
+						{profile?.name || "Student Profile"}
+					</Text>
+					<Text
+						style={{
+							color: "#6B7280",
+							fontSize: 14,
+							marginTop: 4,
+						}}
+					>
+						{profile?.email}
+					</Text>
 				</View>
 
 				{loading ? (
 					<ActivityIndicator color="#FFCC00" style={{ padding: 20 }} />
 				) : profile ? (
 					<>
-						{/* Profile Info Card */}
+						{/* Student ID Card */}
 						<LinearGradient
 							colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
 							style={{
 								borderRadius: 20,
 								borderWidth: 1,
-								borderColor: "rgba(255,255,255,0.1)",
-								padding: 22,
-								marginBottom: 20,
+								borderColor: "rgba(255,204,0,0.3)",
+								padding: 20,
+								marginBottom: 16,
 							}}
 						>
-							<View style={{ gap: 18 }}>
-								<View style={{ gap: 4 }}>
-									<Text style={{ color: "white", fontSize: 18 }}>Name</Text>
+							<View
+								style={{
+									flexDirection: "row",
+									justifyContent: "space-between",
+									alignItems: "center",
+									marginBottom: 16,
+								}}
+							>
+								<View
+									style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+								>
+									<FontAwesome name="id-card" size={18} color="#9CA3AF" />
 									<Text
 										style={{
 											color: "#9CA3AF",
-											fontSize: 13,
-											fontWeight: "600",
+											fontSize: 16,
+											fontWeight: "bold",
 										}}
 									>
-										{profile.name}
+										Student Information
 									</Text>
 								</View>
-
-								<View style={{ gap: 4 }}>
-									<Text style={{ color: "white", fontSize: 18 }}>Email</Text>
+								<View
+									style={{
+										backgroundColor: getStatusColor(profile.status),
+										paddingHorizontal: 10,
+										paddingVertical: 4,
+										borderRadius: 12,
+									}}
+								>
 									<Text
 										style={{
-											color: "#9CA3AF",
-											fontSize: 13,
+											color: "#0A0F1E",
+											fontSize: 11,
+											fontWeight: "bold",
+											textTransform: "uppercase",
 										}}
 									>
-										{profile.email}
+										{profile.status || "ACTIVE"}
 									</Text>
 								</View>
+							</View>
 
+							{/* Roll Number - Highlighted */}
+							{profile.rollNo && (
 								<View
 									style={{
-										flexDirection: "row",
-										justifyContent: "space-between",
-										alignItems: "flex-start",
+										backgroundColor: "rgba(255,255,255,0.05)",
+										borderRadius: 12,
+										padding: 14,
+										marginBottom: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,204,0,0.2)",
 									}}
 								>
-									<View style={{ gap: 4 }}>
-										<Text style={{ color: "white", fontSize: 15 }}>Status</Text>
-										<View
-											style={{
-												flexDirection: "row",
-												alignItems: "center",
-												gap: 6,
-											}}
-										>
-											<View
-												style={{
-													width: 8,
-													height: 8,
-													borderRadius: 4,
-													backgroundColor: getStatusColor(profile.status),
-												}}
-											/>
-											<Text
-												style={{
-													color: getStatusColor(profile.status),
-													fontSize: 14,
-													fontWeight: "500",
-												}}
-											>
-												{profile.status}
-											</Text>
-										</View>
-									</View>
-
-									{profile.block && (
-										<View style={{ alignItems: "center", gap: 4 }}>
-											<Text style={{ color: "white", fontSize: 15 }}>
-												Block
-											</Text>
-											<Text
-												style={{
-													color: "#FFCC00",
-													fontSize: 14,
-													fontWeight: "500",
-												}}
-											>
-												{profile.block.name}
-											</Text>
-										</View>
-									)}
-
-									{profile.room && (
-										<View style={{ alignItems: "flex-end", gap: 4 }}>
-											<Text style={{ color: "white", fontSize: 15 }}>Room</Text>
-											<Text
-												style={{
-													color: "#9CA3AF",
-													fontSize: 14,
-													fontWeight: "500",
-												}}
-											>
-												{profile.room.roomNumber}
-											</Text>
-										</View>
-									)}
-								</View>
-
-								<View
-									style={{
-										flexDirection: "row",
-										alignItems: "center",
-										justifyContent: "space-between",
-									}}
-								>
-									<View
+									<Text
 										style={{
-											backgroundColor: "rgba(255,204,0,0.15)",
-											paddingHorizontal: 12,
-											paddingVertical: 6,
-											borderRadius: 8,
+											color: "#848891",
+											fontSize: 12,
+											marginBottom: 4,
 										}}
 									>
-										<Text
-											style={{
-												color: "#FFCC00",
-												fontSize: 13,
-												fontWeight: "600",
-											}}
-										>
-											STUDENT
-										</Text>
-									</View>
-
-									<Text style={{ color: "#6B7280", fontSize: 12 }}>
-										Joined {new Date(profile.createdAt).toLocaleDateString()}
+										Roll Number
 									</Text>
+									<Text
+										style={{
+											color: "#FFCC00",
+											fontSize: 18,
+											fontWeight: "bold",
+											letterSpacing: 1,
+										}}
+									>
+										{profile.rollNo}
+									</Text>
+								</View>
+							)}
+
+							{/* Grid Layout for Student Details */}
+							<View style={{ gap: 16 }}>
+								{/* Branch & Phone Row */}
+								<View
+									style={{
+										flexDirection: "row",
+										gap: 16,
+									}}
+								>
+									<View style={{ flex: 1 }}>
+										<InfoRow
+											label="Branch"
+											value={getBranchFullName(profile.branch)}
+											icon="graduation-cap"
+											highlight={false}
+										/>
+									</View>
+									<View style={{ flex: 1 }}>
+										<InfoRow
+											label="Phone"
+											value={profile.phoneNumber || "N/A"}
+											icon="phone"
+										/>
+									</View>
+								</View>
+
+								{/* Date of Birth & Joining Date Row */}
+								<View
+									style={{
+										flexDirection: "row",
+										gap: 16,
+									}}
+								>
+									<View style={{ flex: 1 }}>
+										<InfoRow
+											label="DOB"
+											value={formatDate(profile.dateOfBirth)}
+											icon="birthday-cake"
+										/>
+									</View>
+									<View style={{ flex: 1 }}>
+										<InfoRow
+											label="Joined On"
+											value={formatDate(
+												profile.joiningDate || profile.createdAt,
+											)}
+											icon="calendar"
+										/>
+									</View>
 								</View>
 							</View>
 						</LinearGradient>
 
+						{/* Accommodation Info Card */}
+						{(profile.block || profile.room) && (
+							<LinearGradient
+								colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
+								style={{
+									borderRadius: 20,
+									borderWidth: 1,
+									borderColor: "rgba(255,204,0,0.3)",
+									padding: 20,
+									marginBottom: 16,
+								}}
+							>
+								<View
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										gap: 8,
+										marginBottom: 16,
+									}}
+								>
+									<FontAwesome name="building" size={18} color="#9CA3AF" />
+									<Text
+										style={{
+											color: "#9CA3AF",
+											fontSize: 16,
+											fontWeight: "600",
+										}}
+									>
+										Accommodation
+									</Text>
+								</View>
+
+								<View
+									style={{
+										flexDirection: "row",
+										gap: 16,
+									}}
+								>
+									{profile.block && (
+										<View style={{ flex: 1 }}>
+											<InfoRow
+												label="Block"
+												value={profile.block.name}
+												icon="map-marker"
+												highlight={true}
+											/>
+										</View>
+									)}
+									{profile.room && (
+										<View style={{ flex: 1 }}>
+											<InfoRow
+												label="Room"
+												value={profile.room.roomNumber}
+												icon="bed"
+											/>
+										</View>
+									)}
+								</View>
+							</LinearGradient>
+						)}
+
 						{/* Actions */}
-						<View style={{ gap: 12 }}>
+						<View style={{ gap: 12, marginBottom: 16 }}>
 							<Pressable
 								onPress={() => setPasswordModalVisible(true)}
 								style={({ pressed }) => ({
@@ -345,7 +474,7 @@ export default function StudentProfileModal({
 										Change Password
 									</Text>
 									<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
-										Update your password
+										Update your account password
 									</Text>
 								</View>
 								<FontAwesome name="chevron-right" size={16} color="#6B7280" />

@@ -1,6 +1,8 @@
 // app/(auth)/register.tsx
 import { useAuth } from "@/src/context/AuthContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -24,12 +26,29 @@ export default function Register() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+	const [rollNo, setRollNo] = useState("");
+	const [dateOfBirth, setDateOfBirth] = useState(new Date());
+	const [phoneNumber, setPhoneNumber] = useState("");
+	const [branch, setBranch] = useState("IT");
+	const [showDatePicker, setShowDatePicker] = useState(false);
+
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
+	const branches = ["IT", "CS", "ECE", "EE", "ME", "CE", "OTHER"];
+
 	const handleRegister = async () => {
-		if (!name || !email || !password || !confirmPassword) {
+		// Validate all fields
+		if (
+			!name ||
+			!email ||
+			!password ||
+			!confirmPassword ||
+			!rollNo ||
+			!phoneNumber ||
+			!branch
+		) {
 			Alert.alert({
 				title: "Error",
 				description: "Please fill in all the fields",
@@ -56,6 +75,16 @@ export default function Register() {
 			return;
 		}
 
+		// Validate phone number (simple validation)
+		if (phoneNumber.length < 10) {
+			Alert.alert({
+				title: "Error",
+				description: "Please enter a valid phone number",
+				showCancelButton: false,
+			});
+			return;
+		}
+
 		try {
 			setIsLoading(true);
 
@@ -66,7 +95,15 @@ export default function Register() {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ name, email, password }),
+					body: JSON.stringify({
+						name,
+						email,
+						password,
+						rollNo,
+						dateOfBirth: dateOfBirth.toISOString(),
+						phoneNumber,
+						branch,
+					}),
 				},
 			);
 
@@ -87,10 +124,10 @@ export default function Register() {
 					},
 				],
 			});
-		} catch (error) {
+		} catch (error: any) {
 			Alert.alert({
 				title: "Error",
-				description: "Registration failed. Please try again.",
+				description: error.message || "Registration failed. Please try again.",
 				showCancelButton: false,
 			});
 		} finally {
@@ -196,6 +233,147 @@ export default function Register() {
 											fontSize: 16,
 										}}
 									/>
+								</View>
+							</View>
+
+							{/* Roll Number Input */}
+							<View style={{ marginBottom: 16 }}>
+								<Text
+									style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 8 }}
+								>
+									Roll Number
+								</Text>
+								<View
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										backgroundColor: "rgba(255,255,255,0.1)",
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.2)",
+										paddingHorizontal: 16,
+									}}
+								>
+									<FontAwesome name="id-card" size={20} color="#9CA3AF" />
+									<TextInput
+										placeholder="e.g., 2306229"
+										placeholderTextColor="#6B7280"
+										value={rollNo}
+										onChangeText={setRollNo}
+										style={{
+											flex: 1,
+											color: "#fff",
+											paddingVertical: 16,
+											paddingHorizontal: 12,
+											fontSize: 16,
+										}}
+									/>
+								</View>
+							</View>
+
+							{/* Phone Number Input */}
+							<View style={{ marginBottom: 16 }}>
+								<Text
+									style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 8 }}
+								>
+									Phone Number
+								</Text>
+								<View
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										backgroundColor: "rgba(255,255,255,0.1)",
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.2)",
+										paddingHorizontal: 16,
+									}}
+								>
+									<FontAwesome name="phone" size={20} color="#9CA3AF" />
+									<TextInput
+										placeholder="Enter your phone number"
+										placeholderTextColor="#6B7280"
+										value={phoneNumber}
+										onChangeText={setPhoneNumber}
+										keyboardType="phone-pad"
+										style={{
+											flex: 1,
+											color: "#fff",
+											paddingVertical: 16,
+											paddingHorizontal: 12,
+											fontSize: 16,
+										}}
+									/>
+								</View>
+							</View>
+
+							{/* Date of Birth */}
+							<View style={{ marginBottom: 16 }}>
+								<Text
+									style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 8 }}
+								>
+									Date of Birth
+								</Text>
+								<Pressable
+									onPress={() => setShowDatePicker(true)}
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										backgroundColor: "rgba(255,255,255,0.1)",
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.2)",
+										paddingHorizontal: 16,
+										paddingVertical: 16,
+									}}
+								>
+									<FontAwesome name="calendar" size={20} color="#9CA3AF" />
+									<Text style={{ color: "#fff", marginLeft: 12, flex: 1 }}>
+										{dateOfBirth.toLocaleDateString()}
+									</Text>
+								</Pressable>
+								{showDatePicker && (
+									<DateTimePicker
+										value={dateOfBirth}
+										mode="date"
+										display="default"
+										onChange={(event, selectedDate) => {
+											setShowDatePicker(false);
+											if (selectedDate) {
+												setDateOfBirth(selectedDate);
+											}
+										}}
+										maximumDate={new Date()}
+									/>
+								)}
+							</View>
+
+							{/* Branch Picker */}
+							<View style={{ marginBottom: 16 }}>
+								<Text
+									style={{ color: "#9CA3AF", fontSize: 14, marginBottom: 8 }}
+								>
+									Branch
+								</Text>
+								<View
+									style={{
+										backgroundColor: "rgba(255,255,255,0.1)",
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.2)",
+										overflow: "hidden",
+									}}
+								>
+									<Picker
+										selectedValue={branch}
+										onValueChange={(itemValue) => setBranch(itemValue)}
+										style={{ color: "#fff" }}
+										dropdownIconColor="#FFCC00"
+									>
+										{branches.map((b) => (
+											<Picker.Item key={b} label={b} value={b} color="#000" />
+										))}
+									</Picker>
 								</View>
 							</View>
 
@@ -331,22 +509,6 @@ export default function Register() {
 									</Text>
 								</Pressable>
 							</View>
-
-							{/* Terms
-							<Text
-								style={{
-									color: "#d0d7e6",
-									textAlign: "center",
-									marginTop: 30,
-									fontSize: 12,
-								}}
-							>
-								By creating an account, you agree to our{"\n"}
-								<Text style={{ color: "#ffcc00" }}>
-									Terms of Service
-								</Text> and{" "}
-								<Text style={{ color: "#ffcc00" }}>Privacy Policy</Text>
-							</Text> */}
 						</Animated.View>
 					</View>
 				</ScrollView>

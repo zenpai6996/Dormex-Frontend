@@ -187,6 +187,29 @@ export default function AdminDashboard({
 
 						<View style={{ flexDirection: "row", gap: 12 }}>
 							<Pressable
+								onPress={() => router.push("/create-student")}
+								style={({ pressed }) => ({
+									backgroundColor: "rgba(255,255,255,0.1)",
+									width: 44,
+									height: 44,
+									borderRadius: 22,
+									alignItems: "center",
+									justifyContent: "center",
+									borderWidth: 1,
+									borderColor: pressed ? "#ffcc00" : "rgba(255,204,0,0.3)",
+									transform: [{ scale: pressed ? 0.95 : 1 }],
+								})}
+							>
+								{({ pressed }) => (
+									<FontAwesome
+										name="user-plus"
+										size={20}
+										color={pressed ? "#ffcc00" : "#ffcc00"}
+										style={{ marginLeft: 4 }}
+									/>
+								)}
+							</Pressable>
+							<Pressable
 								onPress={() => router.push("/modal")}
 								style={({ pressed }) => ({
 									backgroundColor: "rgba(255,255,255,0.1)",
@@ -209,30 +232,6 @@ export default function AdminDashboard({
 									/>
 								)}
 							</Pressable>
-
-							{/* <Pressable
-								onPress={handleLogoutPress}
-								style={({ pressed }) => ({
-									backgroundColor: "rgba(255,255,255,0.1)",
-									width: 44,
-									height: 44,
-									borderRadius: 22,
-									alignItems: "center",
-									justifyContent: "center",
-									borderWidth: 1,
-									borderColor: pressed ? "#ffcc00" : "rgba(255,204,0,0.3)",
-									transform: [{ scale: pressed ? 0.95 : 1 }],
-								})}
-							>
-								{({ pressed }) => (
-									<FontAwesome
-										name="sign-out"
-										size={24}
-										color={pressed ? "#ffcc00" : "#ffcc00"}
-										style={{ opacity: pressed ? 0.8 : 1, marginLeft: 5 }}
-									/>
-								)}
-							</Pressable> */}
 						</View>
 					</View>
 				</View>

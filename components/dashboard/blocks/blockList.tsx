@@ -27,6 +27,8 @@ interface Block {
 	inviteCode: string;
 	inviteCodeExpiresAt: string;
 	createdAt: string;
+	totalStudents: number;
+	unassignedStudents: number;
 }
 
 interface BlockListProps {
@@ -70,7 +72,7 @@ export default function BlockList({ blocks, onRefresh }: BlockListProps) {
 	const handleRegenerate = (blockId: string, blockName: string) => {
 		Alert.alert({
 			title: "Regenerate Code",
-			description: `Are you sure you want to generate a new invite code for Block ${blockName}? The old code will no longer work.`,
+			description: `Are you sure you want to generate a new invite code for Block ${blockName}? `,
 			buttons: [
 				{
 					text: "Cancel",

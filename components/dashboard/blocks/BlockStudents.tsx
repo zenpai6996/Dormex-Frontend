@@ -8,6 +8,7 @@ import {
 	ActivityIndicator,
 	Modal,
 	Pressable,
+	SafeAreaView,
 	ScrollView,
 	Text,
 	TouchableOpacity,
@@ -20,6 +21,8 @@ interface Student {
 	_id: string;
 	name: string;
 	email: string;
+	rollNo?: string;
+	branch?: string;
 	status: string;
 	room?: { _id: string; roomNumber: string } | null;
 }
@@ -120,7 +123,7 @@ export default function BlockStudents({
 
 		Alert.alert({
 			title: "Remove Student",
-			description: `Remove ${student.name} from this block? They will no longer have access to this block and can join another block later.`,
+			description: `Remove ${student.name} from this block?`,
 			buttons: [
 				{ text: "Cancel", textStyle: { color: "#9CA3AF" }, onPress: () => {} },
 				{
@@ -128,7 +131,6 @@ export default function BlockStudents({
 					textStyle: { color: "#EF4444" },
 					onPress: async () => {
 						if (!token) return;
-
 						setRemovingStudentId(student._id);
 						try {
 							await removeStudentFromBlock(token, student._id);
@@ -162,204 +164,331 @@ export default function BlockStudents({
 
 	return (
 		<View>
+			{/* Full-screen Assign Modal */}
 			<Modal
 				visible={modalVisible}
-				transparent
-				animationType="fade"
+				transparent={false}
+				animationType="slide"
 				onRequestClose={() => setModalVisible(false)}
 			>
-				<Pressable
-					style={{
-						flex: 1,
-						backgroundColor: "rgba(0,0,0,0.5)",
-						justifyContent: "center",
-						alignItems: "center",
-						padding: 10,
-					}}
-					onPress={() => setModalVisible(false)}
-				>
-					<Pressable
-						onPress={(e) => e.stopPropagation()}
-						style={{ width: "100%", maxWidth: 400 }}
+				<SafeAreaView style={{ flex: 1, backgroundColor: "#0A0F1E" }}>
+					{/* Modal Header */}
+					<View
+						style={{
+							flexDirection: "row",
+							alignItems: "center",
+							paddingHorizontal: 16,
+							paddingVertical: 14,
+							borderBottomWidth: 1,
+							borderBottomColor: "rgba(255,255,255,0.08)",
+						}}
 					>
-						<LinearGradient
-							colors={["#0A0F1E", "#0A0F1E"]}
+						<Pressable
+							onPress={() => setModalVisible(false)}
+							style={({ pressed }) => ({
+								width: 40,
+								height: 40,
+								borderRadius: 20,
+								backgroundColor: "rgba(255,255,255,0.08)",
+								alignItems: "center",
+								justifyContent: "center",
+								marginRight: 14,
+								opacity: pressed ? 0.7 : 1,
+							})}
+						>
+							<FontAwesome name="arrow-left" size={16} color="#FFCC00" />
+						</Pressable>
+						<View style={{ flex: 1 }}>
+							<Text style={{ color: "white", fontSize: 18, fontWeight: "700" }}>
+								Assign Room
+							</Text>
+						</View>
+						<View
 							style={{
-								borderRadius: 24,
+								backgroundColor: "rgba(74,222,128,0.1)",
+								paddingHorizontal: 10,
+								paddingVertical: 4,
+								borderRadius: 20,
 								borderWidth: 1,
-								borderColor: "rgba(255,255,255,0.1)",
-								maxHeight: "80%",
+								borderColor: "rgba(74,222,128,0.3)",
+							}}
+						>
+							<Text style={{ color: "#4ADE80", fontSize: 12 }}>
+								{availableRooms.length} available
+							</Text>
+						</View>
+					</View>
+
+					{/* Student summary card */}
+					{selectedStudent && (
+						<View
+							style={{
+								marginHorizontal: 16,
+								marginTop: 16,
+								marginBottom: 8,
+								backgroundColor: "rgba(255,204,0,0.06)",
+								borderRadius: 14,
+								borderWidth: 1,
+								borderColor: "rgba(255,204,0,0.2)",
+								padding: 14,
+								flexDirection: "row",
+								alignItems: "center",
+								gap: 12,
 							}}
 						>
 							<View
 								style={{
-									padding: 20,
-									borderBottomWidth: 1,
-									borderBottomColor: "rgba(255,255,255,0.1)",
+									width: 42,
+									height: 42,
+									borderRadius: 21,
+									backgroundColor: "rgba(255,204,0,0.12)",
+									alignItems: "center",
+									justifyContent: "center",
 								}}
 							>
-								<Text
-									style={{
-										color: "white",
-										fontSize: 20,
-										fontWeight: "bold",
-										marginBottom: 4,
-									}}
-								>
-									Assign to Room
-								</Text>
-								<Text style={{ color: "#9CA3AF", fontSize: 14 }}>
-									Select a room for {selectedStudent?.name}
-								</Text>
+								<FontAwesome name="user" size={18} color="#FFCC00" />
 							</View>
-
-							<ScrollView
-								style={{ maxHeight: 400 }}
-								contentContainerStyle={{ padding: 20 }}
-								showsVerticalScrollIndicator={false}
-							>
-								{availableRooms.map((room) => {
-									const availableSeats = room.capacity - room.occupants.length;
-									return (
-										<TouchableOpacity
-											key={room._id}
-											onPress={() => handleAssignToRoom(room)}
-											activeOpacity={0.7}
+							<View style={{ flex: 1 }}>
+								<Text
+									style={{ color: "white", fontSize: 15, fontWeight: "600" }}
+								>
+									{selectedStudent.name}
+								</Text>
+								<View style={{ flexDirection: "row", gap: 8, marginTop: 4 }}>
+									{selectedStudent.rollNo && (
+										<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
+											{selectedStudent.rollNo}
+										</Text>
+									)}
+									{selectedStudent.branch && (
+										<View
+											style={{
+												backgroundColor: "rgba(255,204,0,0.1)",
+												paddingHorizontal: 8,
+												paddingVertical: 2,
+												borderRadius: 10,
+											}}
 										>
-											<LinearGradient
-												colors={[
-													"rgba(255,204,0,0.05)",
-													"rgba(255,204,0,0.05)",
-												]}
+											<Text style={{ color: "#FFCC00", fontSize: 11 }}>
+												{selectedStudent.branch}
+											</Text>
+										</View>
+									)}
+								</View>
+							</View>
+						</View>
+					)}
+
+					<Text
+						style={{
+							color: "#6B7280",
+							fontSize: 12,
+							marginHorizontal: 16,
+							marginTop: 12,
+							marginBottom: 8,
+							textTransform: "uppercase",
+							letterSpacing: 0.8,
+						}}
+					>
+						Available Rooms
+					</Text>
+
+					<ScrollView
+						style={{ flex: 1 }}
+						contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
+						showsVerticalScrollIndicator={false}
+					>
+						{availableRooms.map((room) => {
+							const availableSeats = room.capacity - room.occupants.length;
+							return (
+								<TouchableOpacity
+									key={room._id}
+									onPress={() => handleAssignToRoom(room)}
+									activeOpacity={0.75}
+								>
+									<LinearGradient
+										colors={[
+											"rgba(255,255,255,0.06)",
+											"rgba(255,255,255,0.03)",
+										]}
+										style={{
+											borderRadius: 14,
+											borderWidth: 1,
+											borderColor: "rgba(255,255,255,0.1)",
+											padding: 16,
+											marginBottom: 12,
+										}}
+									>
+										{/* Room header */}
+										<View
+											style={{
+												flexDirection: "row",
+												alignItems: "center",
+												justifyContent: "space-between",
+												marginBottom: room.occupants.length > 0 ? 12 : 0,
+											}}
+										>
+											<View
 												style={{
-													borderRadius: 16,
-													borderWidth: 1,
-													borderColor: "rgba(255,204,0,0.3)",
-													padding: 16,
-													marginBottom: 12,
+													flexDirection: "row",
+													alignItems: "center",
+													flex: 1,
 												}}
 											>
 												<View
 													style={{
-														flexDirection: "row",
+														width: 42,
+														height: 42,
+														borderRadius: 10,
+														backgroundColor: "rgba(255,204,0,0.1)",
 														alignItems: "center",
-														justifyContent: "space-between",
+														justifyContent: "center",
+														marginRight: 12,
 													}}
 												>
+													<FontAwesome name="bed" size={18} color="#FFCC00" />
+												</View>
+												<View>
+													<Text
+														style={{
+															color: "white",
+															fontSize: 16,
+															fontWeight: "600",
+														}}
+													>
+														Room {room.roomNumber}
+													</Text>
 													<View
 														style={{
 															flexDirection: "row",
 															alignItems: "center",
-															flex: 1,
+															gap: 8,
+															marginTop: 3,
+														}}
+													>
+														<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
+															Capacity: {room.capacity}
+														</Text>
+														<View
+															style={{
+																backgroundColor: "rgba(74,222,128,0.1)",
+																paddingHorizontal: 8,
+																paddingVertical: 2,
+																borderRadius: 10,
+																borderWidth: 1,
+																borderColor: "rgba(74,222,128,0.2)",
+															}}
+														>
+															<Text style={{ color: "#4ADE80", fontSize: 11 }}>
+																{availableSeats} seat
+																{availableSeats !== 1 ? "s" : ""} free
+															</Text>
+														</View>
+													</View>
+												</View>
+											</View>
+											<FontAwesome
+												name="chevron-right"
+												size={14}
+												color="#FFCC00"
+											/>
+										</View>
+
+										{/* Occupants list */}
+										{room.occupants.length > 0 && (
+											<View
+												style={{
+													borderTopWidth: 1,
+													borderTopColor: "rgba(255,255,255,0.07)",
+													paddingTop: 10,
+													gap: 6,
+												}}
+											>
+												<Text
+													style={{
+														color: "#6B7280",
+														fontSize: 11,
+														marginBottom: 4,
+													}}
+												>
+													Current occupants
+												</Text>
+												{room.occupants.map((occupant: any) => (
+													<View
+														key={occupant._id}
+														style={{
+															flexDirection: "row",
+															alignItems: "center",
+															justifyContent: "space-between",
+															backgroundColor: "rgba(255,255,255,0.04)",
+															paddingHorizontal: 10,
+															paddingVertical: 7,
+															borderRadius: 8,
 														}}
 													>
 														<View
 															style={{
-																width: 44,
-																height: 44,
-																borderRadius: 12,
-																backgroundColor: "rgba(255,204,0,0.15)",
+																flexDirection: "row",
 																alignItems: "center",
-																justifyContent: "center",
-																marginRight: 12,
-																borderWidth: 1,
-																borderColor: "rgba(255,204,0,0.3)",
+																gap: 8,
 															}}
 														>
 															<FontAwesome
-																name="bed"
-																size={20}
-																color="#FFCC00"
+																name="user-o"
+																size={11}
+																color="#6B7280"
 															/>
-														</View>
-														<View style={{ flex: 1 }}>
-															<Text
-																style={{
-																	color: "white",
-																	fontSize: 16,
-																	fontWeight: "600",
-																	marginBottom: 2,
-																}}
-															>
-																Room {room.roomNumber}
+															<Text style={{ color: "#D1D5DB", fontSize: 13 }}>
+																{occupant.name}
 															</Text>
-															<View
-																style={{
-																	flexDirection: "row",
-																	alignItems: "center",
-																}}
-															>
+														</View>
+														<View style={{ flexDirection: "row", gap: 5 }}>
+															{occupant.branch && (
 																<View
 																	style={{
-																		backgroundColor: "rgba(74,222,128,0.1)",
+																		backgroundColor: "rgba(255,204,0,0.08)",
 																		paddingHorizontal: 8,
 																		paddingVertical: 2,
-																		borderRadius: 12,
-																		marginRight: 8,
+																		borderRadius: 8,
 																	}}
 																>
 																	<Text
-																		style={{ color: "#4ADE80", fontSize: 11 }}
+																		style={{ color: "#FFCC00", fontSize: 11 }}
 																	>
-																		{availableSeats} seat
-																		{availableSeats !== 1 ? "s" : ""} left
+																		{occupant.branch}
 																	</Text>
 																</View>
-																<Text
-																	style={{ color: "#9CA3AF", fontSize: 11 }}
+															)}
+															{occupant.rollNo && (
+																<View
+																	style={{
+																		backgroundColor: "rgba(255,204,0,0.08)",
+																		paddingHorizontal: 8,
+																		paddingVertical: 2,
+																		borderRadius: 8,
+																	}}
 																>
-																	Capacity: {room.capacity}
-																</Text>
-															</View>
+																	<Text
+																		style={{ color: "#FFCC00", fontSize: 11 }}
+																	>
+																		{occupant.rollNo}
+																	</Text>
+																</View>
+															)}
 														</View>
 													</View>
-													<FontAwesome
-														name="chevron-right"
-														size={16}
-														color="#FFCC00"
-													/>
-												</View>
-											</LinearGradient>
-										</TouchableOpacity>
-									);
-								})}
-							</ScrollView>
-
-							<View
-								style={{
-									padding: 16,
-									borderTopWidth: 1,
-									borderTopColor: "rgba(255,255,255,0.1)",
-								}}
-							>
-								<Pressable
-									onPress={() => setModalVisible(false)}
-									style={({ pressed }) => ({
-										backgroundColor: "rgba(255,255,255,0.05)",
-										padding: 14,
-										borderRadius: 12,
-										alignItems: "center",
-										borderWidth: 1,
-										borderColor: "rgba(255,255,255,0.1)",
-										opacity: pressed ? 0.8 : 1,
-									})}
-								>
-									<Text
-										style={{
-											color: "#9CA3AF",
-											fontSize: 16,
-											fontWeight: "600",
-										}}
-									>
-										Cancel
-									</Text>
-								</Pressable>
-							</View>
-						</LinearGradient>
-					</Pressable>
-				</Pressable>
+												))}
+											</View>
+										)}
+									</LinearGradient>
+								</TouchableOpacity>
+							);
+						})}
+					</ScrollView>
+				</SafeAreaView>
 			</Modal>
 
+			{/* Unassigned count banner */}
 			<LinearGradient
 				colors={["rgba(74,222,128,0.1)", "rgba(74,222,128,0.05)"]}
 				style={{
@@ -377,67 +506,19 @@ export default function BlockStudents({
 					<Text style={{ color: "#4ADE80", fontSize: 32, fontWeight: "bold" }}>
 						{unassignedStudents.length}
 					</Text>
-					<Text
-						style={{
-							color: "#6B7280",
-							fontSize: 12,
-							marginTop: 4,
-						}}
-					>
+					<Text style={{ color: "#6B7280", fontSize: 12, marginTop: 4 }}>
 						Waiting for room assignment
 					</Text>
 				</View>
 			</LinearGradient>
 
 			{unassignedStudents.length === 0 ? (
-				<LinearGradient
-					colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
-					style={{
-						borderRadius: 16,
-						borderWidth: 1,
-						borderColor: "rgba(255,255,255,0.1)",
-						padding: 32,
-						alignItems: "center",
-					}}
-				>
-					<View
-						style={{
-							width: 60,
-							height: 60,
-							borderRadius: 30,
-							backgroundColor: "rgba(74,222,128,0.1)",
-							alignItems: "center",
-							justifyContent: "center",
-							marginBottom: 12,
-						}}
-					>
-						<FontAwesome name="check" size={28} color="#4ADE80" />
-					</View>
-					<Text
-						style={{
-							color: "white",
-							fontSize: 16,
-							fontWeight: "600",
-							marginBottom: 4,
-						}}
-					>
-						All Caught Up!
-					</Text>
-					<Text
-						style={{
-							color: "#9CA3AF",
-							fontSize: 14,
-							textAlign: "center",
-						}}
-					>
-						All students in this block have been assigned to rooms
-					</Text>
-				</LinearGradient>
+				<View />
 			) : (
 				unassignedStudents.map((student) => (
 					<LinearGradient
 						key={student._id}
-						colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.08)"]}
+						colors={["rgba(255,255,255,0.08)", "rgba(255,255,255,0.05)"]}
 						style={{
 							borderRadius: 16,
 							borderWidth: 1,
@@ -449,11 +530,12 @@ export default function BlockStudents({
 						<View
 							style={{
 								flexDirection: "row",
-								alignItems: "center",
+								alignItems: "flex-start",
 								justifyContent: "space-between",
 							}}
 						>
 							<View style={{ flex: 1 }}>
+								{/* Name */}
 								<Text
 									style={{
 										color: "white",
@@ -464,22 +546,41 @@ export default function BlockStudents({
 								>
 									{student.name}
 								</Text>
-								<Text
-									style={{
-										color: "#9CA3AF",
-										fontSize: 13,
-										marginBottom: 8,
-									}}
-								>
-									{student.email}
-								</Text>
+
+								{/* Roll no + Branch row */}
 								<View
 									style={{
 										flexDirection: "row",
+										alignItems: "center",
 										gap: 8,
-										justifyContent: "flex-end",
+										marginBottom: 12,
 									}}
 								>
+									{student.rollNo && (
+										<Text style={{ color: "#9CA3AF", fontSize: 13 }}>
+											{student.rollNo}
+										</Text>
+									)}
+									{student.branch && (
+										<View
+											style={{
+												backgroundColor: "rgba(255,204,0,0.08)",
+												paddingHorizontal: 8,
+												paddingVertical: 2,
+												borderRadius: 10,
+												borderWidth: 1,
+												borderColor: "rgba(255,204,0,0.2)",
+											}}
+										>
+											<Text style={{ color: "#FFCC00", fontSize: 12 }}>
+												{student.branch}
+											</Text>
+										</View>
+									)}
+								</View>
+
+								{/* Action buttons */}
+								<View style={{ flexDirection: "row", gap: 8 }}>
 									{assigningStudentId === student._id ? (
 										<ActivityIndicator color="#FFCC00" />
 									) : (
@@ -493,7 +594,6 @@ export default function BlockStudents({
 												borderWidth: 1,
 												borderColor: "rgba(255,204,0,0.3)",
 												opacity: pressed ? 0.8 : 1,
-												alignSelf: "flex-start",
 											})}
 										>
 											<Text
@@ -503,38 +603,36 @@ export default function BlockStudents({
 													fontWeight: "600",
 												}}
 											>
-												Assign
+												Assign Room
 											</Text>
 										</Pressable>
 									)}
-									<View>
-										{removingStudentId === student._id ? (
-											<ActivityIndicator color="#EF4444" />
-										) : (
-											<Pressable
-												onPress={() => handleRemoveFromBlock(student)}
-												style={({ pressed }) => ({
-													backgroundColor: "rgba(239,68,68,0.1)",
-													paddingHorizontal: 16,
-													paddingVertical: 8,
-													borderRadius: 20,
-													borderWidth: 1,
-													borderColor: "rgba(239,68,68,0.3)",
-													opacity: pressed ? 0.8 : 1,
-												})}
+									{removingStudentId === student._id ? (
+										<ActivityIndicator color="#EF4444" />
+									) : (
+										<Pressable
+											onPress={() => handleRemoveFromBlock(student)}
+											style={({ pressed }) => ({
+												backgroundColor: "rgba(239,68,68,0.1)",
+												paddingHorizontal: 16,
+												paddingVertical: 8,
+												borderRadius: 20,
+												borderWidth: 1,
+												borderColor: "rgba(239,68,68,0.3)",
+												opacity: pressed ? 0.8 : 1,
+											})}
+										>
+											<Text
+												style={{
+													color: "#EF4444",
+													fontSize: 13,
+													fontWeight: "600",
+												}}
 											>
-												<Text
-													style={{
-														color: "#EF4444",
-														fontSize: 13,
-														fontWeight: "600",
-													}}
-												>
-													Remove
-												</Text>
-											</Pressable>
-										)}
-									</View>
+												Remove
+											</Text>
+										</Pressable>
+									)}
 								</View>
 							</View>
 						</View>

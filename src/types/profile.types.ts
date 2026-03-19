@@ -4,6 +4,11 @@ export interface UserProfile {
 	email: string;
 	role: "ADMIN" | "STUDENT";
 	status?: "ACTIVE" | "LEFT" | "TRANSFERRED";
+	rollNo?: string;
+	dateOfBirth?: string;
+	phoneNumber?: string;
+	branch?: "IT" | "CS" | "ECE" | "EE" | "ME" | "CE" | "OTHER";
+	joiningDate?: string;
 	block?: {
 		_id: string;
 		name: string;
