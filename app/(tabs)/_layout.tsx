@@ -207,6 +207,12 @@ export default function TabLayout() {
 					),
 				}}
 			/>
+			<Tabs.Screen
+				name="students"
+				options={{
+					href: null,
+				}}
+			/>
 		</Tabs>
 	);
 }

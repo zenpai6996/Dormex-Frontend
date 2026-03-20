@@ -9,6 +9,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
 	ActivityIndicator,
+	LayoutAnimation,
 	Modal,
 	Pressable,
 	Text,
@@ -59,6 +60,10 @@ export default function BlockRooms({
 	const [loading, setLoading] = useState(false);
 	const [actionLoading, setActionLoading] = useState<string | null>(null);
 	const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+	const [roomSearch, setRoomSearch] = useState("");
+	const [expandedRooms, setExpandedRooms] = useState<Record<string, boolean>>(
+		{},
+	);
 	const [selectedOccupant, setSelectedOccupant] = useState<Occupant | null>(
 		null,
 	);
@@ -224,15 +229,31 @@ export default function BlockRooms({
 		setStudentModalVisible(true);
 	};
 
+	const toggleRoomOccupants = (roomId: string) => {
+		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+		setExpandedRooms((prev) => ({
+			...prev,
+			[roomId]: !prev[roomId],
+		}));
+	};
+
 	const occupancyPercentage =
 		stats.totalCapacity > 0
 			? Math.round((stats.occupiedSeats / stats.totalCapacity) * 100)
 			: 0;
 
+	const normalizedSearch = roomSearch.trim().toLowerCase();
+	const filteredRooms = normalizedSearch
+		? rooms.filter((room) =>
+				room.roomNumber.toLowerCase().includes(normalizedSearch),
+			)
+		: rooms;
+
 	const renderRoomCard = (room: Room) => {
 		const occupancy = Math.round((room.occupants.length / room.capacity) * 100);
 		const hasOccupants = room.occupants.length > 0;
 		const isFull = room.occupants.length === room.capacity;
+		const isExpanded = expandedRooms[room._id] ?? false;
 
 		if (viewMode === "grid") {
 			return (
@@ -311,7 +332,7 @@ export default function BlockRooms({
 					</Text>
 
 					{/* Mini occupancy bar */}
-					<View
+					{/* <View
 						style={{
 							height: 3,
 							backgroundColor: "rgba(255,255,255,0.1)",
@@ -328,7 +349,7 @@ export default function BlockRooms({
 								borderRadius: 2,
 							}}
 						/>
-					</View>
+					</View> */}
 
 					{/* Occupant chips */}
 					{room.occupants.map((occupant) => (
@@ -460,16 +481,16 @@ export default function BlockRooms({
 				</View>
 
 				{/* Occupancy bar */}
-				<View
+				{/* <View
 					style={{
 						flexDirection: "row",
 						alignItems: "center",
 						marginBottom: 10,
 					}}
 				>
-					{/* <Text style={{ color: "#6B7280", fontSize: 12, marginRight: 8 }}>
+					<Text style={{ color: "#6B7280", fontSize: 12, marginRight: 8 }}>
 						{room.occupants.length}/{room.capacity}
-					</Text> */}
+					</Text>
 					<View
 						style={{
 							flex: 1,
@@ -491,110 +512,136 @@ export default function BlockRooms({
 					<Text style={{ color: "#9CA3AF", fontSize: 12, marginLeft: 8 }}>
 						{occupancy}%
 					</Text>
-				</View>
+				</View> */}
 
-				{/* Occupants */}
-				{hasOccupants && (
-					<View
-						style={{
-							paddingTop: 10,
-							borderTopWidth: 1,
-							borderTopColor: "rgba(255,255,255,0.06)",
-							gap: 6,
-						}}
+				{/* Occupants dropdown */}
+				<View
+					style={{
+						paddingTop: 10,
+						borderTopWidth: 1,
+						borderTopColor: "rgba(255,255,255,0.06)",
+						gap: 6,
+					}}
+				>
+					<Pressable
+						onPress={() => hasOccupants && toggleRoomOccupants(room._id)}
+						disabled={!hasOccupants}
+						style={({ pressed }) => ({
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "space-between",
+							backgroundColor: "rgba(255,255,255,0.04)",
+							paddingHorizontal: 12,
+							paddingVertical: 9,
+							borderRadius: 10,
+							opacity: pressed || !hasOccupants ? 0.7 : 1,
+						})}
 					>
-						<Text style={{ color: "#6B7280", fontSize: 11, marginBottom: 2 }}>
-							Occupants
-						</Text>
-						{room.occupants.map((occupant) => (
-							<View
-								key={occupant._id}
-								style={{
-									flexDirection: "row",
-									alignItems: "center",
-									justifyContent: "space-between",
-									backgroundColor: "rgba(255,255,255,0.04)",
-									paddingHorizontal: 12,
-									paddingVertical: 9,
-									borderRadius: 10,
-								}}
-							>
-								<Pressable
-									onPress={() => handleOccupantPress(occupant)}
-									style={({ pressed }) => ({
+						<View
+							style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+						>
+							<Text style={{ color: "#D1D5DB", fontSize: 12 }}>Occupants</Text>
+							<Text style={{ color: "#6B7280", fontSize: 12 }}>
+								{room.occupants.length}/{room.capacity}
+							</Text>
+						</View>
+						<FontAwesome
+							name={isExpanded ? "chevron-up" : "chevron-down"}
+							size={12}
+							color={hasOccupants ? "#9CA3AF" : "#4B5563"}
+						/>
+					</Pressable>
+
+					{hasOccupants && isExpanded && (
+						<View style={{ gap: 6 }}>
+							{room.occupants.map((occupant) => (
+								<View
+									key={occupant._id}
+									style={{
 										flexDirection: "row",
 										alignItems: "center",
-										flex: 1,
-										opacity: pressed ? 0.7 : 1,
-									})}
+										justifyContent: "space-between",
+										backgroundColor: "rgba(255,255,255,0.04)",
+										paddingHorizontal: 12,
+										paddingVertical: 9,
+										borderRadius: 10,
+									}}
 								>
-									{/* <FontAwesome
-										name="user-o"
-										size={12}
-										color="#6B7280"
-										style={{ marginRight: 8 }}
-									/> */}
-									<View>
-										<Text
-											style={{
-												color: "white",
-												fontSize: 13,
-												fontWeight: "500",
-											}}
-										>
-											{occupant.name}
-										</Text>
-										{occupant.rollNo && (
-											<Text
-												style={{ color: "#6B7280", fontSize: 11, marginTop: 1 }}
-											>
-												{occupant.rollNo}
-											</Text>
-										)}
-									</View>
-									{occupant.branch && (
-										<View
-											style={{
-												backgroundColor: "rgba(255, 204, 0, 0.07)",
-												paddingHorizontal: 7,
-												paddingVertical: 2,
-												borderRadius: 9,
-												marginLeft: 8,
-												marginBottom: 15,
-											}}
-										>
-											<Text style={{ color: "#FFCC00", fontSize: 11 }}>
-												{occupant.branch}
-											</Text>
-										</View>
-									)}
-								</Pressable>
-								{actionLoading === occupant._id ? (
-									<ActivityIndicator size="small" color="#EF4444" />
-								) : (
 									<Pressable
-										onPress={() =>
-											handleUnassignStudent(
-												occupant._id,
-												occupant.name,
-												room._id,
-											)
-										}
+										onPress={() => handleOccupantPress(occupant)}
 										style={({ pressed }) => ({
-											padding: 7,
-											borderRadius: 7,
-											backgroundColor: "rgba(239,68,68,0.1)",
+											flexDirection: "row",
+											alignItems: "center",
+											flex: 1,
 											opacity: pressed ? 0.7 : 1,
-											marginLeft: 8,
 										})}
 									>
-										<FontAwesome name="times" size={12} color="#EF4444" />
+										<View>
+											<Text
+												style={{
+													color: "white",
+													fontSize: 13,
+													fontWeight: "500",
+												}}
+											>
+												{occupant.name}
+											</Text>
+											{occupant.rollNo && (
+												<Text
+													style={{
+														color: "#6B7280",
+														fontSize: 11,
+														marginTop: 1,
+													}}
+												>
+													{occupant.rollNo}
+												</Text>
+											)}
+										</View>
+										{occupant.branch && (
+											<View
+												style={{
+													backgroundColor: "rgba(255, 204, 0, 0.07)",
+													paddingHorizontal: 7,
+													paddingVertical: 2,
+													borderRadius: 9,
+													marginLeft: 8,
+													marginBottom: 15,
+												}}
+											>
+												<Text style={{ color: "#FFCC00", fontSize: 11 }}>
+													{occupant.branch}
+												</Text>
+											</View>
+										)}
 									</Pressable>
-								)}
-							</View>
-						))}
-					</View>
-				)}
+									{actionLoading === occupant._id ? (
+										<ActivityIndicator size="small" color="#EF4444" />
+									) : (
+										<Pressable
+											onPress={() =>
+												handleUnassignStudent(
+													occupant._id,
+													occupant.name,
+													room._id,
+												)
+											}
+											style={({ pressed }) => ({
+												padding: 7,
+												borderRadius: 7,
+												backgroundColor: "rgba(239,68,68,0.1)",
+												opacity: pressed ? 0.7 : 1,
+												marginLeft: 8,
+											})}
+										>
+											<FontAwesome name="times" size={12} color="#EF4444" />
+										</Pressable>
+									)}
+								</View>
+							))}
+						</View>
+					)}
+				</View>
 			</LinearGradient>
 		);
 	};
@@ -605,7 +652,7 @@ export default function BlockRooms({
 			<Modal
 				visible={studentModalVisible}
 				transparent
-				animationType="slide"
+				animationType="fade"
 				onRequestClose={() => setStudentModalVisible(false)}
 			>
 				<Pressable
@@ -623,7 +670,7 @@ export default function BlockRooms({
 						style={{ width: "100%", maxWidth: 360 }}
 					>
 						<LinearGradient
-							colors={["#0F172A", "#0F172A"]}
+							colors={["#0A0F1E", "#0A0F1E"]}
 							style={{
 								borderRadius: 20,
 								borderWidth: 1,
@@ -661,13 +708,6 @@ export default function BlockRooms({
 									>
 										{selectedOccupant?.name}
 									</Text>
-									{selectedOccupant?.branch && (
-										<Text
-											style={{ color: "#FFCC00", fontSize: 13, marginTop: 2 }}
-										>
-											{selectedOccupant.branch}
-										</Text>
-									)}
 								</View>
 								<Pressable
 									onPress={() => setStudentModalVisible(false)}
@@ -791,8 +831,133 @@ export default function BlockRooms({
 				</Pressable>
 			</Modal>
 
+			{/* Action row: Add Room + Search + View Toggle */}
+			<View style={{ flexDirection: "row", gap: 10, marginBottom: 16 }}>
+				<View>
+					<Pressable
+						onPress={() => setShowCreateForm(!showCreateForm)}
+						style={({ pressed }) => ({
+							flex: 1,
+							backgroundColor: showCreateForm
+								? "rgba(239,68,68,0.1)"
+								: "rgba(255,204,0,0.1)",
+							borderRadius: 15,
+							padding: 16,
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "center",
+							borderWidth: 1,
+							borderColor: showCreateForm
+								? "rgba(239,68,68,0.3)"
+								: "rgba(255,204,0,0.3)",
+							opacity: pressed ? 0.85 : 1,
+						})}
+					>
+						<FontAwesome
+							name={showCreateForm ? "times" : "plus"}
+							size={14}
+							color={showCreateForm ? "#EF4444" : "#FFCC00"}
+							style={{ marginRight: 0 }}
+						/>
+						{/* <Text
+						style={{
+							color: showCreateForm ? "#EF4444" : "#FFCC00",
+							fontSize: 14,
+							fontWeight: "600",
+						}}
+					>
+						{showCreateForm ? "Cancel" : "Add Room"}
+					</Text> */}
+					</Pressable>
+				</View>
+				<View
+					style={{
+						flex: 1.2,
+						flexDirection: "row",
+						alignItems: "center",
+						backgroundColor: "rgba(255,255,255,0.06)",
+						borderRadius: 12,
+						borderWidth: 1,
+						borderColor: "rgba(255,255,255,0.1)",
+						paddingHorizontal: 10,
+						paddingVertical: 6,
+					}}
+				>
+					<FontAwesome name="search" size={14} color="#6B7280" />
+					<TextInput
+						value={roomSearch}
+						onChangeText={setRoomSearch}
+						placeholder="Search rooms"
+						placeholderTextColor="#4B5563"
+						style={{
+							flex: 1,
+							color: "white",
+							paddingHorizontal: 8,
+							paddingVertical: 6,
+							fontSize: 13,
+						}}
+					/>
+					{roomSearch.length > 0 && (
+						<Pressable
+							onPress={() => setRoomSearch("")}
+							style={({ pressed }) => ({
+								padding: 4,
+								opacity: pressed ? 0.7 : 1,
+							})}
+						>
+							<FontAwesome name="times" size={12} color="#9CA3AF" />
+						</Pressable>
+					)}
+				</View>
+
+				{/* View toggle */}
+				<View
+					style={{
+						flexDirection: "row",
+						backgroundColor: "rgba(255,255,255,0.06)",
+						borderRadius: 12,
+						borderWidth: 1,
+						borderColor: "rgba(255,255,255,0.1)",
+						padding: 4,
+					}}
+				>
+					<Pressable
+						onPress={() => setViewMode("list")}
+						style={{
+							paddingHorizontal: 12,
+							paddingVertical: 12,
+							borderRadius: 8,
+							backgroundColor:
+								viewMode === "list" ? "rgba(255,204,0,0.15)" : "transparent",
+						}}
+					>
+						<FontAwesome
+							name="list"
+							size={14}
+							color={viewMode === "list" ? "#FFCC00" : "#6B7280"}
+						/>
+					</Pressable>
+					<Pressable
+						onPress={() => setViewMode("grid")}
+						style={{
+							paddingHorizontal: 12,
+							paddingVertical: 12,
+							borderRadius: 8,
+							backgroundColor:
+								viewMode === "grid" ? "rgba(255,204,0,0.15)" : "transparent",
+						}}
+					>
+						<FontAwesome
+							name="th"
+							size={14}
+							color={viewMode === "grid" ? "#FFCC00" : "#6B7280"}
+						/>
+					</Pressable>
+				</View>
+			</View>
+
 			{/* Stats bar */}
-			<LinearGradient
+			{/* <LinearGradient
 				colors={["rgba(255,204,0,0.05)", "rgba(255,204,0,0.05)"]}
 				style={{
 					borderRadius: 16,
@@ -861,91 +1026,7 @@ export default function BlockRooms({
 						}}
 					/>
 				</View>
-			</LinearGradient>
-
-			{/* Action row: Add Room + View Toggle */}
-			<View style={{ flexDirection: "row", gap: 10, marginBottom: 16 }}>
-				<Pressable
-					onPress={() => setShowCreateForm(!showCreateForm)}
-					style={({ pressed }) => ({
-						flex: 1,
-						backgroundColor: showCreateForm
-							? "rgba(239,68,68,0.1)"
-							: "rgba(255,204,0,0.1)",
-						borderRadius: 12,
-						padding: 12,
-						flexDirection: "row",
-						alignItems: "center",
-						justifyContent: "center",
-						borderWidth: 1,
-						borderColor: showCreateForm
-							? "rgba(239,68,68,0.3)"
-							: "rgba(255,204,0,0.3)",
-						opacity: pressed ? 0.85 : 1,
-					})}
-				>
-					<FontAwesome
-						name={showCreateForm ? "times" : "plus"}
-						size={14}
-						color={showCreateForm ? "#EF4444" : "#FFCC00"}
-						style={{ marginRight: 7 }}
-					/>
-					<Text
-						style={{
-							color: showCreateForm ? "#EF4444" : "#FFCC00",
-							fontSize: 14,
-							fontWeight: "600",
-						}}
-					>
-						{showCreateForm ? "Cancel" : "Add Room"}
-					</Text>
-				</Pressable>
-
-				{/* View toggle */}
-				<View
-					style={{
-						flexDirection: "row",
-						backgroundColor: "rgba(255,255,255,0.06)",
-						borderRadius: 12,
-						borderWidth: 1,
-						borderColor: "rgba(255,255,255,0.1)",
-						padding: 4,
-					}}
-				>
-					<Pressable
-						onPress={() => setViewMode("list")}
-						style={{
-							paddingHorizontal: 12,
-							paddingVertical: 12,
-							borderRadius: 8,
-							backgroundColor:
-								viewMode === "list" ? "rgba(255,204,0,0.15)" : "transparent",
-						}}
-					>
-						<FontAwesome
-							name="list"
-							size={14}
-							color={viewMode === "list" ? "#FFCC00" : "#6B7280"}
-						/>
-					</Pressable>
-					<Pressable
-						onPress={() => setViewMode("grid")}
-						style={{
-							paddingHorizontal: 12,
-							paddingVertical: 12,
-							borderRadius: 8,
-							backgroundColor:
-								viewMode === "grid" ? "rgba(255,204,0,0.15)" : "transparent",
-						}}
-					>
-						<FontAwesome
-							name="th"
-							size={14}
-							color={viewMode === "grid" ? "#FFCC00" : "#6B7280"}
-						/>
-					</Pressable>
-				</View>
-			</View>
+			</LinearGradient> */}
 
 			{/* Create form */}
 			{showCreateForm && (
@@ -1069,6 +1150,31 @@ export default function BlockRooms({
 						Add rooms to start assigning students
 					</Text>
 				</LinearGradient>
+			) : filteredRooms.length === 0 ? (
+				<LinearGradient
+					colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.05)"]}
+					style={{
+						borderRadius: 16,
+						borderWidth: 1,
+						borderColor: "rgba(255,255,255,0.1)",
+						padding: 28,
+						alignItems: "center",
+					}}
+				>
+					<Text
+						style={{
+							color: "white",
+							fontSize: 16,
+							fontWeight: "600",
+							marginBottom: 4,
+						}}
+					>
+						No matching rooms
+					</Text>
+					<Text style={{ color: "#9CA3AF", fontSize: 13, textAlign: "center" }}>
+						Try a different room number
+					</Text>
+				</LinearGradient>
 			) : viewMode === "grid" ? (
 				<View
 					style={{
@@ -1077,10 +1183,10 @@ export default function BlockRooms({
 						justifyContent: "space-between",
 					}}
 				>
-					{rooms.map(renderRoomCard)}
+					{filteredRooms.map(renderRoomCard)}
 				</View>
 			) : (
-				rooms.map(renderRoomCard)
+				filteredRooms.map(renderRoomCard)
 			)}
 		</View>
 	);

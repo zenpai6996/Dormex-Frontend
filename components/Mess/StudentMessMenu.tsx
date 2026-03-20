@@ -3,7 +3,8 @@ import { useAuth } from "@/src/context/AuthContext";
 import { MessMenuItem } from "@/src/types/mess.types";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Dimensions,
 	Pressable,
@@ -27,12 +28,17 @@ const DAYS_ORDER = [
 ];
 
 const dayButtonWidth = (screenWidth - 32) / DAYS_ORDER.length;
+const getTodayName = () =>
+	new Date().toLocaleString("en-US", { weekday: "long" });
 export default function StudentMessMenu() {
 	const { token } = useAuth();
+	const { day } = useLocalSearchParams<{ day?: string }>();
 	const [menuItems, setMenuItems] = useState<MessMenuItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [refreshing, setRefreshing] = useState(false);
-	const [selectedDay, setSelectedDay] = useState<string>(DAYS_ORDER[0]);
+	const todayName = getTodayName();
+	const initialDay = DAYS_ORDER.includes(todayName) ? todayName : DAYS_ORDER[0];
+	const [selectedDay, setSelectedDay] = useState<string>(initialDay);
 
 	const loadMenu = async () => {
 		if (!token) return;
@@ -58,6 +64,16 @@ export default function StudentMessMenu() {
 	useEffect(() => {
 		loadMenu();
 	}, [token]);
+
+	useFocusEffect(
+		useCallback(() => {
+			if (day && DAYS_ORDER.includes(day)) {
+				setSelectedDay(day);
+				return;
+			}
+			setSelectedDay(initialDay);
+		}, [day, initialDay]),
+	);
 
 	const selectedMenu = menuItems.find((item) => item.day === selectedDay);
 

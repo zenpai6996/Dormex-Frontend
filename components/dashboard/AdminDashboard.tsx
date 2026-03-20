@@ -15,7 +15,6 @@ import {
 import BlockList from "./blocks/blockList";
 import BlocksEmptyState from "./cards/BlockEmptyState";
 import MenuEmptyState from "./cards/MenuEmptyState";
-import StatsCard from "./cards/StatsCard";
 import TodayMenu from "./cards/TodayMenu";
 import ComplaintsSummary from "./ComplaintSummary";
 import DashboardSkeleton from "./DashboardSkeleton";
@@ -241,8 +240,6 @@ export default function AdminDashboard({
 					</View>
 				</View>
 
-				<SectionHeader title="Student Statistics" />
-
 				<View
 					style={{
 						flexDirection: "row",
@@ -251,15 +248,77 @@ export default function AdminDashboard({
 						marginBottom: 16,
 					}}
 				>
-					<View style={{ width: "48%" }}>
-						<StatsCard
-							label="Total "
-							value={dashboardData?.students?.total}
-							icon="👥"
-							gradient
-						/>
+					<View style={{ width: "100%" }}>
+						<Pressable
+							onPress={() => router.push("/(tabs)/students")}
+							style={({ pressed }) => ({
+								transform: [{ scale: pressed ? 0.98 : 1 }],
+							})}
+						>
+							<LinearGradient
+								colors={["rgba(255,204,0,0.18)", "rgba(255,204,0,0.05)"]}
+								start={{ x: 0, y: 0 }}
+								end={{ x: 1, y: 1 }}
+								style={{
+									borderRadius: 16,
+									borderWidth: 1,
+									borderColor: "rgba(255,204,0,0.25)",
+									overflow: "hidden",
+								}}
+							>
+								<View
+									style={{
+										padding: 16,
+										flexDirection: "row",
+										alignItems: "center",
+										justifyContent: "space-between",
+									}}
+								>
+									<View style={{ flex: 1 }}>
+										<Text
+											style={{
+												color: "white",
+												fontSize: 18,
+												fontWeight: "700",
+												marginTop: 4,
+											}}
+										>
+											Students Management
+										</Text>
+										{/* <View
+											style={{
+												marginTop: 6,
+												alignSelf: "flex-end",
+												paddingHorizontal: 10,
+												paddingVertical: 4,
+												borderRadius: 999,
+												backgroundColor: "rgba(255,255,255,0.08)",
+												borderWidth: 1,
+												borderColor: "rgba(255,255,255,0.12)",
+											}}
+										>
+											<Text style={{ color: "#E5E7EB", fontSize: 12 }}>
+												{dashboardData?.students?.total ?? 0} total
+											</Text>
+										</View> */}
+									</View>
+									<View
+										style={{
+											width: 38,
+											height: 38,
+											borderRadius: 19,
+											backgroundColor: "rgba(255,204,0,0.2)",
+											alignItems: "center",
+											justifyContent: "center",
+										}}
+									>
+										<FontAwesome name="arrow-right" size={16} color="#FFCC00" />
+									</View>
+								</View>
+							</LinearGradient>
+						</Pressable>
 					</View>
-					<View style={{ width: "48%" }}>
+					{/* <View style={{ width: "48%" }}>
 						<StatsCard
 							label="Active "
 							value={dashboardData?.students?.active}
@@ -267,8 +326,10 @@ export default function AdminDashboard({
 							trend={{ value: studentOccupancyRate, label: "rate" }}
 							gradient
 						/>
-					</View>
+					</View> */}
 				</View>
+
+				<SectionHeader title=" Today's Menu" />
 
 				{hasMenu ? (
 					<>
@@ -345,7 +406,7 @@ export default function AdminDashboard({
 
 				<View style={{ marginTop: 8 }}>
 					<SectionHeader
-						title="Blocks Overview"
+						title="Block Management"
 						subtitle={hasBlocks ? `${blocks.length} total blocks` : undefined}
 						action={
 							hasBlocks

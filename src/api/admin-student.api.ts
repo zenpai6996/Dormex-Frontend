@@ -41,7 +41,15 @@ export async function getAllStudents(
 		search?: string;
 	},
 ) {
-	const queryParams = new URLSearchParams(filters as any).toString();
+	const cleanedFilters: Record<string, string> = {};
+	if (filters) {
+		Object.entries(filters).forEach(([key, value]) => {
+			if (value && value !== "undefined") {
+				cleanedFilters[key] = value;
+			}
+		});
+	}
+	const queryParams = new URLSearchParams(cleanedFilters).toString();
 	const url = `${API_URL}/admin-students${queryParams ? `?${queryParams}` : ""}`;
 
 	const res = await fetch(url, {
@@ -51,7 +59,13 @@ export async function getAllStudents(
 	});
 
 	if (!res.ok) {
-		throw new Error("Failed to fetch students");
+		const text = await res.text();
+		try {
+			const err = JSON.parse(text);
+			throw new Error(err.message || "Failed to fetch students");
+		} catch (error) {
+			throw new Error(text || "Failed to fetch students");
+		}
 	}
 
 	return res.json();
@@ -77,4 +91,35 @@ export async function updateStudentByAdmin(
 	}
 
 	return res.json();
+}
+
+export async function deleteStudentByAdmin(
+	token: string,
+	studentId: string,
+	password: string,
+) {
+	const res = await fetch(`${API_URL}/admin-students/${studentId}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify({ password }),
+	});
+
+	const text = await res.text();
+	if (!res.ok) {
+		try {
+			const err = JSON.parse(text);
+			throw new Error(err.message || "Failed to delete student");
+		} catch (error) {
+			throw new Error(text || "Failed to delete student");
+		}
+	}
+
+	try {
+		return JSON.parse(text);
+	} catch (error) {
+		return { message: "Student deleted successfully" };
+	}
 }
