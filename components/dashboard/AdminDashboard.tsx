@@ -1,11 +1,13 @@
 import { fetchBlocks } from "@/src/api/block.api";
+import { fetchLeaves } from "@/src/api/leave.api";
 import { useAuth } from "@/src/context/AuthContext";
 import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	ActivityIndicator,
+	Animated,
 	Pressable,
 	RefreshControl,
 	ScrollView,
@@ -36,6 +38,8 @@ export default function AdminDashboard({
 	const [loadingBlocks, setLoadingBlocks] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
 	const [dashboardData, setDashboardData] = useState(data);
+	const [pendingLeaves, setPendingLeaves] = useState(0);
+	const blinkAnim = useRef(new Animated.Value(1)).current;
 
 	// Update local state when prop changes
 	useEffect(() => {
@@ -55,10 +59,21 @@ export default function AdminDashboard({
 		}
 	};
 
+	const loadPendingLeaves = async () => {
+		if (!auth.token) return;
+		try {
+			const leaves = await fetchLeaves(auth.token, { status: "PENDING" });
+			setPendingLeaves(leaves.length);
+		} catch (error) {
+			console.error("Failed to load leaves", error);
+		}
+	};
+
 	const onRefreshHandler = async () => {
 		setRefreshing(true);
 		await Promise.all([
 			loadBlocks(),
+			loadPendingLeaves(),
 			onRefresh ? onRefresh() : Promise.resolve(),
 		]);
 		setRefreshing(false);
@@ -70,12 +85,33 @@ export default function AdminDashboard({
 			if (onRefresh) {
 				onRefresh();
 			}
+			loadPendingLeaves();
 		}, [onRefresh]),
 	);
 
 	useEffect(() => {
 		loadBlocks();
+		loadPendingLeaves();
 	}, [auth.token]);
+
+	useEffect(() => {
+		const animation = Animated.loop(
+			Animated.sequence([
+				Animated.timing(blinkAnim, {
+					toValue: 0.25,
+					duration: 650,
+					useNativeDriver: true,
+				}),
+				Animated.timing(blinkAnim, {
+					toValue: 1,
+					duration: 650,
+					useNativeDriver: true,
+				}),
+			]),
+		);
+		animation.start();
+		return () => animation.stop();
+	}, [blinkAnim]);
 
 	// const handleLogoutPress = () => {
 	// 	Alert.alert({
@@ -275,16 +311,41 @@ export default function AdminDashboard({
 									}}
 								>
 									<View style={{ flex: 1 }}>
-										<Text
+										<View
 											style={{
-												color: "white",
-												fontSize: 18,
-												fontWeight: "700",
-												marginTop: 4,
+												flexDirection: "row",
+												alignItems: "center",
+												gap: 8,
 											}}
 										>
-											Students Management
-										</Text>
+											<Text
+												style={{
+													color: "white",
+													fontSize: 18,
+													fontWeight: "700",
+													marginTop: 4,
+												}}
+											>
+												Students Management
+											</Text>
+											<Animated.View
+												style={{
+													width: 9,
+													height: 9,
+													borderRadius: 4.5,
+													backgroundColor:
+														pendingLeaves > 0 ? "#EF4444" : "#22C55E",
+													borderWidth: 1,
+													borderColor:
+														pendingLeaves > 0
+															? "rgba(239,68,68,0.6)"
+															: "rgba(34,197,94,0.6)",
+													opacity: blinkAnim,
+													top: 2,
+													right: -5,
+												}}
+											/>
+										</View>
 										{/* <View
 											style={{
 												marginTop: 6,

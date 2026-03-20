@@ -1,9 +1,16 @@
+import LeaveRequestsAdmin from "@/components/dashboard/leaves/LeaveRequestsAdmin";
 import {
 	deleteStudentByAdmin,
 	getAllStudents,
 } from "@/src/api/admin-student.api";
 import { fetchBlocks } from "@/src/api/block.api";
+import { fetchLeaves, updateLeaveStatus } from "@/src/api/leave.api";
 import { useAuth } from "@/src/context/AuthContext";
+import {
+	LEAVE_STATUS_LABELS,
+	LeaveApplication,
+	LeaveStatus,
+} from "@/src/types/leave.types";
 import { FontAwesome } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
@@ -39,15 +46,22 @@ interface Student {
 }
 
 const branches = ["", "IT", "CS", "ECE", "EE", "ME", "CE", "OTHER"];
+type Tab = "students" | "leaves";
+type LeaveFilter = LeaveStatus | "ALL";
 
 const StudentsScreen = () => {
 	const { token } = useAuth();
 	const router = useRouter();
+	const [activeTab, setActiveTab] = useState<Tab>("students");
 	const [blocks, setBlocks] = useState<Block[]>([]);
 	const [students, setStudents] = useState<Student[]>([]);
 	const [loadingStudents, setLoadingStudents] = useState(true);
 	const [loadingBlocks, setLoadingBlocks] = useState(true);
 	const [refreshing, setRefreshing] = useState(false);
+	const [leaves, setLeaves] = useState<LeaveApplication[]>([]);
+	const [loadingLeaves, setLoadingLeaves] = useState(true);
+	const [leaveFilter, setLeaveFilter] = useState<LeaveFilter>("ALL");
+	const [updatingLeaveId, setUpdatingLeaveId] = useState<string | null>(null);
 	const [search, setSearch] = useState("");
 	const [selectedBlock, setSelectedBlock] = useState("");
 	const [selectedBranch, setSelectedBranch] = useState("");
@@ -106,24 +120,105 @@ const StudentsScreen = () => {
 		[token, selectedBlock, selectedBranch, normalizedSearch],
 	);
 
-	useEffect(() => {
+	const loadLeaves = useCallback(
+		async (showLoader = true) => {
+			if (!token) return;
+			if (showLoader) {
+				setLoadingLeaves(true);
+			}
+			try {
+				const data = await fetchLeaves(token);
+				setLeaves(data);
+			} catch (error: any) {
+				ToastService.showError({
+					message: error.message || "Failed to load leave requests",
+					duration: 3000,
+					position: "bottom",
+				});
+			} finally {
+				if (showLoader) {
+					setLoadingLeaves(false);
+				}
+			}
+		},
+		[token],
+	);
+
+	const handleUpdateLeaveStatus = async (
+		leaveId: string,
+		status: LeaveStatus,
+	) => {
 		if (!token) return;
+		setUpdatingLeaveId(leaveId);
+		try {
+			await updateLeaveStatus(token, leaveId, { status });
+			await loadLeaves(false);
+			ToastService.show({
+				contentContainerStyle: {
+					borderStartColor: "#4ADE80",
+					borderStartWidth: 5,
+					borderEndColor: "#4ADE80",
+					borderEndWidth: 5,
+					backgroundColor: "#0A0F1E",
+				},
+				message: `Leave ${LEAVE_STATUS_LABELS[status].toLowerCase()}`,
+				duration: 3000,
+				position: "bottom",
+			});
+		} catch (error: any) {
+			ToastService.showError({
+				message: error.message || "Failed to update leave status",
+				duration: 3000,
+				position: "bottom",
+			});
+		} finally {
+			setUpdatingLeaveId(null);
+		}
+	};
+
+	useEffect(() => {
+		if (!token || activeTab !== "students") return;
 		const handle = setTimeout(() => {
 			loadStudents(true);
 		}, 300);
 		return () => clearTimeout(handle);
-	}, [token, selectedBlock, selectedBranch, normalizedSearch, loadStudents]);
+	}, [
+		token,
+		activeTab,
+		selectedBlock,
+		selectedBranch,
+		normalizedSearch,
+		loadStudents,
+	]);
 
 	useFocusEffect(
 		useCallback(() => {
+			if (activeTab === "students") {
+				loadBlocks();
+				loadStudents(true);
+				return;
+			}
+			loadLeaves(true);
+		}, [activeTab, loadBlocks, loadStudents, loadLeaves]),
+	);
+
+	useEffect(() => {
+		if (!token) return;
+		if (activeTab === "students") {
 			loadBlocks();
 			loadStudents(true);
-		}, [loadBlocks, loadStudents]),
-	);
+			return;
+		}
+		loadLeaves(true);
+	}, [activeTab, token, loadBlocks, loadStudents, loadLeaves]);
 
 	const onRefresh = async () => {
 		setRefreshing(true);
-		await Promise.all([loadBlocks(), loadStudents(false)]);
+		if (activeTab === "students") {
+			await Promise.all([loadBlocks(), loadStudents(false)]);
+		} else {
+			await loadLeaves(false);
+		}
 		setRefreshing(false);
 	};
 
@@ -239,266 +334,323 @@ const StudentsScreen = () => {
 					</View>
 				</View>
 
-				<View style={{ marginTop: 16 }}>
-					<View
+				<View
+					style={{
+						flexDirection: "row",
+						backgroundColor: "rgba(255,255,255,0.05)",
+						borderRadius: 12,
+						padding: 4,
+						marginTop: 16,
+					}}
+				>
+					<Pressable
+						onPress={() => setActiveTab("students")}
 						style={{
-							flexDirection: "row",
+							flex: 1,
+							backgroundColor:
+								activeTab === "students"
+									? "rgba(255,204,0,0.2)"
+									: "transparent",
+							borderRadius: 8,
+							paddingVertical: 10,
 							alignItems: "center",
-							backgroundColor: "rgba(255,255,255,0.06)",
-							borderRadius: 12,
-							borderWidth: 1,
-							borderColor: "rgba(255,255,255,0.1)",
-							paddingHorizontal: 10,
-							paddingVertical: 6,
 						}}
 					>
-						<FontAwesome name="search" size={14} color="#6B7280" />
-						<TextInput
-							value={search}
-							onChangeText={setSearch}
-							placeholder="Search students"
-							placeholderTextColor="#4B5563"
+						<Text
 							style={{
-								flex: 1,
-								color: "white",
-								paddingHorizontal: 8,
-								paddingVertical: 6,
-								fontSize: 13,
-							}}
-						/>
-
-						{/* Unassigned toggle */}
-						<Pressable
-							onPress={() => setUnassignedOnly((prev) => !prev)}
-							style={{
-								flexDirection: "row",
-								alignItems: "center",
-								gap: 6,
-								backgroundColor: unassignedOnly
-									? "rgba(255,204,0,0.12)"
-									: "rgba(255,255,255,0.06)",
-								borderRadius: 10,
-								borderWidth: 1,
-								borderColor: unassignedOnly
-									? "rgba(255,204,0,0.35)"
-									: "rgba(255,255,255,0.1)",
-								paddingHorizontal: 10,
-								paddingVertical: 10,
+								color: activeTab === "students" ? "#FFCC00" : "#9CA3AF",
+								fontWeight: activeTab === "students" ? "600" : "400",
 							}}
 						>
-							<Text
-								style={{
-									color: unassignedOnly ? "#FFCC00" : "#6B7280",
-									fontSize: 11,
-									fontWeight: "600",
-								}}
-							>
-								Unassigned
-							</Text>
-						</Pressable>
-						{search.length > 0 && (
-							<Pressable
-								onPress={() => setSearch("")}
-								style={({ pressed }) => ({
-									padding: 5,
-									marginLeft: 5,
-									opacity: pressed ? 0.7 : 1,
-								})}
-							>
-								<FontAwesome name="times" size={20} color="#FFCC00" />
-							</Pressable>
-						)}
-					</View>
-
-					{/* Filter bar */}
-					<View
+							Students
+						</Text>
+					</Pressable>
+					<Pressable
+						onPress={() => setActiveTab("leaves")}
 						style={{
-							marginTop: 10,
-							flexDirection: "row",
+							flex: 1,
+							backgroundColor:
+								activeTab === "leaves" ? "rgba(255,204,0,0.2)" : "transparent",
+							borderRadius: 8,
+							paddingVertical: 10,
 							alignItems: "center",
-							gap: 8,
 						}}
 					>
-						{/* Block picker */}
-						<View
+						<Text
 							style={{
-								flex: 1,
-								backgroundColor: "rgba(255,255,255,0.06)",
-								borderRadius: 10,
-								borderWidth: 1,
-								borderColor: "rgba(255,255,255,0.1)",
-								overflow: "hidden",
+								color: activeTab === "leaves" ? "#FFCC00" : "#9CA3AF",
+								fontWeight: activeTab === "leaves" ? "600" : "400",
 							}}
 						>
-							{loadingBlocks ? (
-								<View style={{ paddingVertical: 12, alignItems: "center" }}>
-									<ActivityIndicator color="#FFCC00" size="small" />
-								</View>
-							) : (
-								<Picker
-									selectedValue={selectedBlock}
-									onValueChange={setSelectedBlock}
-									style={{ color: "#fff", height: 54 }}
-									dropdownIconColor="#FFCC00"
-								>
-									<Picker.Item label="All Blocks" value="" color="#000" />
-									{blocks.map((block) => (
-										<Picker.Item
-											key={block._id}
-											label={block.name}
-											value={block._id}
-											color="#000"
-										/>
-									))}
-								</Picker>
-							)}
-						</View>
-
-						{/* Branch picker */}
-						<View
-							style={{
-								flex: 1,
-								backgroundColor: "rgba(255,255,255,0.06)",
-								borderRadius: 10,
-								borderWidth: 1,
-								borderColor: "rgba(255,255,255,0.1)",
-								overflow: "hidden",
-							}}
-						>
-							<Picker
-								selectedValue={selectedBranch}
-								onValueChange={setSelectedBranch}
-								style={{ color: "#fff", height: 54 }}
-								dropdownIconColor="#FFCC00"
-							>
-								{branches.map((branch) => (
-									<Picker.Item
-										key={branch || "all"}
-										label={branch ? branch : "All Branches"}
-										value={branch}
-										color="#000"
-									/>
-								))}
-							</Picker>
-						</View>
-					</View>
+							Leave Requests
+						</Text>
+					</Pressable>
 				</View>
 
-				<View style={{ marginTop: 16 }}>
-					{loadingStudents ? (
-						<ActivityIndicator color="#FFCC00" style={{ marginTop: 20 }} />
-					) : filteredStudents.length === 0 ? (
-						<LinearGradient
-							colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.05)"]}
-							style={{
-								borderRadius: 16,
-								borderWidth: 1,
-								borderColor: "rgba(255,255,255,0.1)",
-								padding: 24,
-								alignItems: "center",
-							}}
-						>
-							<Text
+				{activeTab === "students" ? (
+					<>
+						<View style={{ marginTop: 16 }}>
+							<View
 								style={{
-									color: "white",
-									fontSize: 16,
-									fontWeight: "600",
-									marginBottom: 4,
+									flexDirection: "row",
+									alignItems: "center",
+									backgroundColor: "rgba(255,255,255,0.06)",
+									borderRadius: 12,
+									borderWidth: 1,
+									borderColor: "rgba(255,255,255,0.1)",
+									paddingHorizontal: 10,
+									paddingVertical: 6,
 								}}
 							>
-								No students found
-							</Text>
-							<Text style={{ color: "#9CA3AF", fontSize: 13 }}>
-								Try adjusting your filters
-							</Text>
-						</LinearGradient>
-					) : (
-						<View style={{ gap: 10 }}>
-							{filteredStudents.map((student) => (
+								<FontAwesome name="search" size={14} color="#6B7280" />
+								<TextInput
+									value={search}
+									onChangeText={setSearch}
+									placeholder="Search students"
+									placeholderTextColor="#4B5563"
+									style={{
+										flex: 1,
+										color: "white",
+										paddingHorizontal: 8,
+										paddingVertical: 6,
+										fontSize: 13,
+									}}
+								/>
+
 								<Pressable
-									key={student._id}
-									onPress={() => handleStudentPress(student)}
-									style={({ pressed }) => ({
-										backgroundColor: "rgba(255,255,255,0.06)",
-										borderRadius: 14,
+									onPress={() => setUnassignedOnly((prev) => !prev)}
+									style={{
+										flexDirection: "row",
+										alignItems: "center",
+										gap: 6,
+										backgroundColor: unassignedOnly
+											? "rgba(255,204,0,0.12)"
+											: "rgba(255,255,255,0.06)",
+										borderRadius: 10,
 										borderWidth: 1,
-										borderColor: "rgba(255,255,255,0.1)",
-										padding: 14,
-										opacity: pressed ? 0.8 : 1,
-									})}
+										borderColor: unassignedOnly
+											? "rgba(255,204,0,0.35)"
+											: "rgba(255,255,255,0.1)",
+										paddingHorizontal: 10,
+										paddingVertical: 10,
+									}}
 								>
-									<View
+									<Text
 										style={{
-											flexDirection: "row",
-											alignItems: "center",
-											gap: 10,
+											color: unassignedOnly ? "#FFCC00" : "#6B7280",
+											fontSize: 11,
+											fontWeight: "600",
 										}}
 									>
-										<View
-											style={{
-												width: 40,
-												height: 40,
-												borderRadius: 20,
-												backgroundColor: "rgba(255,204,0,0.12)",
-												alignItems: "center",
-												justifyContent: "center",
-											}}
-										>
-											<FontAwesome name="user" size={16} color="#FFCC00" />
+										Unassigned
+									</Text>
+								</Pressable>
+								{search.length > 0 && (
+									<Pressable
+										onPress={() => setSearch("")}
+										style={({ pressed }) => ({
+											padding: 5,
+											marginLeft: 5,
+											opacity: pressed ? 0.7 : 1,
+										})}
+									>
+										<FontAwesome name="times" size={20} color="#FFCC00" />
+									</Pressable>
+								)}
+							</View>
+
+							<View
+								style={{
+									marginTop: 10,
+									flexDirection: "row",
+									alignItems: "center",
+									gap: 8,
+								}}
+							>
+								<View
+									style={{
+										flex: 1,
+										backgroundColor: "rgba(255,255,255,0.06)",
+										borderRadius: 10,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.1)",
+										overflow: "hidden",
+									}}
+								>
+									{loadingBlocks ? (
+										<View style={{ paddingVertical: 12, alignItems: "center" }}>
+											<ActivityIndicator color="#FFCC00" size="small" />
 										</View>
-										<View style={{ flex: 1 }}>
-											<Text
-												style={{
-													color: "white",
-													fontSize: 15,
-													fontWeight: "600",
-												}}
-											>
-												{student.name}
-											</Text>
-											{/* <View
+									) : (
+										<Picker
+											selectedValue={selectedBlock}
+											onValueChange={setSelectedBlock}
+											style={{ color: "#fff", height: 54 }}
+											dropdownIconColor="#FFCC00"
+										>
+											<Picker.Item label="All Blocks" value="" color="#000" />
+											{blocks.map((block) => (
+												<Picker.Item
+													key={block._id}
+													label={block.name}
+													value={block._id}
+													color="#000"
+												/>
+											))}
+										</Picker>
+									)}
+								</View>
+
+								<View
+									style={{
+										flex: 1,
+										backgroundColor: "rgba(255,255,255,0.06)",
+										borderRadius: 10,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.1)",
+										overflow: "hidden",
+									}}
+								>
+									<Picker
+										selectedValue={selectedBranch}
+										onValueChange={setSelectedBranch}
+										style={{ color: "#fff", height: 54 }}
+										dropdownIconColor="#FFCC00"
+									>
+										{branches.map((branch) => (
+											<Picker.Item
+												key={branch || "all"}
+												label={branch ? branch : "All Branches"}
+												value={branch}
+												color="#000"
+											/>
+										))}
+									</Picker>
+								</View>
+							</View>
+						</View>
+
+						<View style={{ marginTop: 16 }}>
+							{loadingStudents ? (
+								<ActivityIndicator color="#FFCC00" style={{ marginTop: 20 }} />
+							) : filteredStudents.length === 0 ? (
+								<LinearGradient
+									colors={["rgba(255,255,255,0.05)", "rgba(255,255,255,0.05)"]}
+									style={{
+										borderRadius: 16,
+										borderWidth: 1,
+										borderColor: "rgba(255,255,255,0.1)",
+										padding: 24,
+										alignItems: "center",
+									}}
+								>
+									<Text
+										style={{
+											color: "white",
+											fontSize: 16,
+											fontWeight: "600",
+											marginBottom: 4,
+										}}
+									>
+										No students found
+									</Text>
+									<Text style={{ color: "#9CA3AF", fontSize: 13 }}>
+										Try adjusting your filters
+									</Text>
+								</LinearGradient>
+							) : (
+								<View style={{ gap: 10 }}>
+									{filteredStudents.map((student) => (
+										<Pressable
+											key={student._id}
+											onPress={() => handleStudentPress(student)}
+											style={({ pressed }) => ({
+												backgroundColor: "rgba(255,255,255,0.06)",
+												borderRadius: 14,
+												borderWidth: 1,
+												borderColor: "rgba(255,255,255,0.1)",
+												padding: 14,
+												opacity: pressed ? 0.8 : 1,
+											})}
+										>
+											<View
 												style={{
 													flexDirection: "row",
+													alignItems: "center",
 													gap: 10,
-													marginTop: 4,
 												}}
 											>
-												{student.rollNo && (
-													<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
-														{student.rollNo}
+												<View
+													style={{
+														width: 40,
+														height: 40,
+														borderRadius: 20,
+														backgroundColor: "rgba(255,204,0,0.12)",
+														alignItems: "center",
+														justifyContent: "center",
+													}}
+												>
+													<FontAwesome name="user" size={16} color="#FFCC00" />
+												</View>
+												<View style={{ flex: 1 }}>
+													<Text
+														style={{
+															color: "white",
+															fontSize: 15,
+															fontWeight: "600",
+														}}
+													>
+														{student.name}
 													</Text>
-												)}
-												{student.branch && (
-													<Text style={{ color: "#9CA3AF", fontSize: 12 }}>
-														{student.branch}
+												</View>
+												<View
+													style={{
+														alignItems: "flex-end",
+														flexDirection: "row",
+														gap: 10,
+													}}
+												>
+													<Text
+														style={{
+															color: "#6B7280",
+															fontSize: 11,
+															marginTop: 2,
+														}}
+													>
+														{student.room?.roomNumber
+															? `Room ${student.room.roomNumber}`
+															: "No Room"}
 													</Text>
-												)}
-											</View> */}
-										</View>
-										<View
-											style={{
-												alignItems: "flex-end",
-												flexDirection: "row",
-												gap: 10,
-											}}
-										>
-											<Text
-												style={{ color: "#6B7280", fontSize: 11, marginTop: 2 }}
-											>
-												{student.room?.roomNumber
-													? `Room ${student.room.roomNumber}`
-													: "No Room"}
-											</Text>
-											<Text style={{ color: "#D1D5DB", fontSize: 12 }}>
-												{student.block?.name ? student.block?.name : "No block"}
-											</Text>
-										</View>
-									</View>
-								</Pressable>
-							))}
+													<Text style={{ color: "#D1D5DB", fontSize: 12 }}>
+														{student.block?.name
+															? student.block?.name
+															: "No block"}
+													</Text>
+												</View>
+											</View>
+										</Pressable>
+									))}
+								</View>
+							)}
 						</View>
-					)}
-				</View>
+					</>
+				) : (
+					<View style={{ marginTop: 16 }}>
+						<LeaveRequestsAdmin
+							leaves={leaves}
+							loading={loadingLeaves}
+							filter={leaveFilter}
+							onFilterChange={setLeaveFilter}
+							onApprove={(leaveId) =>
+								handleUpdateLeaveStatus(leaveId, "APPROVED")
+							}
+							onReject={(leaveId) =>
+								handleUpdateLeaveStatus(leaveId, "REJECTED")
+							}
+							updatingId={updatingLeaveId}
+						/>
+					</View>
+				)}
 			</ScrollView>
 
 			<Modal

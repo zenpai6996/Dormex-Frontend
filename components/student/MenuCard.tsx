@@ -59,15 +59,15 @@ export default function MenuCard({
 					<View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
 						<View
 							style={{
-								width: 32,
-								height: 32,
+								width: 44,
+								height: 44,
 								borderRadius: 20,
 								backgroundColor: "rgba(74,222,128,0.12)",
 								alignItems: "center",
 								justifyContent: "center",
 							}}
 						>
-							<FontAwesome name="cutlery" size={14} color="#4ADE80" />
+							<FontAwesome name="cutlery" size={18} color="#4ADE80" />
 						</View>
 						<Text
 							style={{

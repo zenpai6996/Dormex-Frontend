@@ -34,9 +34,9 @@ export default function Onboarding() {
 				{/* Features with Glass Icons */}
 				<Animated.View entering={FadeInDown.delay(100).duration(500)}>
 					<FeatureItem
-						icon="users"
-						title="Roommate Allocation"
-						description="Find compatible roommates "
+						icon="calendar"
+						title="Leave Approval "
+						description="Get you Leaves approved ASAP"
 					/>
 					<FeatureItem
 						icon="cutlery"

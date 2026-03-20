@@ -182,6 +182,14 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
+				name="students"
+				options={{
+					title: "Students",
+					tabBarStyle: { display: "none" },
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
 				name="three"
 				options={{
 					title: "Complaints",
@@ -207,12 +215,12 @@ export default function TabLayout() {
 					),
 				}}
 			/>
-			<Tabs.Screen
+			{/* <Tabs.Screen
 				name="students"
 				options={{
 					href: null,
 				}}
-			/>
+			/> */}
 		</Tabs>
 	);
 }

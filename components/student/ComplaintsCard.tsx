@@ -106,7 +106,7 @@ export default function ComplaintsCard({
 						style={{
 							width: 44,
 							height: 44,
-							borderRadius: 12,
+							borderRadius: 20,
 							backgroundColor: "rgba(239,68,68,0.12)",
 							borderWidth: 1,
 							borderColor: "rgba(239,68,68,0.2)",
@@ -117,7 +117,7 @@ export default function ComplaintsCard({
 						<FontAwesome name="bullhorn" size={18} color="#EF4444" />
 					</View>
 					<View>
-						<Text style={{ color: "white", fontSize: 17, fontWeight: "700" }}>
+						<Text style={{ color: "white", fontSize: 15, fontWeight: "700" }}>
 							My Complaints
 						</Text>
 						<Text style={{ color: "#6B7280", fontSize: 12, marginTop: 1 }}>
@@ -178,7 +178,7 @@ export default function ComplaintsCard({
 										style={{
 											width: 40,
 											height: 40,
-											borderRadius: 10,
+											borderRadius: 20,
 											backgroundColor: config.bg,
 											borderWidth: 1,
 											borderColor: config.border,

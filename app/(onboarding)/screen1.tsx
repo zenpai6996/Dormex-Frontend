@@ -115,11 +115,11 @@ const screen1 = () => {
 					{
 						background: (
 							<LinearGradient
-								colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+								colors={["#0A0F1E", "#0A0F1E", "#1A1F32"]}
 								style={{ flex: 1 }}
 							/>
 						),
-						backgroundColor: "#2A2F45",
+						backgroundColor: "#1A1F32",
 						image: (
 							<View style={styles.lottie}>
 								<LottieView
@@ -131,17 +131,17 @@ const screen1 = () => {
 								/>
 							</View>
 						),
-						title: "Room Allocation",
-						subtitle: "Find your perfect roommate effortlessly",
+						title: "Leave Approval System",
+						subtitle: "Get your leaves approved easily",
 					},
 					{
 						background: (
 							<LinearGradient
-								colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+								colors={["#0A0F1E", "#0A0F1E", "#1A1F32"]}
 								style={{ flex: 1 }}
 							/>
 						),
-						backgroundColor: "#2A2F45",
+						backgroundColor: "#1A1F32",
 						image: (
 							<View style={styles.lottie}>
 								<LottieView
@@ -159,11 +159,11 @@ const screen1 = () => {
 					{
 						background: (
 							<LinearGradient
-								colors={["#0A0F1E", "#1A1F32", "#2A2F45"]}
+								colors={["#0A0F1E", "#0A0F1E", "#1A1F32"]}
 								style={{ flex: 1 }}
 							/>
 						),
-						backgroundColor: "#2A2F45",
+						backgroundColor: "#1A1F32",
 						image: (
 							<View style={styles.lottie}>
 								<LottieView

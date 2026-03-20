@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import ComplaintsCard from "../student/ComplaintsCard";
 import JoinBlockCard from "../student/JoinBlockCard";
+import LeaveCard from "../student/LeaveCard";
 import MenuCard from "../student/MenuCard";
 import RoommateCard from "../student/RoommateCard";
 import StudentHeader from "../student/StudentHeader";
@@ -46,6 +47,7 @@ export default function StudentDashboard({
 	const handleCreateComplaint = () => {
 		router.push("/create-complaint");
 	};
+
 	// const handleLogoutPress = () => {
 	// 	Alert.alert({
 	// 		title: "Logout",
@@ -142,7 +144,30 @@ export default function StudentDashboard({
 							</Text>
 						</View>
 
-						<View style={{ flexDirection: "row", gap: 12 }}>
+						<View style={{ flexDirection: "row", gap: 6 }}>
+							<Pressable
+								onPress={() => router.push("/leave-applications")}
+								style={({ pressed }) => ({
+									backgroundColor: "rgba(255,255,255,0.1)",
+									width: 44,
+									height: 44,
+									borderRadius: 22,
+									alignItems: "center",
+									justifyContent: "center",
+									borderWidth: 1,
+									borderColor: pressed ? "#ffcc00" : "rgba(255,204,0,0.3)",
+									transform: [{ scale: pressed ? 0.95 : 1 }],
+								})}
+							>
+								{({ pressed }) => (
+									<FontAwesome
+										name="calendar"
+										size={20}
+										color={pressed ? "#ffcc00" : "#ffcc00"}
+										style={{ marginLeft: 0 }}
+									/>
+								)}
+							</Pressable>
 							<Pressable
 								onPress={() => router.push("/modal")}
 								style={({ pressed }) => ({
@@ -234,6 +259,8 @@ export default function StudentDashboard({
 								/>
 							</Pressable>
 						)}
+
+						<LeaveCard refreshKey={refreshKey} />
 
 						<Pressable onPress={() => router.push("/(tabs)/three")}>
 							<ComplaintsCard
