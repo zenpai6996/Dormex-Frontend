@@ -28,7 +28,7 @@ React Native + Expo mobile app for hostel management. Includes dedicated student
   <tr>
     <td align="center"><b>Student Dashboard</b></td>
     <td align="center"><b>Mess Menu</b></td>
-    <td align="center"><b>My Complaints</b></td>
+    <td align="center"><b>Student Complaints</b></td>
   </tr>
   <tr>
     <td><img src="https://github.com/user-attachments/assets/4d78c0fd-cacd-45ed-afed-7bafa0a782c9" width="220"/></td>
